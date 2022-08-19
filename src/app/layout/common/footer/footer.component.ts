@@ -29,7 +29,7 @@ export class FooterComponent implements OnInit
 
     @Input() footerType: string = "footer-01";
 
-    marketplaceInfo: { phonenumber: string; email: string; address: string };
+    marketplaceInfo: { phonenumber: string; email: string; address: string; reg: string };
     landingPage: boolean = true;
     paymentLogos: string[] = [];
     
@@ -109,7 +109,8 @@ export class FooterComponent implements OnInit
         this.marketplaceInfo = {
             email: "hello@deliverin.my",
             phonenumber: "+60125033299",
-            address: "First Subang, Unit S-14-06, Level 14, Jalan SS15/4G, 47500 Subang Jaya, Selangor"
+            address: "First Subang, Unit S-14-06, Level 14, Jalan SS15/4G, 47500 Subang Jaya, Selangor",
+            reg: "Symple Business System Sdn Bhd (SSM Reg #: 1436952-D)"
         };
 
         this.paymentLogos = [

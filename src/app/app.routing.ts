@@ -22,7 +22,7 @@ export const appRoutes: Route[] = [
             // roles: [UserRole.Admin, UserRole.Customer]
         },
         resolve    : {
-            browserCompatibility    : BrowserCompatibilityResolver,
+            // browserCompatibility    : BrowserCompatibilityResolver,
             initialData             : InitialDataResolver,
             platformSetup           : PlatformSetupResolver,
             carts                   : CartsResolver
@@ -64,7 +64,7 @@ export const appRoutes: Route[] = [
             layout: 'empty'
         },
         resolve    : {
-            browserCompatibility    : BrowserCompatibilityResolver,
+            // browserCompatibility    : BrowserCompatibilityResolver,
             platformSetup: PlatformSetupResolver
         },
         children: [
@@ -85,7 +85,7 @@ export const appRoutes: Route[] = [
         canActivateChild: [AuthGuard],
         component: LayoutComponent,
         resolve    : {
-            browserCompatibility    : BrowserCompatibilityResolver,
+            // browserCompatibility    : BrowserCompatibilityResolver,
             platformSetup: PlatformSetupResolver
         },
         data: {
@@ -108,7 +108,7 @@ export const appRoutes: Route[] = [
             roles: [UserRole.Admin, UserRole.Customer]
         },
         resolve    : {
-            browserCompatibility    : BrowserCompatibilityResolver,
+            // browserCompatibility    : BrowserCompatibilityResolver,
             initialData: InitialDataResolver,
             platformSetup: PlatformSetupResolver
         },
