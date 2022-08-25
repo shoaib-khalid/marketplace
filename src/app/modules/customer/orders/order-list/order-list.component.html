@@ -116,7 +116,8 @@
                                                 <div class="flex flex-row w-full justify-between items-center">
                                                     <div>
                                                         <span class="text-left font-semibold text-gray-500 text-sm">Sub Total&nbsp;</span> 
-                                                        <span class="text-left text-gray-500 text-xs"> ({{orderDetails.orderItemWithDetails.length + " " + (orderDetails.orderItemWithDetails.length > 1 ? "items" : "item")  }})</span>
+                                                        <span class="text-left text-gray-500 text-xs">({{numberOfItems(orderDetails.orderItemWithDetails)}})</span>
+                                                        <!-- <span class="text-left text-gray-500 text-xs"> ({{orderDetails.orderItemWithDetails.length + " " + (orderDetails.orderItemWithDetails.length > 1 ? "items" : "item")  }})</span> -->
                                                     </div>
                                                     <div class="flex justify-between w-20">
                                                         <span class="font-semibold text-gray-500 text-sm">:</span>
@@ -339,7 +340,8 @@
                                                         <div class="flex flex-row w-full justify-between items-center">
                                                             <div>
                                                                 <span class="text-left font-semibold text-gray-500 text-sm">Sub Total&nbsp;</span> 
-                                                                <span class="text-left text-gray-500 text-xs">({{orderDetails.orderItemWithDetails.length + " " + (orderDetails.orderItemWithDetails.length > 1 ? "items" : "item")  }})</span>
+                                                                <span class="text-left text-gray-500 text-xs">({{numberOfItems(orderDetails.orderItemWithDetails)}})</span>
+                                                                <!-- <span class="text-left text-gray-500 text-xs">({{orderDetails.orderItemWithDetails.length + " " + (orderDetails.orderItemWithDetails.length > 1 ? "items" : "item")  }})</span> -->
                                                             </div>
                                                             <div class="flex justify-between w-20">
                                                                 <span class="font-semibold text-gray-500 text-sm">:</span>

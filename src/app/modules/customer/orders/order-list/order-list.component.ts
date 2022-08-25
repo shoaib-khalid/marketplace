@@ -441,5 +441,19 @@ export class OrderListComponent implements OnInit
             behavior: 'smooth' 
      });
     }
+
+    numberOfItems(orders: OrderItemWithDetails[]) {
+        const sum = orders.reduce(
+            (previousValue, currentValue) => previousValue + currentValue.quantity,
+            0,
+        );
+
+        if (sum > 1) {
+            return sum + " items"
+        }
+        else 
+            return sum + " item"
+        
+    }
     
 }
