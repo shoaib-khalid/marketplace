@@ -10,7 +10,9 @@ import { PlatformService } from 'app/core/platform/platform.service';
 import { Platform } from 'app/core/platform/platform.types';
 import { StoresService } from 'app/core/store/store.service';
 import { Store, StoreAssets, StorePagination } from 'app/core/store/store.types';
-import { Subject, takeUntil, map, merge } from 'rxjs';
+import { CurrentLocationService } from 'app/core/_current-location/current-location.service';
+import { CurrentLocation } from 'app/core/_current-location/current-location.types';
+import { Subject, takeUntil, map, merge, combineLatest } from 'rxjs';
 import { switchMap, debounceTime } from 'rxjs/operators';
 
 @Component({
@@ -23,6 +25,7 @@ export class LandingStoresComponent implements OnInit
     @ViewChild("storesPaginator", {read: MatPaginator}) private _paginator: MatPaginator;
     
     platform: Platform;
+    currentLocation: CurrentLocation;
     
     // Stores Details
     storesDetailsTitle: string = "Shops"
@@ -48,6 +51,7 @@ export class LandingStoresComponent implements OnInit
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _platformsService: PlatformService,
+        private _currentLocationService: CurrentLocationService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _locationService: LocationService,
         private _activatedRoute: ActivatedRoute,
@@ -91,16 +95,35 @@ export class LandingStoresComponent implements OnInit
                 this._changeDetectorRef.markForCheck();
             });
 
-        this._platformsService.platform$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((platform: Platform) => { 
-                this.platform = platform;          
-                
-                if (this.platform) {
+            combineLatest([
+                this._currentLocationService.currentLocation$,
+                this._platformsService.platform$
+            ]).pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(([currentLocation, platform] : [CurrentLocation, Platform])=>{
+                if (currentLocation && platform) {
+
+                    this.platform = platform;
+                    this.currentLocation = currentLocation;
+
+                    // Set title if location is on
+                    if (currentLocation.isAllowed) {
+                        this.storesDetailsTitle = 'Discover Shops Near Me';
+                    }
+
+                    let currentLat = currentLocation.isAllowed ? currentLocation.location.lat : null;
+                    let currentLong = currentLocation.isAllowed ? currentLocation.location.lng : null;
+
                     // Get searches from url parameter 
                     this._activatedRoute.queryParams.subscribe(params => {
                         this.categoryId = params.categoryId ? params.categoryId : null;
                         this.locationId = params.locationId ? params.locationId : null;
+
+                        // if there are value for categoryId OR locationId
+                        // no need for lat long, since customer want to see stores that contain the query
+                        if (this.categoryId || this.locationId) {
+                            currentLat = null;
+                            currentLong = null;
+                        }
 
                         // get back the previous pagination page
                         // more than 2 means it won't get back the previous pagination page when navigate back from 'carts' page
@@ -120,7 +143,15 @@ export class LandingStoresComponent implements OnInit
                                     return item.storeCityId;
                                 });
 
-                                this.adjacentLocationIds.unshift(this.locationId);
+                                // put the original this.locationId in the adjacentLocationIds
+                                if (this.adjacentLocationIds.length > 0) {
+                                    this.adjacentLocationIds.unshift(this.locationId);
+                                }
+                                
+                                // if locationId exists
+                                if (this.adjacentLocationIds.length < 1 && this.locationId) {
+                                    this.adjacentLocationIds = [this.locationId];
+                                }
                         
                                 // Get stores
                                 this._locationService.getStoresDetails({
@@ -128,7 +159,9 @@ export class LandingStoresComponent implements OnInit
                                     pageSize        : this.storesDetailsPageSize, 
                                     regionCountryId : this.platform.country, 
                                     parentCategoryId: this.categoryId, 
-                                    cityId          : this.adjacentLocationIds 
+                                    cityId          : this.adjacentLocationIds,
+                                    latitude        : currentLat,
+                                    longitude       : currentLong
                                 })
                                 .subscribe((stores : StoresDetails[]) => {});
                             });
@@ -159,6 +192,17 @@ export class LandingStoresComponent implements OnInit
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
 
+                // handle if user allow location
+                let currentLat = this.currentLocation.isAllowed ? this.currentLocation.location.lat : null;
+                let currentLong = this.currentLocation.isAllowed ? this.currentLocation.location.lng : null;
+
+                // if there are value for categoryId OR locationId
+                // no need for lat long, since customer want to see stores that contain the query
+                if (this.categoryId || this.locationId) {
+                    currentLat = null;
+                    currentLong = null;
+                }
+
                 // Get products if sort or page changes
                 merge(this._paginator.page).pipe(
                     switchMap(() => {
@@ -168,7 +212,9 @@ export class LandingStoresComponent implements OnInit
                             pageSize        : this.storesDetailsPageOfItems['pageSize'], 
                             regionCountryId : this.platform.country, 
                             parentCategoryId: this.categoryId, 
-                            cityId          : this.adjacentLocationIds 
+                            cityId          : this.adjacentLocationIds,
+                            latitude        : currentLat,
+                            longitude       : currentLong
                         });
                     }),
                     map(() => {
@@ -201,13 +247,26 @@ export class LandingStoresComponent implements OnInit
             if (this.storesDetailsPageOfItems['currentPage'] - 1 !== this.storesDetailsPagination.page) {
                 // set loading to true
                 this.isLoading = true;
+
+                // handle if user allow location
+                let currentLat = this.currentLocation.isAllowed ? this.currentLocation.location.lat : null;
+                let currentLong = this.currentLocation.isAllowed ? this.currentLocation.location.lng : null;
+
+                // if there are value for categoryId OR locationId
+                // no need for lat long, since customer want to see stores that contain the query
+                if (this.categoryId || this.locationId) {
+                    currentLat = null;
+                    currentLong = null;
+                }
     
                 this._locationService.getStoresDetails({
                     page            : this.storesDetailsPageOfItems['currentPage'] - 1, 
                     pageSize        : this.storesDetailsPageOfItems['pageSize'], 
                     regionCountryId : this.platform.country, 
                     parentCategoryId: this.categoryId, 
-                    cityId          : this.adjacentLocationIds 
+                    cityId          : this.adjacentLocationIds,
+                    latitude        : currentLat,
+                    longitude       : currentLong
                 })
                 .subscribe(()=>{
                     // set loading to false

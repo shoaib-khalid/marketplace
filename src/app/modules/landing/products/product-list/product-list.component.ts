@@ -7,7 +7,9 @@ import { LandingLocation, LocationArea, ProductDetailPagination, ProductDetails 
 import { NavigateService } from 'app/core/navigate-url/navigate.service';
 import { PlatformService } from 'app/core/platform/platform.service';
 import { Platform } from 'app/core/platform/platform.types';
-import { Subject, takeUntil, map, merge } from 'rxjs';
+import { CurrentLocationService } from 'app/core/_current-location/current-location.service';
+import { CurrentLocation } from 'app/core/_current-location/current-location.types';
+import { Subject, takeUntil, map, merge, combineLatest } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
@@ -20,6 +22,7 @@ export class LandingProductsComponent implements OnInit
     @ViewChild("productsPaginator", {read: MatPaginator}) private _paginator: MatPaginator;
     
     platform: Platform;
+    currentLocation: CurrentLocation;
 
     // product detauls
     productsDetailsTitle: string = "Items";
@@ -45,6 +48,7 @@ export class LandingProductsComponent implements OnInit
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _platformsService: PlatformService,
+        private _currentLocationService: CurrentLocationService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _locationService: LocationService,
         private _activatedRoute: ActivatedRoute,
@@ -90,15 +94,36 @@ export class LandingProductsComponent implements OnInit
                 this._changeDetectorRef.markForCheck();
             });
 
-        this._platformsService.platform$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((platform: Platform) => { 
-                this.platform = platform;
-                if (this.platform) {
+
+            combineLatest([
+                this._currentLocationService.currentLocation$,
+                this._platformsService.platform$
+            ]).pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(([currentLocation, platform] : [CurrentLocation, Platform])=>{
+                if (currentLocation && platform) {
+
+                    this.platform = platform;
+                    this.currentLocation = currentLocation;
+
+                    // Set title if location is on
+                    if (currentLocation.isAllowed) {
+                        this.productsDetailsTitle = 'Discover Items Near Me';
+                    }
+
+                    let currentLat = currentLocation.isAllowed ? currentLocation.location.lat : null;
+                    let currentLong = currentLocation.isAllowed ? currentLocation.location.lng : null;
+                    
                     // Get searches from url parameter 
                     this._activatedRoute.queryParams.subscribe(params => {
                         this.categoryId = params.categoryId ? params.categoryId : null;
                         this.locationId = params.locationId ? params.locationId : null;
+
+                        // if there are value for categoryId OR locationId
+                        // no need for lat long, since customer want to see stores that contain the query
+                        if (this.categoryId || this.locationId) {
+                            currentLat = null;
+                            currentLong = null;
+                        }
 
                         // get back the previous pagination page
                         // more than 2 means it won't get back the previous pagination page when navigate back from 'carts' page
@@ -118,7 +143,15 @@ export class LandingProductsComponent implements OnInit
                                     return item.storeCityId;
                                 });
         
-                                this.adjacentLocationIds.unshift(this.locationId);
+                                // put the original this.locationId in the adjacentLocationIds
+                                if (this.adjacentLocationIds.length > 0) {
+                                    this.adjacentLocationIds.unshift(this.locationId);
+                                }
+                                
+                                // if locationId exists
+                                if (this.adjacentLocationIds.length < 1 && this.locationId) {
+                                    this.adjacentLocationIds = [this.locationId];
+                                }
                         
                                 // Get products
                                 this._locationService.getProductsDetails({ 
@@ -127,7 +160,9 @@ export class LandingProductsComponent implements OnInit
                                     regionCountryId : this.platform.country, 
                                     cityId          : this.adjacentLocationIds, 
                                     parentCategoryId: this.categoryId, 
-                                    status          : ['ACTIVE', 'OUTOFSTOCK'] 
+                                    status          : ['ACTIVE', 'OUTOFSTOCK'],
+                                    latitude        : currentLat,
+                                    longitude       : currentLong
                                 })
                                 .subscribe((products : ProductDetails[]) => {});
                             }); 
@@ -163,13 +198,27 @@ export class LandingProductsComponent implements OnInit
                 merge(this._paginator.page).pipe(
                     switchMap(() => {
                         this.isLoading = true;
+
+                        // handle if user allow location
+                        let currentLat = this.currentLocation.isAllowed ? this.currentLocation.location.lat : null;
+                        let currentLong = this.currentLocation.isAllowed ? this.currentLocation.location.lng : null;
+
+                        // if there are value for categoryId OR locationId
+                        // no need for lat long, since customer want to see stores that contain the query
+                        if (this.categoryId || this.locationId) {
+                            currentLat = null;
+                            currentLong = null;
+                        }
+
                         return this._locationService.getProductsDetails({
                             page            : this.productsDetailsPageOfItems['currentPage'] - 1, 
                             pageSize        : this.productsDetailsPageOfItems['pageSize'], 
                             regionCountryId : this.platform.country, 
                             parentCategoryId: this.categoryId, 
                             cityId          : this.adjacentLocationIds, 
-                            status          : ['ACTIVE', 'OUTOFSTOCK'] 
+                            status          : ['ACTIVE', 'OUTOFSTOCK'],
+                            latitude        : currentLat,
+                            longitude       : currentLong
                         });
                     }),
                     map(() => {
@@ -193,6 +242,17 @@ export class LandingProductsComponent implements OnInit
             if (this.productsDetailsPageOfItems['currentPage'] - 1 !== this.productsDetailsPagination.page) {
                 // set loading to true
                 this.isLoading = true;
+
+                // handle if user allow location
+                let currentLat = this.currentLocation.isAllowed ? this.currentLocation.location.lat : null;
+                let currentLong = this.currentLocation.isAllowed ? this.currentLocation.location.lng : null;
+
+                // if there are value for categoryId OR locationId
+                // no need for lat long, since customer want to see stores that contain the query
+                if (this.categoryId || this.locationId) {
+                    currentLat = null;
+                    currentLong = null;
+                }
     
                 this._locationService.getProductsDetails({
                     page            : this.productsDetailsPageOfItems['currentPage'] - 1, 
@@ -200,7 +260,9 @@ export class LandingProductsComponent implements OnInit
                     regionCountryId : this.platform.country, 
                     parentCategoryId: this.categoryId, 
                     cityId          : this.adjacentLocationIds, 
-                    status          : ['ACTIVE', 'OUTOFSTOCK'] 
+                    status          : ['ACTIVE', 'OUTOFSTOCK'],
+                    latitude        : currentLat,
+                    longitude       : currentLong
                 })
                 .subscribe(()=>{
                     // set loading to false
