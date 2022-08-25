@@ -149,6 +149,12 @@
                             Address information is required
                         </mat-error>
                     </mat-form-field>
+                    <div *ngIf="addressForm.get('address').value && addressForm.get('latitude').hasError('required') && addressForm.get('longitude').hasError('required')" 
+                        class="w-full flex md:hidden -mt-[1rem]">
+                        <mat-error class="text-sm font-medium">
+                            Click Find to update your address information
+                        </mat-error>
+                    </div>
                     <div class="py-2  sm:pl-2 w-full sm:w-auto">
                         <button
                             id="locate-button"
@@ -159,6 +165,9 @@
                         </button>
                     </div>
                 </div>
+                <mat-error class="hidden md:block -mt-[1rem] text-sm font-medium" *ngIf="addressForm.get('address').value && addressForm.get('latitude').hasError('required') && addressForm.get('longitude').hasError('required')">
+                    Click Find to update your address information
+                </mat-error>
                 <fuse-alert
                     class="w-full"
                     *ngIf="isAddressValid === false"

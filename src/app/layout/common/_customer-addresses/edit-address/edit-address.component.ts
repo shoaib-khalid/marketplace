@@ -146,7 +146,8 @@ export class EditAddressDialog implements OnInit {
 
         this.regionCountryStateCities.valueChanges
             .pipe(takeUntil(this._onDestroy))
-            .subscribe((result) => {                                
+            .subscribe((result) => {        
+                                        
                 // Get states by country Z(using symplified backend)
                 this._storesService.getStoreRegionCountryStateCity({ stateId: this.addressForm.get('state').value, city: result})
                 .subscribe((response)=>{

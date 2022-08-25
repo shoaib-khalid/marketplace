@@ -118,7 +118,15 @@ export class _CustomerAddressesComponent implements OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((address: CustomerAddress) => {
                 if (address) {
-                    this.selectedAddress = address;     
+                    this.selectedAddress = address;    
+                    
+                    if (!this.selectedAddress.latitude && !this.selectedAddress.longitude) {
+                        setTimeout(() => {
+                            this.editAddress(this.selectedAddress);
+                            // Mark for check
+                            this._changeDetectorRef.markForCheck();
+                        }, 200);
+                    }
 
                     this.latitude = this.selectedAddress.latitude
                     this.longitude = this.selectedAddress.longitude

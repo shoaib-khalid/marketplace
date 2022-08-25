@@ -509,7 +509,7 @@ export class CartListComponent implements OnInit, OnDestroy
                         .pipe(takeUntil(this._unsubscribeAll))
                         .subscribe((customerAddress : CustomerAddress) => {
                             if (customerAddress) { 
-                                                               
+
                                 this.customerAddress = customerAddress;
                                 // use for self pickup
                                 this.selfPickupInfo = customerAddress;

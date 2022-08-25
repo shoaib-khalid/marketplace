@@ -481,13 +481,23 @@
                                                 </ng-container>
                                                 <ng-template #deliveryErrorDesktop>
                                                     <div>
-                                                        <span *ngIf="selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage" class="font-semibold text-sm" >{{ selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage }}</span>
+                                                        <span *ngIf="selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage" class="font-semibold text-sm tracking-tight" >{{ selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage }}</span>
                                                         <ng-container *ngIf="!selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage && !validateCustomerInfo(i + pagination.startIndex)">
                                                             <div class="text-sm">
                                                                 <span 
-                                                                    class="underline cursor-pointer text-primary" 
+                                                                    class="underline cursor-pointer text-primary tracking-tight" 
                                                                     (click)="addAddressPopup()">
                                                                     Add delivery address
+                                                                </span>
+                                                            </div>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage === 'Coordinates Not Found' && (!customerAddress.latitude && !customerAddress.longitude)">
+                                                            <div class="text-sm">
+                                                                <span 
+                                                                    class="underline cursor-pointer text-red-500 tracking-tight" 
+                                                                    [routerLink]="'/address'"
+                                                                    [queryParams]="{origin: 'carts'}">
+                                                                    Click here to update
                                                                 </span>
                                                             </div>
                                                         </ng-container>
@@ -586,13 +596,23 @@
                                                 </ng-container>
                                                 <ng-template #deliveryErrorMobile>
                                                     <div>
-                                                        <span *ngIf="selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage" class="font-semibold text-sm" >{{ selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage }}</span>
+                                                        <span *ngIf="selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage" class="font-semibold text-sm tracking-tight" >{{ selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage }}</span>
                                                         <ng-container *ngIf="!selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage && !validateCustomerInfo(i + pagination.startIndex)">
                                                             <div class="text-sm">
                                                                 <span 
-                                                                    class="underline cursor-pointer text-primary" 
+                                                                    class="underline cursor-pointer text-primary tracking-tight" 
                                                                     (click)="addAddressPopup()">
                                                                     Add delivery address
+                                                                </span>
+                                                            </div>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage === 'Coordinates Not Found' && (!customerAddress.latitude && !customerAddress.longitude)">
+                                                            <div class="text-sm">
+                                                                <span 
+                                                                    class="underline cursor-pointer text-red-500 tracking-tight" 
+                                                                    [routerLink]="'/address'"
+                                                                    [queryParams]="{origin: 'carts'}">
+                                                                    Click here to update
                                                                 </span>
                                                             </div>
                                                         </ng-container>
