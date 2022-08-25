@@ -1,18 +1,306 @@
 <div class="flex flex-col w-full">
-    <div class="flex flex-col bg-red-500">
-        <img class="w-full" src="assets/images/example/background1.png" alt="">
-    </div>
-    <div class="flex flex-col bg-green-500">
-        <div class="md:px-20 md:py-10">
-            <img class="w-full" src="assets/images/example/background2.png" alt="">
+    <!-- About 1 -->
+    <div class="flex flex-col md:flex-row w-full p-4 md:py-10 md:px-24 h-full bg-primary">
+        <!-- Button and text -->
+        <div class="flex flex-col max-w-140 w-full justify-center">
+            <div class="w-full items-start">
+                <button
+                    mat-flat-button
+                    class="bg-blue-500">
+                    <span class="text-white font-semibold text-xs">Merchant Onboarding</span>
+                </button>
+            </div>
+            <div class="flex flex-col mt-1">
+                <span class="text-white font-bold text-4xl md:text-5xl">Online Platform to sell your food and grocery items</span>
+                <span class="text-white max-w-120 md:text-lg mt-2">
+                    <a href="https://www.symplified.biz" class="text-white font-semibold">Symplified.Biz</a>
+                    is an online platform that helps you sell food and grocery items online through your own branded store to sell food and grocey items.
+                </span>
+            </div>
+        </div>
+        <!-- images -->
+        <div class="flex flex-col h-100 w-full mt-4 md:mt-16 relative">
+            <div class="flex justify-end w-full absolute top-0 right-0 ">
+                <img class="w-36 md:w-44" src="assets/faq/image-2.png" alt="">
+            </div>
+            <div class="flex justify-start w-full absolute bottom-0 left-0 ">
+                <img class="w-64 md:w-80" src="assets/faq/image-1.png" alt="">
+            </div>
         </div>
     </div>
-    <div class="flex flex-col bg-red-500">
-        <img class="w-full" src="assets/images/example/background3.png" alt="">
+    <!-- About 2 -->
+    <div class="flex flex-col md:flex-row w-full p-4 md:py-10 md:px-24 h-full bg-card">
+        <!-- Text -->
+        <div class="flex flex-col md:max-w-140 w-full justify-center mr-20">
+            <div class="flex flex-col md:mb-10">
+                <span class="font-bold text-4xl md:text-5xl">What We Offer
+                    <p class="text-primary">For You</p>
+                </span>
+                <span class="text-secondary md:text-lg mt-2">
+                    Manage your customer's journey from order to fulfilment on one single platform. Built-in integration with payment and delivery channels.
+                </span>
+            </div>
+            <div class="flex flex-row shadow rounded-md p-3 mt-3 items-center w-full">
+                <mat-icon class="icon-size-8 text-primary mr-3" svgIcon="mat_outline:check_circle_outline"></mat-icon>
+                <div class="flex flex-col">
+                    <span class="text-primary font-semibold text-xl">Own Branded Store</span>
+                    <span class="text-secondary text-sm">Build your brand loyalty through us.</span>
+                </div>
+            </div>
+            <div class="flex flex-row shadow rounded-md p-3 mt-3 items-center w-full">
+                <mat-icon class="icon-size-8 text-primary mr-3" svgIcon="mat_outline:check_circle_outline"></mat-icon>
+                <div class="flex flex-col">
+                    <span class="text-primary font-semibold text-xl">Convenient Payment</span>
+                    <span class="text-secondary text-sm">Customers can pay easily through multiple payment methods.</span>
+                </div>
+            </div>
+            <div class="flex flex-row shadow rounded-md p-3 mt-3 items-center w-full">
+                <mat-icon class="icon-size-8 text-primary mr-3" svgIcon="mat_outline:check_circle_outline"></mat-icon>
+                <div class="flex flex-col">
+                    <span class="text-primary font-semibold text-xl">Fastest Delivery</span>
+                    <span class="text-secondary text-sm">Deliver through integrated delivery services.</span>
+                </div>
+            </div>
+        </div>
+        <!-- images -->
+        <div class="flex w-full pt-4">
+            <img class="md:w-100 rounded-md" src="assets/faq/image-3.png" alt="">
+        </div>
     </div>
-    <div class="flex flex-col bg-amber-500">
-        <div class="md:px-20 md:py-10">
-            <img class="w-full" src="assets/images/example/background4.png" alt="">
+    <!-- About 3 -->
+    <div class="flex flex-col w-full p-4 md:py-10 md:px-24 h-full bg-primary">
+        <!-- Button and text -->
+        <div class="flex flex-col w-full items-center justify-center mb-4">
+            <span class="text-white font-bold text-4xl md:text-5xl">Customer Experience</span>
+            <span class="text-white md:max-w-120 md:text-lg">Customer can browse the online store and place order.</span>
+        </div>
+        <!-- images -->
+        <div class="flex flex-col w-full">
+            <div class="flex justify-center w-full">
+                <img class="w-full" src="assets/faq/image-4.png" alt="">
+            </div>
+        </div>
+    </div>
+    <!-- About 4 -->
+    <div class="flex flex-col w-full p-4 md:py-10 md:px-24 h-full bg-card">
+        <!-- Button and text -->
+        <div class="flex flex-col w-full items-center justify-center mb-4">
+            <span class="font-bold text-4xl md:text-5xl">How It <a class="text-primary">Works</a></span>
+            <span class="text-center font-semibold md:text-lg">Manage your customer's journey from order to filfilment on one single platform. 
+                <p>Easy to learn and fast to deploy.</p>
+            </span>
+        </div>
+        <!-- content -->
+        <div class="flex flex-col w-full">
+            <!-- advantages -->
+            <div class="grid grid-cols-6 gap-2 place-items-center w-full justify-center mt-4">
+                <!-- superiority 1 -->
+                <div class="col-span-6 sm:col-span-3 md:col-span-2 flex flex-col bg-card rounded-lg border border-primary p-3 w-60 h-60 cursor-pointer group hover:bg-primary">
+                    <div class="flex flex-col w-full">
+                        <div class="flex items-center justify-center rounded-full h-12 w-12 bg-primary group-hover:bg-white">
+                            <span class="text-white text-center text-xl font-semibold group-hover:text-primary">1</span>
+                        </div>
+                        <span class="py-3 text-primary font-semibold group-hover:text-white">Easy To Order</span>
+                        <span class="text-secondary group-hover:text-white">Customer places order through online store</span>
+                    </div>
+
+                    <div class="flex items-end h-full">
+                        <div class="flex flex-row items-center">
+                            <span class="text-primary font-semibold group-hover:text-white">Read More</span>
+                            <mat-icon class="text-primary group-hover:text-white" svgIcon="mat_outline:arrow_right_alt"></mat-icon>
+                        </div>
+                    </div>
+                </div>
+                <!-- superiority 2 -->
+                <div class="col-span-6 sm:col-span-3 md:col-span-2 flex flex-col bg-card rounded-lg border border-primary p-3 w-60 h-60 cursor-pointer group hover:bg-primary">
+                    <div class="flex flex-col w-full">
+                        <div class="flex items-center justify-center rounded-full h-12 w-12 bg-primary group-hover:bg-white">
+                            <span class="text-white text-center text-xl font-semibold group-hover:text-primary">2</span>
+                        </div>
+                        <span class="py-3 text-primary font-semibold group-hover:text-white">Easy To Manage</span>
+                        <span class="text-secondary group-hover:text-white">Merchant receives order on Symplified merchant app and processes it</span>
+                    </div>
+
+                    <div class="flex items-end h-full">
+                        <div class="flex flex-row items-center">
+                            <span class="text-primary font-semibold group-hover:text-white">Read More</span>
+                            <mat-icon class="text-primary group-hover:text-white" svgIcon="mat_outline:arrow_right_alt"></mat-icon>
+                        </div>
+                    </div>
+                </div>
+                <!-- superiority 3 -->
+                <div class="col-span-6 sm:col-span-3 md:col-span-2 flex flex-col bg-card rounded-lg border border-primary p-3 w-60 h-60 cursor-pointer group hover:bg-primary">
+                    <div class="flex flex-col w-full">
+                        <div class="flex items-center justify-center rounded-full h-12 w-12 bg-primary group-hover:bg-white">
+                            <span class="text-white text-center text-xl font-semibold group-hover:text-primary">3</span>
+                        </div>
+                        <span class="py-3 text-primary font-semibold group-hover:text-white">Fastest Delivery</span>
+                        <span class="text-secondary group-hover:text-white">Delivery rider picks up and delivers to customer</span>
+                    </div>
+
+                    <div class="flex items-end h-full">
+                        <div class="flex flex-row items-center">
+                            <span class="text-primary font-semibold group-hover:text-white">Read More</span>
+                            <mat-icon class="text-primary group-hover:text-white" svgIcon="mat_outline:arrow_right_alt"></mat-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Commission & Delivery Partners -->
+            <div class="flex flex-col sm:flex-row justify-center w-full mt-10">
+                <div class="flex flex-col max-w-100">
+                    <span class="font-bold text-4xl md:text-5xl">Commission & 
+                        <p class="text-primary">Delivery Partners</p>
+                    </span>
+                    <span class="text-secondary text-sm">
+                        We understand that running an online business requires strict control 
+                        and management of your business. That's why Symplified is built with 
+                        all the functionalities to start your business as well as help you expand. 
+                        All the while keeping your costs in your control.
+                    </span>
+                    <div class="flex flex-row mt-3 items-center w-full">
+                        <mat-icon class="icon-size-8 text-primary mr-3" svgIcon="mat_outline:check_circle_outline"></mat-icon>
+                        <span class="font-medium text-secondary md:text-lg">15% Commission will be charged for Food and Grocery items</span>
+                    </div>
+                    <div class="flex flex-row mt-3 items-center w-full">
+                        <mat-icon class="icon-size-8 text-primary mr-3" svgIcon="mat_outline:check_circle_outline"></mat-icon>
+                        <span class="font-medium text-secondary md:text-lg">Markup Option Available for Pricing</span>
+                    </div>
+                    <div class="flex flex-row mt-3 items-center w-full">
+                        <mat-icon class="icon-size-8 text-primary mr-3" svgIcon="mat_outline:check_circle_outline"></mat-icon>
+                        <span class="font-medium text-secondary md:text-lg">Multiple Delivery Options available</span>
+                    </div>
+                    <div class="ml-10">
+                        <div class="flex flex-row mt-3 items-center w-full">
+                            <mat-icon class="icon-size-3 text-primary mr-3" svgIcon="mat_solid:circle"></mat-icon>
+                            <span class="font-medium text-secondary md:text-lg">Self Delivery</span>
+                        </div>
+                        <div class="flex flex-row mt-2 items-center w-full">
+                            <mat-icon class="icon-size-3 text-primary mr-3" svgIcon="mat_solid:circle"></mat-icon>
+                            <span class="font-medium text-secondary md:text-lg">Instant Delivery</span>
+                        </div>
+                        <div class="flex flex-row mt-2 items-center w-full">
+                            <mat-icon class="icon-size-3 text-primary mr-3" svgIcon="mat_solid:circle"></mat-icon>
+                            <span class="font-medium text-secondary md:text-lg">2 -4 Hours Delivery</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Image -->
+                <div class="md:w-120 sm:ml-5 md:ml-10">
+                    <img class="w-full" src="assets/faq/image-5.png" alt="">    
+                </div>
+            </div>
+            <!-- Time and week -->
+            <div class="w-full flex flex-col sm:flex-row mt-10">
+                <!-- Image -->
+                <div class="sm:w-120 mb-5 md:mr-10 order-2 sm:order-1">
+                    <img class="w-full" src="assets/faq/image-6.png" alt="">    
+                </div>
+                <div class="flex flex-col max-w-100 justify-center order-1 sm:order-2">
+                    <span class="font-bold text-4xl md:text-5xl">Get Your 
+                        <p>Payment In A <a class="text-primary">Week</a></p>
+                    </span>
+                    <span class="text-secondary md:text-lg">Merchant will be paid on Wednesday's and Friday's each week</span>
+                </div>
+            </div>
+            <!-- Required Document -->
+            <div class="flex flex-col sm:flex-row justify-center w-full md:mt-10">
+                <div class="flex flex-col max-w-100">
+                    <span class="font-bold text-4xl md:text-5xl">Required
+                        <a class="text-primary">Documents</a>
+                    </span>
+                    <span class="text-secondary text-sm">No technical knowledge required, Simple onboarding process.</span>
+                    <div class="flex flex-row mt-3 items-center w-full">
+                        <mat-icon class="icon-size-8 text-primary mr-3" svgIcon="mat_outline:check_circle_outline"></mat-icon>
+                        <span class="font-medium text-secondary md:text-lg">Merchant Registration Form</span>
+                    </div>
+                    <div class="flex flex-row mt-3 items-center w-full">
+                        <mat-icon class="icon-size-8 text-primary mr-3" svgIcon="mat_outline:check_circle_outline"></mat-icon>
+                        <span class="font-medium text-secondary md:text-lg">Bank Statement (Header Only)</span>
+                    </div>
+                    <div class="flex flex-row mt-3 items-center w-full">
+                        <mat-icon class="icon-size-8 text-primary mr-3" svgIcon="mat_outline:check_circle_outline"></mat-icon>
+                        <span class="font-medium text-secondary md:text-lg">Menu Photos</span>
+                    </div>
+                </div>
+                <!-- Image -->
+                <div class="sm:w-120 mt-4 sm:ml-10">
+                    <img class="w-full" src="assets/faq/image-7.png" alt="">    
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About 5 -->
+    <div class="flex flex-col w-full p-4 md:py-10 md:px-24 h-full bg-primary">
+        <!-- Header -->
+        <div class="flex flex-col w-full items-center justify-center mb-4">
+            <span class="text-white font-bold text-4xl md:text-5xl">Frequently Asked Questions</span>
+            <span class="text-white md:max-w-120 text-lg">Got a Question? We're to answer. If you don't find your question below, contact us now.</span>
+        </div>
+        <!-- question -->
+        <div class="flex flex-col md:flex-row w-full">
+            <div class="flex flex-col w-full md:mr-1 pb-2 md:pb-4">
+                <mat-accordion>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header [collapsedHeight]="'56px'">
+                            <mat-panel-title class="text-primary font-semibold">What happens to missing/wrong orders?</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        Symplified will deal with customers directly for compensation.
+                    </mat-expansion-panel>
+                </mat-accordion>
+                
+                <mat-accordion class="mt-2">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header [collapsedHeight]="'56px'">
+                            <mat-panel-title class="text-primary font-semibold">What if customers didn't receive their items?</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        Symplified will deal with customers directly for compensation.
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+
+            <div class="flex flex-col w-full md:ml-1 md:pt-4">
+                <mat-accordion>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header [collapsedHeight]="'56px'">
+                            <mat-panel-title class="text-primary font-semibold">What happens when a customer cancel an order?</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        There will be no cancellation will be entertained once order is out.
+                    </mat-expansion-panel>
+                </mat-accordion>
+                
+                <mat-accordion class="mt-2">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header [collapsedHeight]="'56px'">
+                            <mat-panel-title class="text-primary font-semibold">How to keep track of my orders?</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        Merchant can check the order updates through the merchant app.
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </div>
+    </div>
+    <!-- About 6 -->
+    <div class="flex w-full md:py-10 md:px-24 h-full sm:bg-card">
+        <div class="flex flex-col sm:flex-row justify-center w-full sm:rounded-lg md:shadow bg-stone-100 p-4 sm:p-10">
+            <!-- Button and text -->
+            <div class="flex flex-col w-full mb-4">
+                <span class="font-bold text-5xl">Become a <a class="text-primary">Merchant!</a></span>
+                <span class="text-secondary max-w-120 text-lg">Join us as a Deliver-In Food Merchant today and grow your business with us.</span>
+                <div class="mt-4">
+                    <button
+                        class="p-2 bg-primary rounded-md">
+                        <div class="flex flex-row">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#FFFFFF" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                            <span class="text-white ml-2">Contact Now</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <!-- images -->
+            <div class="flex justify-center md:w-100">
+                <img class="w-full" src="assets/faq/image-8.png" alt="">
+            </div>
         </div>
     </div>
 </div>
