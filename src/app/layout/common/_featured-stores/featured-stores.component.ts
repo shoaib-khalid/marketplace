@@ -217,7 +217,8 @@ export class _FeaturedStoresComponent implements OnInit, OnDestroy
                                     });
 
                                 } else {
-                                    nextStoreOpeningTime = "Store will open at " + this._datePipe.transform(store.storeSnooze.snoozeEndTime,'EEEE, h:mm a');
+                                    let dateConverted = new Date(store.storeSnooze.snoozeEndTime.replace(/-/g, "/")).toISOString();
+                                    nextStoreOpeningTime = "Store will open at " + this._datePipe.transform(dateConverted,'EEEE, h:mm a');
                                 }                                
 
                                 if (store.storeSnooze.snoozeReason && store.storeSnooze.snoozeReason !== null) {
