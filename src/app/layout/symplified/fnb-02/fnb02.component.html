@@ -11,89 +11,96 @@
     <!-- Floating Message Small -->
     <!-- <floating-message-small></floating-message-small> -->
     <!-- Wrapper -->
-    <div class="flex flex-col flex-auto w-full min-w-0 bg-card lg:items-center">
+    <div class="flex flex-col flex-auto w-full min-w-0 bg-card lg:items-center relative h-screen overflow-hidden">
         <!-- Header --> <!-- Add md:relative to disable header floating-->
-        <div class="flex flex-col flex-0 justify-center lg:items-center w-full h-auto overflow-hidden z-40 shadow dark:shadow-none bg-white print:hidden sticky top-0">
-            <!-- Top Header bar -->
-            <div class="flex flex-auto w-full justify-center items-center px-3 sm:px-4 lg:px-0 lg:max-w-300 bg-white z-40 dark:bg-gray-700">
-                <div class="relative flex items-center justify-between w-full h-16">
-                    <!-- Logo -->
-                    <ng-container *ngIf="platform">
-                        <div class="flex items-center">
-                            <img
-                                (click)="goToHome()"
-                                class="w-36 cursor-pointer"
-                                [src]="platform.logo"
-                                alt="Logo image">
-                            <!-- <span class="block md:hidden">{{headerTitle}}</span> -->
-                        </div>
-                    </ng-container>
-                    <!-- <search class="w-1/2 hidden sm:block"></search> -->
-                    <!-- <vertical-mode></vertical-mode> -->
-                    <search-location class="w-1/2 hidden md:block"></search-location>
-                    <div class="flex items-center flex-row py-4 pl-4 sm:p-0">
-                        <button class="md:hidden" mat-icon-button (click)="toggleSearch()">
-                            <mat-icon class="text-primary" [svgIcon]="'mat_outline:add_location_alt'"></mat-icon>
-                        </button>
-                        <!-- <notifications></notifications> -->
-                        <!-- <span class="text-gray-300 hidden sm:block"> &nbsp; | &nbsp; </span> -->
-                        <!-- cart -->
-                        <cart></cart>
-                        <span class="text-gray-300 items-center w-full hidden md:block">|</span>
-                        <!-- Components -->
-                        <div class="flex w-full items-center">
-                            <!-- <search [appearance]="'bar'"></search> -->
-                            <user></user>
-                            <!-- <ng-container *ngIf="!isScreenSmall">
-                                <div class="ml-4 text-medium font-medium leading-5 truncate">
-                                    {{displayUsername}}
-                                </div>
-                            </ng-container> -->
+        <div class="flex flex-col flex-auto w-full h-full items-center overflow-auto">
+
+            <div class="flex flex-col flex-0 justify-center lg:items-center w-full h-auto overflow-hidden z-40 shadow dark:shadow-none bg-white print:hidden sticky top-0">
+                <!-- Top Header bar -->
+                <div class="flex flex-auto w-full justify-center items-center px-3 sm:px-4 lg:px-0 lg:max-w-300 bg-white z-40 dark:bg-gray-700">
+                    <div class="relative flex items-center justify-between w-full h-16">
+                        <!-- Logo -->
+                        <ng-container *ngIf="platform">
+                            <div class="flex items-center">
+                                <img
+                                    (click)="goToHome()"
+                                    class="w-36 cursor-pointer"
+                                    [src]="platform.logo"
+                                    alt="Logo image">
+                                <!-- <span class="block md:hidden">{{headerTitle}}</span> -->
+                            </div>
+                        </ng-container>
+                        <!-- <search class="w-1/2 hidden sm:block"></search> -->
+                        <!-- <vertical-mode></vertical-mode> -->
+                        <search-location class="w-1/2 hidden md:block"></search-location>
+                        <div class="flex items-center flex-row py-4 pl-4 sm:p-0">
+                            <button class="md:hidden" mat-icon-button (click)="toggleSearch()">
+                                <mat-icon class="text-primary" [svgIcon]="'mat_outline:add_location_alt'"></mat-icon>
+                            </button>
+                            <!-- <notifications></notifications> -->
+                            <!-- <span class="text-gray-300 hidden sm:block"> &nbsp; | &nbsp; </span> -->
+                            <!-- cart -->
+                            <cart></cart>
+                            <span class="text-gray-300 items-center w-full hidden md:block">|</span>
+                            <!-- Components -->
+                            <div class="flex w-full items-center">
+                                <!-- <search [appearance]="'bar'"></search> -->
+                                <user></user>
+                                <!-- <ng-container *ngIf="!isScreenSmall">
+                                    <div class="ml-4 text-medium font-medium leading-5 truncate">
+                                        {{displayUsername}}
+                                    </div>
+                                </ng-container> -->
+                            </div>
                         </div>
                     </div>
+                    <!-- <span class="block md:hidden">{{headerTitle}}</span> -->
+                    <!-- <search *ngIf="currentScreenSize.includes('md')" class="w-full"></search> -->
                 </div>
-                <!-- <span class="block md:hidden">{{headerTitle}}</span> -->
-                <!-- <search *ngIf="currentScreenSize.includes('md')" class="w-full"></search> -->
+                <!-- <div class="flex-auto w-full bg-primary z-30 hidden sm:block">
+                    <div class="w-full flex flex-row justify-center items-center">
+                        <span class="text-white"><&nbsp;</span>
+                        <span class="text-white font-semibold">Up to 70% Off.</span>
+                        <span class="text-white underline">&nbsp; Shop our latest sale styles</span>
+                        <span class="text-white">&nbsp;></span>
+                    </div>
+                </div> -->
+                <div class="md:hidden relative w-full flex flex-auto items-center p-2 pb-2 z-20 bg-primary"
+                    *ngIf="isSearchOpened" 
+                    @expandCollapse
+                    >
+                    <!-- <search class="w-full"></search> -->
+                    <!-- <vertical-mode></vertical-mode> -->
+                    <search-location class="w-full"></search-location>
+                    <div class="absolute top-1 right-1">
+                        <mat-icon (click)="closeSearch()" class="text-white cursor-pointer" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                    </div>
+                </div> 
+                <!-- Breadcrumbs -->
+                <div class="flex items-center w-full">
+                    <breadcrumb class="w-full"></breadcrumb>
+                </div>
             </div>
-            <!-- <div class="flex-auto w-full bg-primary z-30 hidden sm:block">
-                <div class="w-full flex flex-row justify-center items-center">
-                    <span class="text-white"><&nbsp;</span>
-                    <span class="text-white font-semibold">Up to 70% Off.</span>
-                    <span class="text-white underline">&nbsp; Shop our latest sale styles</span>
-                    <span class="text-white">&nbsp;></span>
-                </div>
+            <!-- Content -->
+            <div class="flex flex-col flex-auto w-full p-2 sm:px-4 lg:px-0 lg:max-w-300">
+                <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
+                     Otherwise, layout changes won't be registered and the view won't be updated! -->
+                <router-outlet *ngIf="true"></router-outlet>
+            </div>
+            <!-- Upper Footer -->
+            <!-- <div class="flex w-full bg-slate-100 justify-center">
+                <footer [footerType]="'upper-footer-02'" class="w-full max-w-300"></footer>
             </div> -->
-            <div class="md:hidden relative w-full flex flex-auto items-center p-2 pb-2 z-20 bg-primary"
-                *ngIf="isSearchOpened" 
-                @expandCollapse
-                >
-                <!-- <search class="w-full"></search> -->
-                <!-- <vertical-mode></vertical-mode> -->
-                <search-location class="w-full"></search-location>
-                <div class="absolute top-1 right-1">
-                    <mat-icon (click)="closeSearch()" class="text-white cursor-pointer" [svgIcon]="'heroicons_outline:x'"></mat-icon>
-                </div>
-            </div> 
-            <!-- Breadcrumbs -->
-            <div class="flex items-center w-full">
-                <breadcrumb class="w-full"></breadcrumb>
+            
+            <floating-carts class="w-full md:hidden z-20 fixed bottom-4 "></floating-carts>
+
+            <!-- Footer -->
+            <div class="flex w-full bg-primary justify-center">
+                <footer [footerType]="'footer-02'" class="w-full max-w-300"></footer>
             </div>
-        </div>
-        <!-- Content -->
-        <div class="flex flex-col flex-auto w-full p-2 sm:px-4 lg:px-0 lg:max-w-300">
-            <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
-                 Otherwise, layout changes won't be registered and the view won't be updated! -->
-            <router-outlet *ngIf="true"></router-outlet>
         </div>
 
-        <!-- Upper Footer -->
-        <!-- <div class="flex w-full bg-slate-100 justify-center">
-            <footer [footerType]="'upper-footer-02'" class="w-full max-w-300"></footer>
-        </div> -->
-        
-        <!-- Footer -->
-        <div class="flex w-full bg-primary justify-center">
-            <footer [footerType]="'footer-02'" class="w-full max-w-300"></footer>
-        </div>
+
+        <bottom-popup class="md:hidden w-full absolute z-60"></bottom-popup>
     </div>
 </ng-template>

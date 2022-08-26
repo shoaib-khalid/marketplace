@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { LocationService } from 'app/core/location/location.service';
 import { ParentCategory, LandingLocation, StoresDetails, ProductDetails } from 'app/core/location/location.types';
@@ -12,6 +12,7 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { NavigateService } from 'app/core/navigate-url/navigate.service';
 import { CurrentLocationService } from 'app/core/_current-location/current-location.service';
 import { CurrentLocation } from 'app/core/_current-location/current-location.types';
+import { BottomPopUpService } from 'app/layout/common/_bottom-popup/bottom-popup.service';
 
 @Component({
     selector     : 'landing-home',
@@ -21,6 +22,8 @@ import { CurrentLocation } from 'app/core/_current-location/current-location.typ
 export class LandingHomeComponent implements OnInit
 {
     @ViewChild("storesDetailsPaginator", {read: MatPaginator}) private _storesDetailsPaginator: MatPaginator;
+    @ViewChild('openDetails', { read: TemplateRef }) _openDetails:TemplateRef<any>;
+
 
     platform: Platform;
 
@@ -56,7 +59,9 @@ export class LandingHomeComponent implements OnInit
         private _adsService: AdsService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _currentLocationService: CurrentLocationService,
-        private _navigate: NavigateService
+        private _navigate: NavigateService,
+        private _bottomPopUpService: BottomPopUpService,
+
     )
     {
     }
@@ -207,6 +212,10 @@ export class LandingHomeComponent implements OnInit
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
+    }
+
+    openPopup() {
+        this._bottomPopUpService.get(this._openDetails).subscribe();
     }
 
     

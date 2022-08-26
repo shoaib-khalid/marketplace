@@ -24,6 +24,8 @@ import { DisplayErrorModule } from 'app/layout/common/_display-error/display-err
 import { BreadcrumbModule } from 'app/layout/common/breadcrumb/breadcrumb.module';
 import { _SearchLocationModule } from 'app/layout/common/_search-location/search-location.module';
 import { _VerticalModeModule } from 'app/layout/common/_vertical-mode/vertical-mode.module';
+import { _BottomPopUpModule } from 'app/layout/common/_bottom-popup/bottom-popup.module';
+import { _FloatingCartsModule } from 'app/layout/common/_floating-carts/floating-carts.module';
 
 @NgModule({
     declarations: [
@@ -53,7 +55,9 @@ import { _VerticalModeModule } from 'app/layout/common/_vertical-mode/vertical-m
         _SearchLocationModule,
         _VerticalModeModule,
         FloatingMessageModule,
-        BreadcrumbModule
+        BreadcrumbModule,
+        _BottomPopUpModule,
+        _FloatingCartsModule
     ],
     exports     : [
         Fnb2LayoutComponent
