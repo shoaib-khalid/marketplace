@@ -2,7 +2,7 @@ import { DatePipe, DOCUMENT, ViewportScroller } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
@@ -118,6 +118,7 @@ export class LandingStoreComponent implements OnInit
         private _searchService: SearchService,
         private _datePipe: DatePipe,
         private _scroller: ViewportScroller,
+        private _titleService: Title
 
     )
     {
@@ -165,6 +166,9 @@ export class LandingStoreComponent implements OnInit
                     // set loading to true
                     this.isLoading = true;
                     this.store = response;
+
+                    // set title
+                    this._titleService.setTitle(this.platform.name + " | " + this.store.name);
 
                     this._storesService.storeId = this.store.id;
     

@@ -6,6 +6,9 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Subject, takeUntil } from 'rxjs';
 import { UserService } from 'app/core/user/user.service';
 import { Customer, User } from 'app/core/user/user.types';
+import { Platform } from 'app/core/platform/platform.types';
+import { PlatformService } from 'app/core/platform/platform.service';
+import { Title } from '@angular/platform-browser';
 
 
 @Component({
@@ -35,7 +38,10 @@ export class EditProfileComponent implements OnInit
     constructor(
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _changeDetectorRef: ChangeDetectorRef,
-        private _userService: UserService
+        private _userService: UserService,
+        private _platformService: PlatformService,
+        private _titleService: Title
+
 
     )
     {
@@ -109,6 +115,18 @@ export class EditProfileComponent implements OnInit
                         this.panels.splice(index, 1)
                     }
                 }
+            });
+
+        this._platformService.platform$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((platform: Platform) => {
+                if (platform) {
+                    // set title
+                    this._titleService.setTitle(platform.name + " | " + "Profile Settings");
+                }
+    
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
             });
     }
 

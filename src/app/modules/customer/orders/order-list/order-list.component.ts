@@ -17,6 +17,7 @@ import { OrderService } from 'app/core/_order/order.service';
 import { Order, OrderDetails, OrderGroup, OrderItemWithDetails, OrderPagination, OrdersCountSummary } from 'app/core/_order/order.types';
 import { PlatformService } from 'app/core/platform/platform.service';
 import { Platform } from 'app/core/platform/platform.types';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector     : 'order-list',
@@ -85,7 +86,8 @@ export class OrderListComponent implements OnInit
         private _authService: AuthService,
         public _dialog: MatDialog,
         private _platformService: PlatformService,
-        private _storesService: StoresService
+        private _storesService: StoresService,
+        private _titleService: Title
     )
     {
     }
@@ -97,6 +99,9 @@ export class OrderListComponent implements OnInit
         .subscribe((platform: Platform) => {
             if (platform) {
                 this.platform = platform;
+
+                // set title
+                this._titleService.setTitle(this.platform.name + " | " + "Orders");
 
             }
 

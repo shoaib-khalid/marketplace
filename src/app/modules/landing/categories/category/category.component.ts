@@ -9,6 +9,7 @@ import { Location } from '@angular/common';
 import { ProductPagination, StorePagination } from 'app/core/store/store.types';
 import { CurrentLocationService } from 'app/core/_current-location/current-location.service';
 import { CurrentLocation } from 'app/core/_current-location/current-location.types';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector     : 'category',
@@ -60,6 +61,7 @@ export class CategoryComponent implements OnInit
         private _currentLocationService: CurrentLocationService,
         private _location: Location,
         private _router: Router,
+        private _titleService: Title
 
     )
     {
@@ -258,6 +260,9 @@ export class CategoryComponent implements OnInit
             .subscribe((category) => {
                 if (category) {                    
                     this.category = category;
+
+                    // set title
+                    this._titleService.setTitle(this.platform.name + " | " + this.category.parentName);
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -269,7 +274,11 @@ export class CategoryComponent implements OnInit
             .subscribe(location => {
                 if (location) {
                     this.location = location;
-                    this.storesDetailsTitle = "Discover Shops Near " + location.cityDetails.name;            
+                    this.storesDetailsTitle = "Discover Shops Near " + location.cityDetails.name;   
+                    
+                    // set title
+                    this._titleService.setTitle(this.platform.name + " | " + this.category.parentName + " @ " + this.location.cityDetails.name);
+
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

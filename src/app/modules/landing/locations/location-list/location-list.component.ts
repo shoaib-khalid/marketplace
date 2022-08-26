@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { AdsService } from 'app/core/ads/ads.service';
@@ -43,7 +44,8 @@ export class LandingLocationsComponent implements OnInit
         private _locationService: LocationService,
         private _adsService: AdsService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _activatedRoute: ActivatedRoute
+        private _activatedRoute: ActivatedRoute,
+        private _titleService: Title
     )
     {
     }
@@ -73,6 +75,9 @@ export class LandingLocationsComponent implements OnInit
                             .subscribe((location : LandingLocation[]) => {                        
                             });
                     }
+
+                    // set title
+                    this._titleService.setTitle(this.platform.name + " | " + "Location List");
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

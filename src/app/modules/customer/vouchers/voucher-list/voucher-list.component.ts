@@ -13,6 +13,7 @@ import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { VoucherModalComponent } from '../voucher-modal/voucher-modal.component';
 import { VoucherService } from 'app/core/_voucher/voucher.service';
 import { CustomerVoucher, CustomerVoucherPagination, UsedCustomerVoucherPagination, Voucher } from 'app/core/_voucher/voucher.types';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector     : 'voucher-list',
@@ -110,7 +111,7 @@ export class VoucherListComponent implements OnInit, OnDestroy
         private _authService: AuthService,
         private _platformService : PlatformService,
         private _storesService: StoresService,
-
+        private _titleService: Title
     )
     {
     }
@@ -188,6 +189,10 @@ export class VoucherListComponent implements OnInit, OnDestroy
             .subscribe((response: Platform) => {
                 if (response) {
                     this.platform = response;
+
+                    // set title
+                    this._titleService.setTitle(this.platform.name + " | " + "Vouchers");
+
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

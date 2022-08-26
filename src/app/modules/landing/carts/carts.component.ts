@@ -26,6 +26,7 @@ import { VoucherService } from 'app/core/_voucher/voucher.service';
 import { VoucherModalComponent } from 'app/modules/customer/vouchers/voucher-modal/voucher-modal.component';
 import { SelfPickupInfoDialog } from './modal-self-pickup-info/modal-self-pickup-info.component';
 import { CartAddressComponent } from './modal-address/cart-addresses.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector     : 'carts',
@@ -290,7 +291,8 @@ export class CartListComponent implements OnInit, OnDestroy
         private _scroller: ViewportScroller,
         private _datePipe: DatePipe,
         private _storesService: StoresService,
-        private _voucherService: VoucherService
+        private _voucherService: VoucherService,
+        private _titleService: Title
 
     )
     {
@@ -313,6 +315,8 @@ export class CartListComponent implements OnInit, OnDestroy
             .subscribe((platform) => {
                 if(platform) {
                     this.platform = platform;
+                    // set title
+                    this._titleService.setTitle(this.platform.name + " | " + "Carts");
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

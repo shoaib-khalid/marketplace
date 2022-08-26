@@ -24,6 +24,7 @@ import { Router } from '@angular/router';
 import { AnalyticService } from 'app/core/analytic/analytic.service';
 import { AppConfig } from 'app/config/service.config';
 import { StoresService } from 'app/core/store/store.service';
+import { Title } from '@angular/platform-browser';
 
 
 @Component({
@@ -231,6 +232,7 @@ export class BuyerCheckoutComponent implements OnInit
         private _apiServer: AppConfig,
         private _platformLocation: PlatformLocation,
         private _storesService: StoresService,
+        private _titleService: Title
 
     )
     {
@@ -253,6 +255,10 @@ export class BuyerCheckoutComponent implements OnInit
             .subscribe((platform) => {
                 if(platform) {
                     this.platform = platform;
+
+                    // set title
+                    this._titleService.setTitle(this.platform.name + " | " + "Checkout");
+
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
