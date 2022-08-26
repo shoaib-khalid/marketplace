@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { RouterModule } from '@angular/router';
 import { FooterComponent } from 'app/layout/common/footer/footer.component';
 import { SharedModule } from 'app/shared/shared.module';
 import { _FeaturedCategoriesModule } from '../_featured-categories/featured-categories.module';
@@ -12,6 +13,7 @@ import { _FeaturedCategoriesModule } from '../_featured-categories/featured-cate
         FooterComponent
     ],
     imports     : [
+        RouterModule.forChild([]),
         MatButtonModule,
         MatDividerModule,
         MatIconModule,
