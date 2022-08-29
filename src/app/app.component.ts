@@ -89,8 +89,8 @@ export class AppComponent
                                     this.metaKeyword.content = tags[keywordsIndex].content;
                                 }
                                 if (titleIndex > -1) {
-                                    // set title
-                                    this._titleService.setTitle(tags[titleIndex].content);
+                                    // // set title
+                                    // this._titleService.setTitle(tags[titleIndex].content);
                                     // set h1
                                     this.h1Title.innerText = tags[titleIndex].content;
                                 }

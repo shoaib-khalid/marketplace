@@ -48,7 +48,7 @@ export const appRoutes: Route[] = [
         },
         resolve    : {
             browserCompatibility    : BrowserCompatibilityResolver,
-            platformSetup: PlatformSetupResolver
+            platformSetup           : PlatformSetupResolver
         },
         children: [
             { path: 'confirmation-required', loadChildren: () => import('app/modules/auth/confirmation-required/confirmation-required.module').then(m => m.AuthConfirmationRequiredModule) },
@@ -69,7 +69,7 @@ export const appRoutes: Route[] = [
         component: LayoutComponent,
         resolve    : {
             browserCompatibility    : BrowserCompatibilityResolver,
-            platformSetup: PlatformSetupResolver
+            platformSetup           : PlatformSetupResolver
         },
         data: {
             layout: 'empty'
@@ -92,7 +92,7 @@ export const appRoutes: Route[] = [
         },
         resolve    : {
             browserCompatibility    : BrowserCompatibilityResolver,
-            platformSetup: PlatformSetupResolver
+            platformSetup           : PlatformSetupResolver
         },
         children   : [
             { path: '', loadChildren: () => import('app/modules/customer/customer.module').then(m => m.BuyerModule) },
@@ -120,10 +120,22 @@ export const appRoutes: Route[] = [
         children: [
             // Changelog
             // {path: 'changelog', loadChildren: () => import('app/modules/admin/docs/changelog/changelog.module').then(m => m.ChangelogModule)},
-            {path: 'legal', loadChildren: () => import('app/modules/admin/docs/legal/legal.module').then(m => m.LegalModule)}
-
         ]
     },
+
+    // About Symplified
+    {
+        path: 'about',
+        resolve:  {
+            browserCompatibility    : BrowserCompatibilityResolver,
+            platformSetup           : PlatformSetupResolver  
+        },
+        children: [
+            {path: 'legal', loadChildren: () => import('app/modules/landing/about/legal/legal.module').then(m => m.LegalModule)},
+            {path: 'merchant', loadChildren: () => import('app/modules/landing/about/join-as-merchant/join-as-merchant.module').then(m => m.JoinAsMerchantModule)}
+        ]
+    },
+
     {
         path: '**', redirectTo: ''
     }

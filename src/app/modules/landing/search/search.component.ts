@@ -1,6 +1,7 @@
 import { ViewportScroller } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { AdsService } from 'app/core/ads/ads.service';
@@ -71,6 +72,7 @@ export class LandingSearchComponent implements OnInit
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _navigate: NavigateService,
         private _scroller: ViewportScroller,
+        private _titleService: Title
     )
     {
     }
@@ -194,6 +196,10 @@ export class LandingSearchComponent implements OnInit
                         // Mark for check
                         this._changeDetectorRef.markForCheck();
                     });
+
+                    // set title
+                    this._titleService.setTitle(this.platform.name + " | " + "Search");
+
                 }
 
                 // Mark for check

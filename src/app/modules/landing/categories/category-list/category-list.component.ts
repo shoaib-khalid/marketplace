@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { AdsService } from 'app/core/ads/ads.service';
@@ -43,7 +44,8 @@ export class LandingCategoriesComponent implements OnInit
         private _adsService: AdsService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _router: Router,
-        private _activatedRoute: ActivatedRoute
+        private _activatedRoute: ActivatedRoute,
+        private _titleService: Title
     )
     {
     }
@@ -81,6 +83,9 @@ export class LandingCategoriesComponent implements OnInit
                                     .subscribe((category : ParentCategory[]) => {});
                             });
                     });
+
+                    // set title
+                    this._titleService.setTitle(this.platform.name + " | " + "Category List");
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { LocationService } from 'app/core/location/location.service';
 import { ParentCategory, LandingLocation, StoresDetails, ProductDetails } from 'app/core/location/location.types';
 import { PlatformService } from 'app/core/platform/platform.service';
-import { Platform } from 'app/core/platform/platform.types';
+import { Platform, PlatformTag } from 'app/core/platform/platform.types';
 import { StorePagination } from 'app/core/store/store.types';
 import { Subject, takeUntil, combineLatest } from 'rxjs';
 import { AdsService } from 'app/core/ads/ads.service';
@@ -12,6 +12,7 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { NavigateService } from 'app/core/navigate-url/navigate.service';
 import { CurrentLocationService } from 'app/core/_current-location/current-location.service';
 import { CurrentLocation } from 'app/core/_current-location/current-location.types';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector     : 'landing-home',
@@ -56,7 +57,8 @@ export class LandingHomeComponent implements OnInit
         private _adsService: AdsService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _currentLocationService: CurrentLocationService,
-        private _navigate: NavigateService
+        private _navigate: NavigateService,
+        private _titleService: Title
     )
     {
     }
@@ -111,6 +113,19 @@ export class LandingHomeComponent implements OnInit
                 })
                 .subscribe((storesDetails: StoresDetails[])=>{
                 });
+
+                this._platformsService.getTag(platform.id)
+                    .subscribe((tags: PlatformTag[]) => {
+                        if (tags) {
+
+                            let titleIndex = tags.findIndex(tag => tag.property === 'og:title');
+                            if (titleIndex > -1) {
+                                // set title
+                                this._titleService.setTitle(tags[titleIndex].content);
+                            }
+                        }
+                    });
+
             }
 
             // Mark for check

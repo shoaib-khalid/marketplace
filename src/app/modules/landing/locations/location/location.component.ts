@@ -10,6 +10,7 @@ import { ProductPagination, StorePagination } from 'app/core/store/store.types';
 import { MatPaginator } from '@angular/material/paginator';
 import { CurrentLocationService } from 'app/core/_current-location/current-location.service';
 import { CurrentLocation } from 'app/core/_current-location/current-location.types';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector     : 'location',
@@ -62,6 +63,7 @@ export class LocationComponent implements OnInit
         private _locationService: LocationService,
         private _location: Location,
         private _router: Router,
+        private _titleService: Title
     )
     {
     }
@@ -188,6 +190,9 @@ export class LocationComponent implements OnInit
             .subscribe(category => {
                 if (category) {                    
                     this.category = category;
+
+                    // set title
+                    this._titleService.setTitle(this.platform.name + " | " + this.location.cityDetails.name + " - " + this.category.parentName );
                 }                
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -224,6 +229,10 @@ export class LocationComponent implements OnInit
                 if (location) {
                     this.location = location;
                     this.storesDetailsTitle = "Discover Shops Near " + location.cityDetails.name;
+
+                    // set title
+                    this._titleService.setTitle(this.platform.name + " | " + this.location.cityDetails.name);
+
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
