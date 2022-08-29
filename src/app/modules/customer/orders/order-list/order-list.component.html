@@ -284,6 +284,31 @@
                                                         </span>
                                                     </div>
                                                 </div>
+                                                <!-- Status -->
+                                                <ng-container *ngIf="orderDetails.orderShipmentDetail && (orderDetails.orderShipmentDetail.customerTrackingUrl || orderDetails.orderShipmentDetail.trackingNumber)">
+                                                    <!-- Border -->
+                                                    <div class="border-t w-full"></div>
+                                                    <!-- Tracking Number -->
+                                                    <div class="flex flex-row sm:p-2">
+                                                        <svg class="h-6 w-6 text-primary"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" 
+                                                            stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" 
+                                                            d="M0 0h24v24H0z"/>  <circle cx="7" cy="17" r="2" />  <circle cx="17" cy="17" r="2" />  <path 
+                                                            d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v6h-5l2 2m0 -4l-2 2" />  <path d="M9 17h6" />  <path d="M13 6h5l3 5v6h-2" /></svg>
+                                                        <div class="flex flex-col pl-2">
+                                                            <span class="font-semibold">Tracking Number</span>
+                                                            <span class="text-gray-400 text-xs">
+                                                                <span *ngIf="orderDetails.orderShipmentDetail.deliveryServiceProvider" 
+                                                                    class="font-medium">{{orderDetails.orderShipmentDetail.deliveryServiceProvider.name}} : &nbsp;
+                                                                </span>
+                                                                <span class="font-medium"
+                                                                    [ngClass]="orderDetails.orderShipmentDetail.customerTrackingUrl ? 'cursor-pointer hover:text-primary underline' : ''" 
+                                                                    (click)="orderDetails.orderShipmentDetail.customerTrackingUrl ? goToExternalUrl(orderDetails.orderShipmentDetail.customerTrackingUrl, true) : ''">
+                                                                    {{orderDetails.orderShipmentDetail.trackingNumber ? orderDetails.orderShipmentDetail.trackingNumber : 'Click Here' }}
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </ng-container>
                                                 <!-- Border -->
                                                 <div class="border-t w-full"></div>
                                                 <!-- Body -->

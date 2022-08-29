@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -17,6 +17,7 @@ import { OrderService } from 'app/core/_order/order.service';
 import { Order, OrderDetails, OrderGroup, OrderItemWithDetails, OrderPagination, OrdersCountSummary } from 'app/core/_order/order.types';
 import { PlatformService } from 'app/core/platform/platform.service';
 import { Platform } from 'app/core/platform/platform.types';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
     selector     : 'order-list',
@@ -78,6 +79,7 @@ export class OrderListComponent implements OnInit
     * Constructor
     */
     constructor(
+        @Inject(DOCUMENT) private _document: Document,
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _orderService: OrderService,
@@ -454,6 +456,14 @@ export class OrderListComponent implements OnInit
         else 
             return sum + " item"
         
+    }
+
+    goToExternalUrl(url: string, isOpenNewTab: boolean = false) {
+        if (isOpenNewTab) {
+            window.open(url,'_blank');
+        } else {
+            this._document.location.href = url;
+        }
     }
     
 }
