@@ -179,6 +179,7 @@ export class AppComponent
                 // set page visited
                 this.customerActivity.pageVisited = 'https://' + this._apiServer.settings.marketplaceDomain + event["urlAfterRedirects"];
                 
+                this._analyticService.customerActivity = this.customerActivity;
                 this._analyticService.postActivity(this.customerActivity).subscribe();           
             }        
         });

@@ -19,8 +19,7 @@ import { CurrentLocationService } from '../_current-location/current-location.se
 export class AnalyticService
 {
 
-    private _analytic: ReplaySubject<CustomerActivity> = new ReplaySubject<CustomerActivity>(1);
-
+    private _customerActivity: ReplaySubject<CustomerActivity> = new ReplaySubject<CustomerActivity>(1);
     /**
      * Constructor
      */
@@ -43,9 +42,17 @@ export class AnalyticService
     /**
      * Getter for customer activity
      */
-    get analytic$(): Observable<CustomerActivity>
+    get customerActivity$(): Observable<CustomerActivity>
     {
-        return this._analytic.asObservable();
+        return this._customerActivity.asObservable();
+    }
+
+    /**
+     * Setter for customer activity
+     */
+    set customerActivity(value: CustomerActivity)
+    {
+        this._customerActivity.next(value);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -88,9 +95,7 @@ export class AnalyticService
     * @param cart
     */
     postActivity(bodyActivity: CustomerActivity): Observable<any>
-    {
-        
-        
+    {   
         let analyticService = this._apiServer.settings.apiServer.analyticService;
         
         const header = {  
@@ -103,9 +108,6 @@ export class AnalyticService
             .pipe(
                 map((response) => {
                     this._logging.debug("Response from AnalyticService (postActivity)",response);
-
-                    // set cart
-                    this._analytic.next(response);
 
                     return response["data"];
                 })
