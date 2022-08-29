@@ -127,7 +127,7 @@ export class LandingStoreComponent implements OnInit
         .addSvgIcon('list-view',this._domSanitizer.bypassSecurityTrustResourceUrl('assets/layouts/fnb/icons/list-view.svg'));
     }
 
-    ngOnInit(): void {
+    ngOnInit(): void {        
 
         // Set route to 'store' on init
         this._searchService.route = 'store'

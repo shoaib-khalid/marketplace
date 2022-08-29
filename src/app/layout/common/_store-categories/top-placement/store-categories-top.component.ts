@@ -73,36 +73,37 @@ export class _StoreCategoriesTopComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {        
+        
         this._platformService.platform$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((platform: Platform)=>{
-                this.platform = platform;
-            })   
-
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((platform: Platform)=>{
+            this.platform = platform;
+        })   
+        
         // collapse category to false if desktop by default, 
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({matchingAliases}) => {
-
-                this.currentScreenSize = matchingAliases;
-
-                // Set the drawerMode and drawerOpened
-                if ( matchingAliases.includes('sm') )
-                {
-                    this.collapseCategory = false;
-                }
-                else
-                {
-                    this.collapseCategory = true;
-                }
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            }); 
-
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe(({matchingAliases}) => {
+            
+            this.currentScreenSize = matchingAliases;
+            
+            // Set the drawerMode and drawerOpened
+            if ( matchingAliases.includes('sm') )
+            {
+                this.collapseCategory = false;
+            }
+            else
+            {
+                this.collapseCategory = true;
+            }
+            
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }); 
+        
     }
-
+    
     /**
      * On destroy
      */
@@ -112,11 +113,11 @@ export class _StoreCategoriesTopComponent implements OnInit, OnDestroy
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
     }
-
+    
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
-
+    
     /**
      * Track by function for ngFor loops
      *
@@ -127,7 +128,7 @@ export class _StoreCategoriesTopComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
-
+    
     chooseStore(storeDomain:string) {
         let slug = storeDomain.split(".")[0]
         this._router.navigate(['/store/' + slug]);

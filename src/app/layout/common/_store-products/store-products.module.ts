@@ -1,4 +1,6 @@
 import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import { _StoreProductsComponent } from './store-products.component';
@@ -9,6 +11,8 @@ import { _StoreProductsComponent } from './store-products.component';
     ],
     imports     : [
         RouterModule.forChild([]),
+        MatButtonModule,
+        MatIconModule,
         SharedModule
     ],
     exports     : [
