@@ -145,7 +145,7 @@
                     </div>
                 </div>
 
-                <ng-container *ngIf="(products$ | async) as products">
+                <ng-container *ngIf="products && products.length">
                     <ng-container *ngIf="isLoading === false; else productLoading">
                         <store-products class="w-full" [products]="products" [productViewOrientation]="productViewOrientation" [store]="store" [storeSlug]="storeDomain" [catalogueSlug]="catalogueSlug"></store-products>
                         <!-- Pagination -->

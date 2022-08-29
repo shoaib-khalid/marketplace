@@ -11,7 +11,7 @@ import { ParentCategory, LandingLocation, StoresDetails, ProductDetails, Product
 import { NavigateService } from 'app/core/navigate-url/navigate.service';
 import { PlatformService } from 'app/core/platform/platform.service';
 import { Platform } from 'app/core/platform/platform.types';
-import { map, merge, Subject, switchMap, takeUntil } from 'rxjs';
+import { filter, map, merge, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
     selector     : 'landing-search',
@@ -358,4 +358,23 @@ export class LandingSearchComponent implements OnInit
     scroll(id) {
         this._scroller.scrollToAnchor(id)
     }
+
+    // viewMore(type: string) {
+    //     if (type === 'products') {
+    //         // Get products
+    //         this._locationService.getProductsDetails({ 
+    //             name            : this.searchValue, 
+    //             page            : ++this.productPage,
+    //             pageSize        : this.productsDetailsPageSize, 
+    //             sortByCol       : 'created', 
+    //             sortingOrder    : 'DESC', 
+    //             regionCountryId : this.platform.country, 
+    //             latitude        : this.currentLat, 
+    //             longitude       : this.currentLong, 
+    //             storeTagKeyword : this.tagValue,
+    //             status          : ['ACTIVE', 'OUTOFSTOCK']
+    //         })
+    //         .subscribe(()=>{});
+    //     }
+    // }
 }

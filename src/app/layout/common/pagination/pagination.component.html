@@ -53,10 +53,11 @@
     </li>
 </ul> -->
 
-<ul *ngIf="pager.pages && pager.pages.length" class="pagination flex flex-row items-center">
+<ul *ngIf="pager.pages && pager.pages.length" class="pagination flex flex-row items-center text-sm">
+    <!-- Go to First Page -->
     <li 
         (click)="setPage(1)"
-        class="bg-card h-10 w-10 flex justify-center items-center cursor-pointer rounded-full page-item first-item pt-[6px]" 
+        class="bg-card h-8 w-8 flex justify-center items-center cursor-pointer rounded-full page-item first-item pt-[6px]" 
         [ngClass]="pager.currentPage === 1 ? 'disabled bg-disabled cursor-default' : 'bg-card cursor-pointer group hover:bg-primary'"
     >
         <a class="page-link">
@@ -66,9 +67,10 @@
                 [svgIcon]="'heroicons_outline:chevron-double-left'"></mat-icon>
         </a>
     </li>
+    <!-- Go to Previous Page -->
     <li 
         (click)="setPage(pager.currentPage - 1)"
-        class="bg-card h-10 w-10 flex justify-center items-center cursor-pointer rounded-full page-item previous-item pt-[6px]" 
+        class="bg-card h-8 w-8 flex justify-center items-center cursor-pointer rounded-full page-item previous-item pt-[6px]" 
         [ngClass]="pager.currentPage === 1 ? 'disabled bg-disabled cursor-default' : 'bg-card cursor-pointer group hover:bg-primary'"
     >
         <a class="page-link">
@@ -78,10 +80,29 @@
                 [svgIcon]="'heroicons_outline:chevron-left'"></mat-icon>
         </a>
     </li>
+    <!-- First page -->
+    <li
+        *ngIf="pager.totalPages > maxPages && (pager.pages.includes(pager.totalPages))"
+        (click)="setPage(1)"
+        class="flex justify-center items-center select-none active h-8 w-8 cursor-pointer rounded mx-2 page-item number-item"
+        [ngClass]="pager.currentPage === page ? 'active bg-primary' : 'bg-card hover:bg-hover'">
+        <a>
+            1
+        </a>
+    </li>
+    <!-- Dot dot dot before-->
+    <li
+        *ngIf="pager.totalPages > maxPages && (pager.pages.includes(pager.totalPages))"
+        class="bg-card h-8 w-8 flex justify-center items-center rounded-full page-item next-item pt-[6px]">
+        <a>
+            ...
+        </a>
+    </li>
+    <!-- Pages -->
     <ng-container *ngFor="let page of pager.pages">
         <li
             (click)="setPage(page)"
-            class="flex justify-center items-center select-none active h-10 w-10 cursor-pointer rounded mx-2 page-item number-item"
+            class="flex justify-center items-center select-none active h-8 w-8 cursor-pointer rounded mx-2 page-item number-item"
             [ngClass]="pager.currentPage === page ? 'active bg-primary' : 'bg-card hover:bg-hover'" 
         >
             <a 
@@ -90,10 +111,29 @@
             >{{page}}</a>
         </li>
     </ng-container>
+    <!-- Dot dot dot after-->
+    <li
+        *ngIf="pager.totalPages > maxPages && !(pager.pages.includes(pager.totalPages))"
+        class="bg-card h-8 w-8 flex justify-center items-center rounded-full page-item next-item pt-[6px]">
+        <a>
+            ...
+        </a>
+    </li>
+    <!-- Number of pages -->
+    <li
+        *ngIf="!(pager.pages.includes(pager.totalPages))"
+        (click)="setPage(pager.totalPages)"
+        class="flex justify-center items-center select-none active h-8 w-8 cursor-pointer rounded mx-2 page-item number-item"
+        [ngClass]="pager.currentPage === page ? 'active bg-primary' : 'bg-card hover:bg-hover'">
+        <a>
+            {{pager.totalPages}}
+        </a>
+    </li>
 
+    <!-- Go to Next Page -->
     <li 
         (click)="setPage(pager.currentPage + 1)"
-        class="bg-card h-10 w-10 flex justify-center items-center cursor-pointer rounded-full page-item next-item pt-[6px]" 
+        class="bg-card h-8 w-8 flex justify-center items-center cursor-pointer rounded-full page-item next-item pt-[6px]" 
         [ngClass]="pager.currentPage === pager.totalPages ? 'disabled bg-disabled cursor-default' : 'bg-card cursor-pointer group hover:bg-primary'"
     >
         <a class="page-link">
@@ -103,9 +143,10 @@
                 [svgIcon]="'heroicons_outline:chevron-right'"></mat-icon>
         </a>
     </li>
+    <!-- Go to Last Page -->
     <li 
         (click)="setPage(pager.totalPages)"
-        class="bg-card h-10 w-10 flex justify-center items-center cursor-pointer rounded-full page-item last-item pt-[6px]" 
+        class="bg-card h-8 w-8 flex justify-center items-center cursor-pointer rounded-full page-item last-item pt-[6px]" 
         [ngClass]="pager.currentPage === pager.totalPages ? 'disabled bg-disabled cursor-default' : 'bg-card cursor-pointer group hover:bg-primary'"
     >
         <a class="page-link">

@@ -222,7 +222,7 @@ export class LandingStoreComponent implements OnInit
                                     // If keyword exist
                                     if (this.searchValue) {
                                         // Get searched product
-                                        this._productsService.getProducts(0, 12, "name", "asc", this.searchValue, 'ACTIVE,OUTOFSTOCK', this.storeCategory ? this.storeCategory.id : '')
+                                        this._productsService.getProducts(this.oldPaginationIndex, 12, "name", "asc", this.searchValue, 'ACTIVE,OUTOFSTOCK', this.storeCategory ? this.storeCategory.id : '')
                                             .pipe(takeUntil(this._unsubscribeAll))
                                             .subscribe(()=>{
                                                 // set loading to false
@@ -268,7 +268,15 @@ export class LandingStoreComponent implements OnInit
             });
 
         // Get the products
-        this.products$ = this._productsService.products$;        
+        this._productsService.products$
+        .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((products: Product[]) => {
+                if (products) {
+                    this.products = products;
+                }
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
