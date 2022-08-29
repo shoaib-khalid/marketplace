@@ -24,6 +24,7 @@ import { Router } from '@angular/router';
 import { AnalyticService } from 'app/core/analytic/analytic.service';
 import { AppConfig } from 'app/config/service.config';
 import { StoresService } from 'app/core/store/store.service';
+import { CustomerActivity } from 'app/core/analytic/analytic.types';
 
 
 @Component({
@@ -197,17 +198,20 @@ export class BuyerCheckoutComponent implements OnInit
         storeDiscountList: []
     }
 
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
     user: User;
     order: GroupOrder;
     payment: any;
-
+    
     selfPickupInfo: {
         name: string,
         email: string,
         phoneNumber: string
     } = null;
     hasSelfPickup: boolean;
+    
+    customerActivity: CustomerActivity;
+
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
      * Constructor
@@ -401,6 +405,14 @@ export class BuyerCheckoutComponent implements OnInit
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((user: User) => {
                 this.user = user;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._analyticService.customerActivity$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((customerActivity: CustomerActivity) => {
+                this.customerActivity = customerActivity;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -623,24 +635,11 @@ export class BuyerCheckoutComponent implements OnInit
         document.body.appendChild(form);        
         form.submit();
 
-        // //get ip address info
-        // var _IpService = this.ipAddress;
-
-        // var _sessionId = this._cartService.cartId$ 
+        let customerActivity = this.customerActivity;
+        customerActivity.pageVisited = path;
+        customerActivity.storeId = null;
         
-        // this._analyticService.postActivity({
-        //     "browserType" : null,
-        //     "customerId"  : this.ownerId?this.ownerId:null,
-        //     "deviceModel" : null,
-        //     "errorOccur"  : null,
-        //     "errorType"   : null,
-        //     "ip"          : _IpService,
-        //     "os"          : null,
-        //     "pageVisited" : path,
-        //     "sessionId"   : _sessionId,
-        //     "storeId"     : null
-        // }).subscribe((response) => {
-        // }); 
+        this._analyticService.postActivity(customerActivity).subscribe(()=>{}); 
     }
 
     onChangePage(pageOfItems: Array<any>) {
