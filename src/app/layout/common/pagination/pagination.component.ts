@@ -17,7 +17,7 @@ export class PaginationComponent implements OnInit, OnDestroy
     @Output() changePage = new EventEmitter<any>(true);
     @Input() initialPage: number = 1;
     @Input() pageSize: number = 10;
-    @Input() maxPages: number = 10;
+    @Input() maxPages: number = 3;
 
     @Input() set _itemLength(value: number) {
         this.itemLength = value;
@@ -101,17 +101,19 @@ export class PaginationComponent implements OnInit, OnDestroy
             .subscribe(({matchingAliases}) => {               
 
                 // Set the drawerMode and drawerOpened
-                if ( matchingAliases.includes('lg') ) {
-                    this.maxPages = 10;
-                } else if ( matchingAliases.includes('md') ) {
-                    this.maxPages = 7;
-                } else if ( matchingAliases.includes('sm') ) {
-                    this.maxPages = 5;
-                } else {
-                    this.maxPages = 2;
-                }
+                // if ( matchingAliases.includes('lg') ) {
+                //     this.maxPages = 10;
+                // } else if ( matchingAliases.includes('md') ) {
+                //     this.maxPages = 7;
+                // } else if ( matchingAliases.includes('sm') ) {
+                //     this.maxPages = 5;
+                // } else {
+                //     this.maxPages = 3;
+                // }
 
-                if(pageSize < this.maxPages) {
+                this.maxPages = 3;
+
+                if (pageSize < this.maxPages) {
                     this.maxPages = pageSize; 
                 }
 
