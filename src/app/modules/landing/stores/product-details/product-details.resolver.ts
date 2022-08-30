@@ -33,6 +33,7 @@ export class ProductResolver implements Resolve<any>
         // Fork join multiple API endpoint calls to wait all of them to finish
         return forkJoin([
             this._productsService.resolveProduct(route.paramMap.get('product-slug')),
+            // Query popular products
             this._productsService.getProducts(0, 8, "name", "asc", '', 'ACTIVE,OUTOFSTOCK', '', true)
         ]);
     }

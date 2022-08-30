@@ -209,7 +209,7 @@ export class LandingProductDetailsComponent implements OnInit
                         .subscribe((product: Product) => {
                             if(product){
         
-                                this.product = product;                
+                                this.product = product;           
             
                                 // ----------------------------------
                                 // Get category info by category id

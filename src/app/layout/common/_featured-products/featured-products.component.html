@@ -26,7 +26,7 @@
     #productResult
     let-product>
     <fuse-card
-        (click)="redirectToProduct(product.storeDetails.id, product.storeDetails.domain ,product.seoName)"
+        (click)="redirectToProduct(product.storeDetails.id, product.storeDetails.domain, product.seoNameMarketplace)"
         class="flex flex-col rounded-lg border border-gray-300 h-[210px] md:h-[220px] cursor-pointer filter-article">
         <div class="relative w-full">
             <ng-container *ngIf="!product.thumbnailUrl" >

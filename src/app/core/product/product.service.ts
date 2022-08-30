@@ -129,7 +129,9 @@ export class ProductsService
     {        
         return of(true).pipe(
             map(()=>{
-                this.getProductBySeoName(productSlug).subscribe((product: Product)=>{});
+                let shortId = parseInt(productSlug.split("-")[0], 10);
+                
+                this.getProductByShortId(shortId).subscribe((product: Product)=>{});
             })
         );
     }
@@ -163,7 +165,8 @@ export class ProductsService
             }
         };
 
-        if (categoryId === null) delete header.params.categoryId;
+        if (categoryId === null || categoryId === '') delete header.params.categoryId;
+        if (search === null || search === '') delete header.params.name;
 
         return this._httpClient.get<any>(productService +'/stores/'+this.storeId$+'/products', header).pipe(
             tap((response) => {
@@ -240,6 +243,34 @@ export class ProductsService
                 map((response) => {
 
                     this._logging.debug("Response from ProductsService (getProductBySeoName)", response);
+
+                    // Update the products with the new product
+                    this._product.next(response["data"].content[0]);
+
+                    // Return the new product
+                    return response["data"].content;
+                })
+            );
+    }
+
+    getProductByShortId(shortId: number): Observable<any>
+    {
+        let productService = this._apiServer.settings.apiServer.productService;
+        //let accessToken = this._jwt.getJwtPayload(this.accessToken).act;
+        let accessToken = "accessToken";
+        let clientId = this._jwt.getJwtPayload(this.accessToken).uid;
+
+        const header = {
+            headers: new HttpHeaders().set("Authorization", `Bearer ${accessToken}`),
+            params: {
+                shortId: shortId
+            }
+        };
+
+        return this._httpClient.get<Product>(productService + '/stores/' + this.storeId$ + '/products', header).pipe(
+                map((response) => {
+
+                    this._logging.debug("Response from ProductsService (getProductByShortId)", response);
 
                     // Update the products with the new product
                     this._product.next(response["data"].content[0]);
