@@ -1277,4 +1277,5 @@ export class LandingProductDetailsComponent implements OnInit
             behavior: 'smooth' 
         });
     }
+    
 }

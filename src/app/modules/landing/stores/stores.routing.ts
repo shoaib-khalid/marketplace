@@ -1,6 +1,7 @@
 import { Route } from '@angular/router';
 import { LandingProductDetailsComponent } from './product-details/product-details.component';
 import { ProductResolver } from './product-details/product-details.resolver';
+import { LandingShopComponent } from './shop/shop.component';
 import { LandingStoresComponent } from './store-list/store-list.component';
 import { LandingStoreComponent } from './store/store.component';
 import { StoresResolver } from './stores.resolvers';
@@ -41,7 +42,9 @@ export const landingStoresRoutes: Route[] = [
                 children: [
                     {
                         path: '',
-                        component: LandingStoreComponent,
+                        // component: LandingStoreComponent,
+                        component: LandingShopComponent,
+
 
                     },
                     {

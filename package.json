@@ -46,6 +46,7 @@
     "ngx-cookie-service": "^13.1.2",
     "ngx-device-detector": "^3.0.0",
     "ngx-gallery-9": "^1.0.6",
+    "ngx-hide-on-scroll": "^0.2.1",
     "ngx-markdown": "13.1.0",
     "ngx-mat-select-search": "^4.1.1",
     "ngx-quill": "16.1.2",

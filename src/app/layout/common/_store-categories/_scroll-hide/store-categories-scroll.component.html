@@ -1,0 +1,68 @@
+<!-- categories for xs view mobile -->
+<div class="w-full h-full bg-card">
+       
+    <div class="flex flex-nowrap items-center justify-start overflow-x-auto w-full mt-2 sm:mt-4">
+        <div class="grid grid-flow-col grid-rows-1 gap-1 sm:gap-4">
+            <fuse-card 
+                (click)="changeCatalogue('')"
+                [ngClass]="{'bg-primary text-black' : !category,
+                            'bg-gray-300 text-black' : category}" 
+                class="flex flex-col items-center justify-center h-12 w-40 filter-article cursor-pointer shadow rounded-lg mb-2 ml-2">
+                <span class="m-1 text-sm text-center font-semibold">All</span>
+            </fuse-card>
+            <ng-container *ngFor="let _category of categories">
+                <fuse-card
+                    (click)="changeCata( _category)"
+                    [ngClass]="{
+                        'bg-slate-300 text-black' : !category,
+                        'bg-primary text-black' : (category && category.id === _category.id),
+                        'bg-gray-300 text-black' : (category && category.id !== _category.id)      
+                        }" 
+                    class="h-12 w-40 flex items-center justify-center cursor-pointer shadow rounded-lg p-1 mb-2 ml-2">
+                    <span class="m-1 break-words line-clamp-2 text-sm text-center font-semibold">{{_category.name}}</span>
+                </fuse-card>
+            </ng-container>
+        </div>
+    </div>
+
+</div>
+
+<!-- categories for xs view mobile -->
+<!-- <div class="w-full truncate">
+    <div class="grid grid-flow-col grid-rows-1 items-center overflow-x-scroll pb-1 gap-1">
+        <div class="flex flex-wrap items-center p-0.5">
+            <input 
+                [id]="'categories-btn-all-product'" 
+                type="button" 
+                class="w-0 h-0 invisible"
+                (click)="changeCatalogue('')">
+            <label
+                class="font-semibold text-sm p-2.5 rounded-lg w-40 h-12 cursor-pointer"
+                [ngClass]="{'bg-primary text-black' : !category,
+                            'bg-gray-300 text-black' : category}"
+                [for]="'categories-btn-all-product'"
+            >
+                <span class="">All</span>
+            </label>
+        </div>
+        <div *ngFor="let _category of categories" class="justify-around">
+            <input 
+                [id]="'categories-btn' + _category.id" 
+                [value]="getCategorySlug(_category.name)"
+                type="button" 
+                class="w-0 h-0 invisible"
+                (click)="changeCatalogue($event.target.value, $event)">
+            <label
+                class="font-semibold text-sm p-3 rounded-lg w-40 h-12 cursor-pointer"
+                [ngClass]="{
+                            'bg-slate-300 text-black' : !category,
+                            'bg-primary text-black' : (category && category.id === _category.id),
+                            'bg-gray-300 text-black' : (category && category.id !== _category.id)      
+                            }"
+                [for]="'categories-btn' + _category.id"
+            >
+                <span>{{_category.name}}</span>
+            </label>
+        </div>
+    </div>
+</div> -->

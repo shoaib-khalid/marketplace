@@ -1,0 +1,74 @@
+<ng-container *ngIf="store">
+    <!-- Main menu -->
+    <div class="flex flex-col items-center w-full h-auto">
+        <mat-tab-group 
+            (selectedTabChange)="onTabChanged($event.index);"
+            [color]="'primary'" 
+            mat-stretch-tabs mat-align-tabs="center" 
+            class="w-full justify-between">
+            <!-- Categories Tabs -->
+            <mat-tab> 
+                <ng-template class="sticky top-0" mat-tab-label>
+                    <div class="whitespace-normal w-full max-w-24">
+                        <span class="text-sm line-clamp-2">All</span>
+                    </div>
+                </ng-template>
+                <div class="flex flex-col w-full mt-4">
+                    <ng-container *ngIf="(products$ | async) as products">
+                        <ng-container *ngIf="isLoading === false; else productLoading">
+                            <store-products class="w-full" [products]="products" [productViewOrientation]="productViewOrientation" [store]="store"></store-products>
+                        </ng-container>
+                        <!-- Pagination -->
+                        <ng-container *ngIf="pagination">
+                            <div class="flex w-full items-center justify-center">
+                                <pagination 
+                                    [itemLength]="pagination.length" 
+                                    [initialPage]="pagination.page + 1"
+                                    [pageSize]="pagination.size"
+                                    (changePage)="onChangePage($event)"
+                                    (click)="scroll('scrollContainer')"
+                                    #productPaginator></pagination>
+                            </div>
+                        </ng-container>
+                    </ng-container>      
+                </div>
+            </mat-tab>
+            <!-- Categories -->
+            <ng-container *ngIf="storeCategories; else noCategories">
+                <div *ngFor="let category of storeCategories" class="justify-around">
+                    <mat-tab [label]="category.name">
+                        <ng-template mat-tab-label>
+                            <div class="whitespace-normal w-24">
+                                <span class="text-sm line-clamp-2">{{ category.name }}</span>
+                            </div>
+                        </ng-template>
+                        <div class="flex flex-col w-full mt-4">
+                            <ng-container *ngIf="(products$ | async) as products">
+                                <ng-container *ngIf="isLoading === false; else productLoading">
+                                    <store-products class="w-full" [products]="products" [productViewOrientation]="productViewOrientation" [store]="store"></store-products>
+                                </ng-container>
+                            </ng-container> 
+                            <!-- Pagination -->
+                            <ng-container *ngIf="pagination">
+                                <div class="flex w-full items-center justify-center">
+                                    <pagination 
+                                        [itemLength]="pagination.length" 
+                                        [initialPage]="pagination.page + 1"
+                                        [pageSize]="pagination.size"
+                                        (changePage)="onChangePage($event)"
+                                        (click)="scroll('scrollContainer')"
+                                        #productPaginator></pagination>
+                                </div>
+                            </ng-container>     
+                        </div>
+                    </mat-tab>
+                </div>
+            </ng-container>
+
+            <!-- No Category -->
+            <ng-template #noCategories>
+                unable to comply building in progress
+            </ng-template>
+        </mat-tab-group>
+    </div>
+</ng-container>

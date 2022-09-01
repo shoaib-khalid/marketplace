@@ -20,7 +20,7 @@ import { SearchService } from 'app/layout/common/_search/search.service';
     selector     : 'fnb02-layout',
     templateUrl  : './fnb02.component.html',
     encapsulation: ViewEncapsulation.None,
-    animations   : fuseAnimations
+    animations   : fuseAnimations,
 
 })
 export class Fnb2LayoutComponent implements OnInit, OnDestroy
@@ -40,7 +40,9 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     
     floatingMessageData = {};
-    
+
+    isHidden: boolean = false;
+
     /**
      * Constructor
      */
@@ -83,6 +85,7 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        console.log('isHidden', this.isHidden)
         // set route and storeDetails to null first
         this._searchService.route = '';
         this._searchService.storeDetails = null;
