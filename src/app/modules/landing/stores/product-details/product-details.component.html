@@ -67,7 +67,7 @@
             <div class="flex flex-col md:flex-row justify-between w-full mt-3 md:mt-6">
 
                 <!-- Product Assets -->
-                <div class="flex justify-center w-full md:w-140 md:pr-6 lg:w-1/2">
+                <div class="flex justify-center w-full md:w-140 md:pr-6 lg:w-1/2 md:max-h-120 md:min-h-120">
                     <ngx-gallery 
                         (previewOpen)="openPreview = true"
                         (previewClose)="openPreview = false"
@@ -124,9 +124,11 @@
                         </ng-template>
                     </div>
                     <!-- Details -->
-                    <div class="">
-                        <p class="mb-2 font-semibold">Details:</p> 
-                        <span class="text-sm font-normal text-gray-400" [innerHTML]="product.description"></span>
+                    <div class="flex flex-col">
+                        <span class="font-semibold">Details:</span> 
+                        <div class="md:overflow-y-auto h-auto md:max-h-32">
+                            <span class="text-sm font-normal text-gray-400" [innerHTML]="product.description"></span>
+                        </div>
                     </div>
                     <!-- Variants / Combo -->
                     <ng-container *ngIf="!product.isPackage; else comboProduct">
@@ -200,7 +202,7 @@
                                     matInput
                                     [formControlName]="'specialInstructionValue'"
                                     maxlength="500"
-                                    [rows]="5"
+                                    [rows]="3"
                                     [placeholder]="product.customNote ? product.customNote : 'Make it special'"
                                     [required]="product.isNoteOptional === false"
                                     matTextareaAutosize></textarea>
