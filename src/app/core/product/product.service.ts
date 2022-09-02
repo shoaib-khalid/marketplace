@@ -163,8 +163,11 @@ export class ProductsService
             }
         };
 
-        if (categoryId === null) delete header.params.categoryId;
+        if (categoryId === null || categoryId === '') delete header.params.categoryId;
+        if (search === null || search === '') delete header.params.name;
 
+        // if (categoryId === null) delete header.params.categoryId;
+        
         return this._httpClient.get<any>(productService +'/stores/'+this.storeId$+'/products', header).pipe(
             tap((response) => {
 

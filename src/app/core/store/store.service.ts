@@ -63,11 +63,10 @@ export class StoresService
 
     resolveStore(storeDomain: string): Observable<any>
     {
-        return of(true).pipe(
-            map(()=>{
-                let storeFrontUrl = this._apiServer.settings.storeFrontDomain;
-                this.getStoreByDomainName(storeDomain + storeFrontUrl)
-                    .subscribe((response: Store)=>{
+        let storeFrontUrl = this._apiServer.settings.storeFrontDomain;
+        return this.getStoreByDomainName(storeDomain + storeFrontUrl)
+                .pipe(
+                    map((response: Store) => {
                         if (response) {
                             this.storeId = response.id;
                             this.getStoreCategories(response.id).subscribe();
@@ -75,9 +74,9 @@ export class StoresService
                         } else {
                             this._displayErrorService.show({title: "Store Not Found", type: '4xx', message: "The store you are looking for might have been removed, had its name changed or is temporarily unavailable.", code: "404"});
                         }
+                        return response;
                     })
-            })
-        )
+                )
     }
 
     // ----------------------

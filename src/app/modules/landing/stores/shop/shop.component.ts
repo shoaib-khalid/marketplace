@@ -1,7 +1,9 @@
 import { DatePipe, ViewportScroller } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { PlatformService } from 'app/core/platform/platform.service';
@@ -9,8 +11,10 @@ import { Platform } from 'app/core/platform/platform.types';
 import { ProductsService } from 'app/core/product/product.service';
 import { Product, ProductPagination } from 'app/core/product/product.types';
 import { StoresService } from 'app/core/store/store.service';
-import { Store, StoreCategory } from 'app/core/store/store.types';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Store, StoreAssets, StoreCategory } from 'app/core/store/store.types';
+import { SearchService } from 'app/layout/common/_search/search.service';
+import { debounceTime, map, Observable, Subject, switchMap, takeUntil } from 'rxjs';
+import { ShopService } from './shop.service';
 
 
 
@@ -105,6 +109,11 @@ import { Observable, Subject, takeUntil } from 'rxjs';
                     padding: 0px;
                 }
             }
+
+            .cat {
+                margin-right: -5px !important;
+                margin-left: -5px !important; 
+            }
             
         `
     ],
@@ -121,17 +130,25 @@ export class LandingShopComponent implements OnInit
 
     store: Store
     storeCategories: StoreCategory[];
-    storeCategory: StoreCategory;
+    selectedCategory: StoreCategory;
+    catalogueSlug: string = "all-products";
+    storeDomain: string;
+    storeDetails: {
+        image: string,
+        domain: string
+    }
 
     // product
     products$: Observable<Product[]>;
     products: Product[] = [];
     pagination: ProductPagination;
 
+    sortInputControl: FormControl = new FormControl();
     pageOfItems: Array<any>;
     sortName: string = "name";
     sortOrder: 'asc' | 'desc' | '' = 'asc';
     searchName: string = "";
+    oldPaginationIndex: number = 0;
 
     productViewOrientation: string = 'grid';
     collapseCategory: boolean = true;
@@ -147,9 +164,12 @@ export class LandingShopComponent implements OnInit
         private _matIconRegistry: MatIconRegistry,
         private _domSanitizer: DomSanitizer,
         private _scroller: ViewportScroller,
+        private _activatedRoute: ActivatedRoute,
         private _storesService: StoresService,
         private _productsService: ProductsService,
-        private _platformService: PlatformService
+        private _platformService: PlatformService,
+        private _searchService: SearchService,
+        private _shopService: ShopService
     )
     {
         this._matIconRegistry
@@ -188,6 +208,43 @@ export class LandingShopComponent implements OnInit
                 this.isScreenSmall = !matchingAliases.includes('md');
             });
 
+        this.sortInputControl.valueChanges
+        .pipe(
+            takeUntil(this._unsubscribeAll),
+            debounceTime(300),
+            switchMap((query) => {
+
+                if (query === "recent") {
+                    this.sortName = "created";
+                    this.sortOrder = "desc";
+                } else if (query === "cheapest") {
+                    this.sortName = "price";
+                    this.sortOrder = "asc";
+                } else if (query === "expensive") {
+                    this.sortName = "price";
+                    this.sortOrder = "desc";
+                } else if (query === "a-z") {
+                    this.sortName = "name";
+                    this.sortOrder = "asc";
+                } else if (query === "z-a") {
+                    this.sortName = "name";
+                    this.sortOrder = "desc";
+                } else {
+                    // default to recent (same as recent)
+                    this.sortName = "created";
+                    this.sortOrder = "desc";
+                }
+                
+                // set loading to true
+                this.isLoading = true;
+                return this._productsService.getProducts(0, 12, this.sortName, this.sortOrder, this.searchName, "ACTIVE,OUTOFSTOCK" , this.selectedCategory ? this.selectedCategory.id : '');
+            }),
+            map(() => {
+                // set loading to false
+                this.isLoading = false;
+            })
+        ).subscribe();
+
         this._platformService.platform$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((platform: Platform) => {
@@ -198,14 +255,28 @@ export class LandingShopComponent implements OnInit
                 this._changeDetectorRef.markForCheck();
             });
 
+        this.storeDomain = this._activatedRoute.snapshot.paramMap.get('store-slug');    
+
         this._storesService.store$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((store: Store) => {
                 if(store){
                     this.store = store;
 
-                    console.log("this.store", this.store);
+                    let storeLogo = this.displayStoreLogo(this.store.storeAssets);
                     
+                    // If keyword from search exist, set catalogueSlug to null so that checkbox won't be checked
+                    if (!this.catalogueSlug && this._activatedRoute.snapshot.queryParamMap.get('keyword')){
+                        this.catalogueSlug = null;
+                    }
+                    
+                    // To be sent to _search component
+                    this.storeDetails = {
+                        image : storeLogo,
+                        domain: this.storeDomain
+                    };
+                    // Setter for store details for _search component
+                    this._searchService.storeDetails = this.storeDetails;
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -216,8 +287,6 @@ export class LandingShopComponent implements OnInit
             .subscribe((storeCategories: StoreCategory[]) => {
                 if(storeCategories){
                     this.storeCategories = storeCategories;
-
-                    console.log("this.storeCategories", this.storeCategories);
                     
                 }
                 // Mark for check
@@ -238,6 +307,48 @@ export class LandingShopComponent implements OnInit
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+
+
+        // Get searches from url parameter 
+        this._activatedRoute.queryParams
+            .subscribe(params => {
+
+
+                // get back the previous pagination page
+                // more than 2 means it won't get back the previous pagination page when navigate back from 'carts' page
+                if (this._shopService.getPreviousUrl() && this._shopService.getPreviousUrl().split("/").length > 4) {                            
+                    this.oldPaginationIndex = this.pagination ? this.pagination.page : 0;
+                }
+
+                this.searchName = params['keyword'] ? params['keyword'] : "";
+                // If keyword exist
+                if (this.searchName) {
+                    // Get searched product
+                    this._productsService.getProducts(0, 12, "name", "asc", this.searchName, 'ACTIVE,OUTOFSTOCK', this.selectedCategory ? this.selectedCategory.id : '')
+                        .pipe(takeUntil(this._unsubscribeAll))
+                        .subscribe(()=>{
+                            // set loading to false
+                            this.isLoading = false;
+
+                            // Mark for check
+                            this._changeDetectorRef.markForCheck();
+                        });
+
+                }
+                // Else, get all products
+                else {
+                    this._productsService.getProducts(this.oldPaginationIndex, 12, "name", "asc", "", 'ACTIVE,OUTOFSTOCK', this.selectedCategory ? this.selectedCategory.id : '')
+                        .pipe(takeUntil(this._unsubscribeAll))
+                        .subscribe(()=>{
+                            // set loading to false
+                            this.isLoading = false;
+
+                            // Mark for check
+                            this._changeDetectorRef.markForCheck();
+                        });
+
+                }
+        });
         
     }
 
@@ -257,11 +368,9 @@ export class LandingShopComponent implements OnInit
         if ( ( (this.pageOfItems['currentPage'] - 1) > -1 ) && (this.pageOfItems['currentPage'] - 1 !== this.pagination.page)) {
             // set loading to true
             this.isLoading = true;
-            this._productsService.getProducts((this.pageOfItems['currentPage'] - 1) < 0 ? 0 : (this.pageOfItems['currentPage'] - 1), this.pageOfItems['pageSize'], this.sortName, this.sortOrder, this.searchName, "ACTIVE,OUTOFSTOCK" , this.storeCategory ? this.storeCategory.id : '')
+            this._productsService.getProducts((this.pageOfItems['currentPage'] - 1) < 0 ? 0 : (this.pageOfItems['currentPage'] - 1), this.pageOfItems['pageSize'], this.sortName, this.sortOrder, this.searchName, "ACTIVE,OUTOFSTOCK" , this.selectedCategory ? this.selectedCategory.id : '')
                 .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe((response)=>{
-
-                    console.log("response", response);
                     
                     // set loading to false
                     this.isLoading = false;
@@ -271,24 +380,31 @@ export class LandingShopComponent implements OnInit
         this._changeDetectorRef.markForCheck();
     }
 
-    onTabChanged(index) {
+    chooseCategory(category : StoreCategory) {
+        // console.log("category", category);
+        this.selectedCategory = category;
+        this.catalogueSlug = category ? category.name.toLowerCase().replace(/ /g, '-').replace(/[-]+/g, '-').replace(/[^\w-]+/g, '') : "all-products";
 
         this.pageOfItems['currentPage'] = 1;
         
-        let storeCategoryIndex = index - 1;
-
-        this.storeCategory = this.storeCategories[storeCategoryIndex];
-
         // set loading to true
         this.isLoading = true;
-        this._productsService.getProducts((this.pageOfItems['currentPage'] - 1) < 0 ? 0 : (this.pageOfItems['currentPage'] - 1), this.pageOfItems['pageSize'], this.sortName, this.sortOrder, this.searchName, "ACTIVE,OUTOFSTOCK" , this.storeCategory ? this.storeCategory.id : '')
+        this._productsService.getProducts((this.pageOfItems['currentPage'] - 1) < 0 ? 0 : (this.pageOfItems['currentPage'] - 1), this.pageOfItems['pageSize'], this.sortName, this.sortOrder, this.searchName, "ACTIVE,OUTOFSTOCK" , this.selectedCategory ? this.selectedCategory.id : '')
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(()=>{
                 // set loading to false
                 this.isLoading = false;
             });
-
         
+    }
+
+    displayStoreLogo(storeAssets: StoreAssets[]) {
+        let storeAssetsIndex = storeAssets.findIndex(item => item.assetType === 'LogoUrl');
+        if (storeAssetsIndex > -1) {
+            return storeAssets[storeAssetsIndex].assetUrl;
+        } else {
+            return this.platform.logo;
+        }
     }
 
 }

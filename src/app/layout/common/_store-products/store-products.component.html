@@ -236,3 +236,31 @@
     </div>
     <div class="mb-12"></div>
 </ng-template>
+
+<ng-template #openDetails>
+    <bottom-popup-content class="md:hidden">
+        <bottom-popup-header>
+            <span class="font-bold text-lg"></span>
+        </bottom-popup-header>
+        <!-- Combo -->
+        <fieldset 
+            [id]="combo.title" 
+            *ngFor="let combo of combos; let i = index;"
+            class="py-1">
+            <label class="font-semibold" for="{{combo.title}}">{{combo.title | uppercase}} : (Select {{ combo.totalAllow }} of {{ combo.productPackageOptionDetail.length }})</label>
+            <ul class="grid grid-cols-2">
+                <li *ngFor="let option of combo.productPackageOptionDetail; let i = index;" class="flex items-center">
+                    <input type="checkbox" 
+                        [id]="'combo-checkbox-' + combo.id + '-' + option.productId"
+                        [value]="option.productId" 
+                        [name]="'combo-checkbox-' + combo.id + '-' + option.productId"
+                        [checked]="selectedCombo[combo.id].indexOf(option.productId) > -1"
+                        (change)="onChangeCombo(combo.id, option.productId, $event)"
+                    >
+                    <label class="pl-2" [for]="'combo-checkbox-' + combo.id + '-' + option.productId">{{option.product.name}}</label>
+                    <!-- <label for="{{variant.name + i}}">{{option.value}} / {{ selectedVariants.indexOf(option.id) }} / {{option.id}}</label> -->
+                </li>
+            </ul>
+        </fieldset>
+    </bottom-popup-content>
+</ng-template>

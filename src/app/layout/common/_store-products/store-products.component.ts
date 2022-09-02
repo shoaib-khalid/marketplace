@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlatformService } from 'app/core/platform/platform.service';
@@ -7,6 +7,7 @@ import { DOCUMENT } from '@angular/common';
 import { StoreAssets } from 'app/core/store/store.types';
 import { ProductDetails } from 'app/core/location/location.types';
 import { Product } from 'app/core/product/product.types';
+import { BottomPopUpService } from '../_bottom-popup/bottom-popup.service';
 
 @Component({
     selector     : 'store-products',
@@ -24,6 +25,11 @@ export class _StoreProductsComponent implements OnInit, OnDestroy
     @Input() storeSlug: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
+    combos: any = [];
+    selectedCombo: any = [];
+
+    @ViewChild('openDetails', { read: TemplateRef }) _openDetails:TemplateRef<any>;
+
     /**
      * Constructor
      */
@@ -32,6 +38,7 @@ export class _StoreProductsComponent implements OnInit, OnDestroy
         private _platformService: PlatformService,
         private _router: Router,
         private _route: ActivatedRoute,
+        private _bottomPopUpService: BottomPopUpService
 
     )
     {
@@ -90,6 +97,18 @@ export class _StoreProductsComponent implements OnInit, OnDestroy
     redirectToProduct(url: string) {
         // this._document.location.href = url;
         this._router.navigate(['store/' + this.storeSlug + '/' + this.catalogueSlug + '/' + url]);
+    }
+
+    addProductToCart(product: Product) {
+        console.log("product", product);
+
+        // Precheck for combo
+        if (product.isPackage) {
+            this._bottomPopUpService.get(this._openDetails).subscribe();
+        }
+
+        
+        
     }
 
     // addProductToCart(product: Product) {

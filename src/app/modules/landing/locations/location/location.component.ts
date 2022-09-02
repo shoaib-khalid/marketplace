@@ -57,7 +57,7 @@ export class LocationComponent implements OnInit
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _platformsService: PlatformService,
-        private _route: ActivatedRoute,
+        private _activatedRoute: ActivatedRoute,
         private _currentLocationService: CurrentLocationService,
         private _locationService: LocationService,
         private _location: Location,
@@ -72,8 +72,8 @@ export class LocationComponent implements OnInit
 
     ngOnInit(): void {
 
-        this.locationId = this._route.snapshot.paramMap.get('location-id');
-        this.categoryId = this._route.snapshot.paramMap.get('category-id');
+        this.locationId = this._activatedRoute.snapshot.paramMap.get('location-id');
+        this.categoryId = this._activatedRoute.snapshot.paramMap.get('category-id');
 
         this.redirectUrl = {
             locationId : this.locationId,
