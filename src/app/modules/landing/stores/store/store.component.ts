@@ -73,7 +73,7 @@ export class LandingStoreComponent implements OnInit
 
     sortInputControl: FormControl = new FormControl();
     sortName: string = "name";
-    sortOrder: 'asc' | 'desc' | '' = 'asc';
+    sortOrder: 'ASC' | 'DESC' | '' = 'ASC';
     searchInputControl: FormControl = new FormControl();
     searchName: string = "";
 
@@ -165,8 +165,6 @@ export class LandingStoreComponent implements OnInit
                     // set loading to true
                     this.isLoading = true;
                     this.store = response;
-
-                    this._storesService.storeId = this.store.id;
     
                     let storeLogo = this.displayStoreLogo(this.store.storeAssets);
                     // To be sent to _search component
@@ -218,29 +216,42 @@ export class LandingStoreComponent implements OnInit
                                     // If keyword exist
                                     if (this.searchValue) {
                                         // Get searched product
-                                        this._productsService.getProducts(0, 12, "name", "asc", this.searchValue, 'ACTIVE,OUTOFSTOCK', this.storeCategory ? this.storeCategory.id : '')
-                                            .pipe(takeUntil(this._unsubscribeAll))
-                                            .subscribe(()=>{
-                                                // set loading to false
-                                                this.isLoading = false;
-            
-                                                // Mark for check
-                                                this._changeDetectorRef.markForCheck();
-                                            });
-    
+                                        this._productsService.getProducts(this.store.id, {
+                                            name        : this.searchValue, 
+                                            page        : 0, 
+                                            size        : 12, 
+                                            sortByCol   : "name", 
+                                            sortingOrder: "ASC", 
+                                            status      : 'ACTIVE,OUTOFSTOCK', 
+                                            categoryId  :this.storeCategory ? this.storeCategory.id : ''
+                                        }, false)
+                                        .pipe(takeUntil(this._unsubscribeAll))
+                                        .subscribe(()=>{
+                                            // set loading to false
+                                            this.isLoading = false;
+        
+                                            // Mark for check
+                                            this._changeDetectorRef.markForCheck();
+                                        });
                                     }
                                     // Else, get all products
                                     else {
-                                        this._productsService.getProducts(this.oldPaginationIndex, 12, "name", "asc", "", 'ACTIVE,OUTOFSTOCK', this.storeCategory ? this.storeCategory.id : '')
-                                            .pipe(takeUntil(this._unsubscribeAll))
-                                            .subscribe(()=>{
-                                                // set loading to false
-                                                this.isLoading = false;
-            
-                                                // Mark for check
-                                                this._changeDetectorRef.markForCheck();
-                                            });
-    
+                                        this._productsService.getProducts(this.store.id, {
+                                            page        : this.oldPaginationIndex, 
+                                            size        : 12,
+                                            sortByCol   : "name", 
+                                            sortingOrder: "ASC",
+                                            status      : 'ACTIVE,OUTOFSTOCK',
+                                            categoryId  : this.storeCategory ? this.storeCategory.id : ''
+                                        }, false)
+                                        .pipe(takeUntil(this._unsubscribeAll))
+                                        .subscribe(()=>{
+                                            // set loading to false
+                                            this.isLoading = false;
+        
+                                            // Mark for check
+                                            this._changeDetectorRef.markForCheck();
+                                        });
                                     }
                                 });
     
@@ -277,7 +288,15 @@ export class LandingStoreComponent implements OnInit
                 
                 // set loading to true
                 this.isLoading = true;
-                return this._productsService.getProducts(0, 12, this.sortName, this.sortOrder, this.searchName, "ACTIVE,OUTOFSTOCK" , this.storeCategory ? this.storeCategory.id : '');
+                return this._productsService.getProducts(this.store.id,{
+                    name        : this.searchName, 
+                    page        : 0, 
+                    size        : 12, 
+                    sortByCol   : "name", 
+                    sortingOrder: "ASC", 
+                    status      : "ACTIVE,OUTOFSTOCK", 
+                    categoryId  : this.storeCategory ? this.storeCategory.id : ''
+                }, false);
             }),
             map(() => {
                 // set loading to false
@@ -294,28 +313,36 @@ export class LandingStoreComponent implements OnInit
 
                     if (query === "recent") {
                         this.sortName = "created";
-                        this.sortOrder = "desc";
+                        this.sortOrder = "DESC";
                     } else if (query === "cheapest") {
                         this.sortName = "price";
-                        this.sortOrder = "asc";
+                        this.sortOrder = "ASC";
                     } else if (query === "expensive") {
                         this.sortName = "price";
-                        this.sortOrder = "desc";
+                        this.sortOrder = "DESC";
                     } else if (query === "a-z") {
                         this.sortName = "name";
-                        this.sortOrder = "asc";
+                        this.sortOrder = "ASC";
                     } else if (query === "z-a") {
                         this.sortName = "name";
-                        this.sortOrder = "desc";
+                        this.sortOrder = "DESC";
                     } else {
                         // default to recent (same as recent)
                         this.sortName = "created";
-                        this.sortOrder = "desc";
+                        this.sortOrder = "DESC";
                     }
                     
                     // set loading to true
                     this.isLoading = true;
-                    return this._productsService.getProducts(0, 12, this.sortName, this.sortOrder, this.searchName, "ACTIVE,OUTOFSTOCK" , this.storeCategory ? this.storeCategory.id : '');
+                    return this._productsService.getProducts(this.store.id, {
+                        name        : this.searchName, 
+                        page        : 0, 
+                        size        : 12, 
+                        sortByCol   : "name", 
+                        sortingOrder: "ASC", 
+                        status      : "ACTIVE,OUTOFSTOCK", 
+                        categoryId  : this.storeCategory ? this.storeCategory.id : ''
+                    }, false);
                 }),
                 map(() => {
                     // set loading to false
@@ -390,12 +417,20 @@ export class LandingStoreComponent implements OnInit
         if ( ( (this.pageOfItems['currentPage'] - 1) > -1 ) && (this.pageOfItems['currentPage'] - 1 !== this.pagination.page)) {
             // set loading to true
             this.isLoading = true;
-            this._productsService.getProducts((this.pageOfItems['currentPage'] - 1) < 0 ? 0 : (this.pageOfItems['currentPage'] - 1), this.pageOfItems['pageSize'], this.sortName, this.sortOrder, this.searchName, "ACTIVE,OUTOFSTOCK" , this.storeCategory ? this.storeCategory.id : '')
-                .pipe(takeUntil(this._unsubscribeAll))
-                .subscribe(()=>{
-                    // set loading to false
-                    this.isLoading = false;
-                });
+            this._productsService.getProducts(this.store.id, {
+                name        : this.searchName, 
+                page        : (this.pageOfItems['currentPage'] - 1) < 0 ? 0 : (this.pageOfItems['currentPage'] - 1), 
+                size        : this.pageOfItems['pageSize'], 
+                sortByCol   : "name", 
+                sortingOrder: "ASC", 
+                status      : "ACTIVE,OUTOFSTOCK", 
+                categoryId  : this.storeCategory ? this.storeCategory.id : ''
+            }, false)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(()=>{
+                // set loading to false
+                this.isLoading = false;
+            });
         }
         // Mark for check
         this._changeDetectorRef.markForCheck();

@@ -89,9 +89,6 @@ export class _FeaturedProductsComponent implements OnInit, OnDestroy
 
     redirectToProduct(storeId: string, storeDomain: string, seoName: string) {
         let domainName = storeDomain.split(".")[0];
-
-        // resolve store 
-        this._storesService.storeId = storeId;
         
         // this._document.location.href = url;
         this._router.navigate(['store/' + domainName + '/' + 'all-products/' + seoName]);

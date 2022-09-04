@@ -13,10 +13,11 @@ export class DisplayErrorComponent
 {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     error: {
-        type: string;
-        code: string;
-        title: string;
-        message: string;
+        type        : string;
+        code        : string;
+        title       : string;
+        message     : string;
+        aftereffect?: 'reload' | 'back';
     } = null;
 
     /**
@@ -42,5 +43,22 @@ export class DisplayErrorComponent
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });   
+    }
+
+    doAction()
+    {
+        if (this.error && this.error.aftereffect) {
+            if (this.error.aftereffect === "reload"){
+                // Reload the app
+                location.reload();
+                return;
+            } else {
+                window.history.back();
+                return;
+            }
+        } else{
+            window.history.back();
+            return;
+        }
     }
 }

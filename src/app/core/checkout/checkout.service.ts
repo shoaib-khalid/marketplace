@@ -244,7 +244,7 @@ export class CheckoutService
     /**
      * Get the Customer Info
      */
-    getCustomerInfo(email: string = null, phoneNumber: string = null): Observable<Customer>
+    getCustomerInfo(storeId: string, email: string = null, phoneNumber: string = null): Observable<Customer>
     {
         let userService = this._apiServer.settings.apiServer.userService;
         //let accessToken = this._jwt.getJwtPayload(this.accessToken).act;
@@ -261,7 +261,7 @@ export class CheckoutService
         if (header.params.email === null) delete header.params.email;
         if (header.params.phoneNumber === null) delete header.params.phoneNumber;
 
-        return this._httpClient.get<any>(userService + '/stores/' + this._storeService.storeId$ + '/customers/', header)
+        return this._httpClient.get<any>(userService + '/stores/' + storeId + '/customers/', header)
             .pipe(
                 map((response) => {
                     this._logging.debug("Response from StoresService (getCustomerInfo)",response);

@@ -84,7 +84,7 @@ export class CoreInterceptor implements HttpInterceptor
                     // when already retried 'retryCount' amount of times
                     else if (count === retryCount) {
                         // set show error 500 page to true
-                        this._displayErrorService.show({title: "Internal Server Error", code: error.status , message: error.message, type: '5xx'});
+                        this._displayErrorService.show({title: "Internal Server Error", code: error.status , message: error.message, type: '5xx', aftereffect: 'reload'});
                     }
                     // Ignore intercept for login () clients/authenticate                
                     else if ( error instanceof HttpErrorResponse && !(error.status === 401 && newReq.url.indexOf("customers/authenticate") > -1)  && !(error.status === 409) && !(error.status === 417) && !(error.status === 404) && !(error.status === 403))

@@ -2,20 +2,71 @@
     <!-- Main menu -->
     <div class="flex flex-col items-center w-full h-auto">
         <ng-container *ngIf="storeCategories && storeCategories.length">
-            <div class="flex flex-col w-full">                
+            <div class="flex flex-col w-full md:mt-2">
+                <!-- Store Header -->
+                <fuse-card class="relative flex flex-row h-30 sm:h-40 w-full border border-primary rounded-lg filter-article">
+                    <div *ngIf="isStoreClose(store.id)" 
+                        class="absolute bg-black bg-opacity-60 z-10 w-full h-full flex flex-col items-center justify-center rounded-lg lg:rounded gap-2">
+                        <div class="flex flex-col rounded-lg bg-red-500 text-white items-center p-3 leading-none uppercase">
+                            <span class="text-white text-base lg:text-2xl font-medium">{{notificationMessageTitle}}</span>
+                            <span class="text-white text-3xl lg:text-5xl font-semibold">CLOSED</span>
+                        </div>
+                        <span class="w-3/4 text-center text-white text-md lg:text-lg font-medium tracking-tight">{{notificationMessage}}</span>
+                    </div>
+                    <!-- Store Image -->
+                    <div class="flex-0 w-30 sm:w-44 h-full">
+                        <img
+                            class="w-full h-full shadow object-cover"
+                            [src]="displayStoreLogo(store.storeAssets)"
+                            [alt]="'Card cover image'">
+                    </div>
+                    <div class="flex flex-col flex-auto p-2 sm:p-3 justify-between">
+                        <!-- Store Details  -->
+                        <div class="flex flex-col">
+                            <!-- Store Name -->
+                            <div class="md:text-2xl text-lg font-semibold leading-tight">{{store.name}}</div>
+                            <!-- Store Description -->
+                            <p class="flex flex-row text-black overflow-hidden text-ellipsis text-xs sm:text-sm md:text-base break-all line-clamp-2" [innerHTML]="store.storeDescription"></p>
+                        </div>
+                        <!-- Saparator -->
+                        <div class="w-full border-t border-primary-200"></div>
+                        <!-- Contact -->
+                        <div class="flex flex-col">
+                            <!-- Address  -->
+                            <div class="w-full flex flex-row gap-x-1">
+                                <mat-icon class="block sm:hidden icon-size-3 text-primary pt-0.5" [svgIcon]="'mat_solid:location_on'"></mat-icon>
+                                <span class="hidden sm:block text-xs sm:text-sm md:text-base">Address:</span>
+                                <span class="text-xs sm:text-sm md:text-base line-clamp-2 font-medium">{{store.address}}</span>
+                            </div>
+                            <!-- Contact & Product -->
+                            <div class="flex flex-row justify-between gap-x-2">
+                                <div class="flex flex-row gap-x-1">
+                                    <mat-icon class="block sm:hidden icon-size-3 text-primary" [svgIcon]="'mat_solid:phone'"></mat-icon>
+                                    <span class="hidden sm:block text-xs sm:text-sm md:text-base">Contact Us:</span>
+                                    <a [href]="'tel:' + store.phoneNumber" class="text-xs sm:text-sm md:text-base font-medium underline">{{store.phoneNumber}}</a>
+                                </div>
+                                <div class="flex flex-row gap-x-1">
+                                    <mat-icon class="block sm:hidden icon-size-3 text-primary" [svgIcon]="'mat_solid:shopping_bag'"></mat-icon>
+                                    <span class="hidden sm:block text-xs sm:text-sm md:text-base">Products:</span>
+                                    <span class="text-xs sm:text-sm md:text-base font-medium">{{pagination?.length}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fuse-card>
                 <!-- Category -->                    
-                <div class="flex flex-nowrap items-center justify-start overflow-x-auto rounded-md w-screen md:w-full bg-card md:border-2 md:mx-0 md:mb-2 -mx-2 pt-2 sm:pt-4 sticky top-0 z-40">
-                    <div class="grid grid-flow-col grid-rows-1 gap-1 sm:gap-4">
+                <div class="flex h-12 flex-nowrap items-center justify-start scrollbar-hide overflow-x-auto rounded-md w-screen md:w-full bg-card md:border-2 md:mx-0 -mx-2 sticky top-0 my-2 md:mt-4 z-40">
+                    <div class="h-full grid grid-flow-col grid-rows-1 gap-1 sm:gap-4">
                         <div 
                             [ngClass]="!selectedCategory ? 'border-primary border-b-4 ' : '' "
-                            class="flex flex-col h-10 w-28 filter-article justify-center cursor-pointer mb-2 mx-1 first:ml-1 last:mr-1" 
+                            class="flex flex-col w-28 filter-article justify-center cursor-pointer mx-1 first:ml-1 last:mr-1 hover:bg-primary-300 rounded" 
                             (click)="chooseCategory(null)">
                             <span class="m-1 text-sm text-center font-semibold line-clamp-2 leading-4">All</span>
                         </div>
                         <ng-container *ngFor="let category of storeCategories">
                             <div 
                                 [ngClass]="selectedCategory && selectedCategory.id === category.id ? 'border-primary border-b-4 ' : '' "
-                                class="flex flex-col h-10 w-28 filter-article justify-center cursor-pointer mb-2 mx-1 first:ml-1 last:mr-1" 
+                                class="flex flex-col w-28 filter-article justify-center cursor-pointer mx-1 first:ml-1 last:mr-1 hover:bg-primary-300 rounded" 
                                 (click)="chooseCategory(category)">
                                 <span class="m-1 text-sm text-center font-semibold line-clamp-2 leading-4">{{category.name}}</span>
                             </div>
@@ -85,8 +136,9 @@
                     </div>
                 </div>
 
-                <!-- product -->
+                <!-- Products Section -->
                 <div class="flex flex-col z-0">
+                    <!-- Products -->
                     <ng-container *ngIf="(products$ | async) as products">
                         <ng-container *ngIf="isLoading === false; else productLoading">
                             <store-products class="w-full" [products]="products" [productViewOrientation]="productViewOrientation" [store]="store" [storeSlug]="storeDomain" [catalogueSlug]="catalogueSlug"></store-products>
@@ -104,6 +156,15 @@
                             </ng-container>
                         </ng-container>
                     </ng-container>
+
+                    <!-- Loading Product -->
+                    <ng-template #productLoading>
+                        <div class="flex flex-auto h-96 flex-col items-center justify-center rounded-lg border border-gray-300 dark:bg-transparent">
+                            <img class="w-20" src="assets/gif/loading.gif" alt="loading">
+                            <div class="mt-6 text-2xl font-semibold tracking-tight text-secondary">Loading Products</div>
+                        </div>
+                        <div class="mb-12"></div>
+                    </ng-template>
                 </div>
             </div>
         </ng-container>

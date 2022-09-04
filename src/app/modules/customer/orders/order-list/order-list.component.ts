@@ -372,9 +372,6 @@ export class OrderListComponent implements OnInit
         let domainName = storeDomain.split(".")[0];
 
         let seo = seoName.split("/")[4];
-
-        // resolve store id
-        this._storesService.storeId = storeId;
         
         // this._document.location.href = url;
         this._router.navigate(['store/' + domainName + '/' + 'all-products/' + seo]);
