@@ -242,7 +242,7 @@ export class ProductsService
             );
     }
 
-    getProductByShortId(shortId: number): Observable<any>
+    getProductByShortId(storeId: string, shortId: number): Observable<any>
     {
         let productService = this._apiServer.settings.apiServer.productService;
         //let accessToken = this._jwt.getJwtPayload(this.accessToken).act;
@@ -256,7 +256,7 @@ export class ProductsService
             }
         };
 
-        return this._httpClient.get<Product>(productService + '/stores/' + this.storeId$ + '/products', header).pipe(
+        return this._httpClient.get<Product>(productService + '/stores/' + storeId + '/products', header).pipe(
                 map((response) => {
 
                     this._logging.debug("Response from ProductsService (getProductByShortId)", response);

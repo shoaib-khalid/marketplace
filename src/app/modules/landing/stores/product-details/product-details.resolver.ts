@@ -36,8 +36,10 @@ export class ProductResolver implements Resolve<any>
         // Fork join multiple API endpoint calls to wait all of them to finish
         return this._storesService.store$
                     .pipe(
-                        tap((store: Store) => {                            
-                            this._productsService.getProductBySeoName(store.id, route.paramMap.get('product-slug')).subscribe();
+                        tap((store: Store) => {        
+                            let productSlug: string = route.paramMap.get('product-slug');                    
+                            let shortId: number = +(productSlug.split("-")[0]);
+                            this._productsService.getProductByShortId(store.id, shortId).subscribe();
                         })
                     );
     }

@@ -13,6 +13,7 @@ import { NavigateService } from 'app/core/navigate-url/navigate.service';
 import { CurrentLocationService } from 'app/core/_current-location/current-location.service';
 import { CurrentLocation } from 'app/core/_current-location/current-location.types';
 import { BottomPopUpService } from 'app/layout/common/_bottom-popup/bottom-popup.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector     : 'landing-home',
@@ -61,7 +62,7 @@ export class LandingHomeComponent implements OnInit
         private _currentLocationService: CurrentLocationService,
         private _navigate: NavigateService,
         private _bottomPopUpService: BottomPopUpService,
-
+        private _titleService: Title
     )
     {
     }
