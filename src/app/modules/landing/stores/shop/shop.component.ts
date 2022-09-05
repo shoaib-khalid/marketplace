@@ -1,9 +1,9 @@
-import { DatePipe, DOCUMENT, ViewportScroller } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { DatePipe, ViewportScroller } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer, Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { PlatformService } from 'app/core/platform/platform.service';
@@ -13,84 +13,149 @@ import { Product, ProductPagination } from 'app/core/product/product.types';
 import { StoresService } from 'app/core/store/store.service';
 import { Store, StoreAssets, StoreCategory } from 'app/core/store/store.types';
 import { SearchService } from 'app/layout/common/_search/search.service';
-import { Subject, switchMap, Observable } from 'rxjs';
-import { takeUntil, debounceTime, map } from 'rxjs/operators';
-import { StoreService } from './store.service';
+import { debounceTime, map, Observable, Subject, switchMap, takeUntil } from 'rxjs';
+import { ShopService } from './shop.service';
+
 
 
 @Component({
-    selector     : 'landing-store',
-    templateUrl  : './store.component.html',
+    selector     : 'landing-shop',
+    templateUrl  : './shop.component.html',
     styles       : [
         `
-        /** Custom input number **/
-        input[type='number']::-webkit-inner-spin-button,
-        input[type='number']::-webkit-outer-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-        }
-      
-        .custom-number-input input:focus {
-          outline: none !important;
-        }
-      
-        .custom-number-input button:focus {
-          outline: none !important;
-        }
+            .mat-tab-group {
 
+                /* No header */
+                &.fuse-mat-no-header {
+            
+                    .mat-tab-header {
+                        height: 0 !important;
+                        max-height: 0 !important;
+                        border: none !important;
+                        visibility: hidden !important;
+                        opacity: 0 !important;
+                        overflow-x: scroll !important;
+                    }
+                }
+            
+                .mat-tab-header {
+                    border-bottom: flex !important;
+                    overflow-x: scroll !important;
+                    
+
+                    .mat-tab-header-pagination-before{
+                        display: none !important;
+                    }
+    
+                    .mat-tab-header-pagination-after {
+                        display: none !important;
+                    }
+    
+                    @screen md{
+                        .mat-tab-header-pagination-before{
+                            display: flex !important;
+                        }
+        
+                        .mat-tab-header-pagination-after {
+                            display: flex !important;
+                        }
+
+                        overflow-x: none !important;
+
+                    }                  
+
+                    .mat-tab-label-container {
+                        padding: 0 0px;
+                        overflow: visible !important;
+
+                        @screen md{
+                            overflow: hidden !important;
+
+                        }
+
+                        .mat-tab-list {
+            
+                            .mat-tab-labels {
+            
+                                .mat-tab-label {
+                                    min-width: 0 !important;
+                                    height: 40px !important;
+                                    padding: 0 20px !important;
+                                    @apply text-secondary;
+            
+                                    &.mat-tab-label-active {
+                                        @apply bg-primary-700 bg-opacity-0 dark:bg-primary-50 dark:bg-opacity-0 #{'!important'};
+                                        @apply text-primary #{'!important'};
+                                    }
+            
+                                    + .mat-tab-label {
+                                        margin-left: 0px;
+                                    }
+            
+                                    .mat-tab-label-content {
+                                        line-height: 20px;
+                                    }
+                                }
+                            }
+            
+                            .mat-ink-bar {
+                                display: flex !important;
+                            }
+                        }
+                    }
+                }
+            
+                .mat-tab-body-content {
+                    padding: 0px;
+                }
+            }
+
+            .cat {
+                margin-right: -5px !important;
+                margin-left: -5px !important; 
+            }
+            
         `
     ],
     encapsulation: ViewEncapsulation.None,
     animations     : fuseAnimations,
 })
-export class LandingStoreComponent implements OnInit
+export class LandingShopComponent implements OnInit
 {
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
-
     platform: Platform;
-   
-    storeDomain: string;
-
-    image: any = [];
-    store: Store;
-    storeCategories: StoreCategory[];
-    storeCategory: StoreCategory;
-    catalogueSlug: string;
-
-    cartId: string;
-    currentScreenSize: string[] = [];
-    collapseCategory: boolean = true;
-
-    // product
-    products$: Observable<Product[]>;
-    products: Product[] = [];
-    selectedProduct: Product | null = null;
-    pagination: ProductPagination;
-    productName: string = null;
-
-    productViewOrientation: string = 'grid';
-    oldPaginationIndex: number = 0;
-
-    sortInputControl: FormControl = new FormControl();
-    sortName: string = "name";
-    sortOrder: 'ASC' | 'DESC' | '' = 'ASC';
-    searchInputControl: FormControl = new FormControl();
-    searchName: string = "";
 
     isLoading: boolean = false;
-    quantity: number = 0;
-    pageOfItems: Array<any>;
+    isScreenSmall: boolean;
+    currentScreenSize: string[] = [];
 
+    store: Store
+    storeCategories: StoreCategory[];
+    selectedCategory: StoreCategory;
+    catalogueSlug: string = "all-products";
+    storeDomain: string;
     storeDetails: {
         image: string,
         domain: string
     }
-    searchValue: string;
+
+    // product
+    products$: Observable<Product[]>;
+    products: Product[] = [];
+    pagination: ProductPagination;
+
+    sortInputControl: FormControl = new FormControl();
+    pageOfItems: Array<any>;
+    sortName: string = "name";
+    sortOrder: 'ASC' | 'DESC' | '' = 'ASC';
+    searchName: string;
+    oldPaginationIndex: number = 0;
+
+    productViewOrientation: string = 'grid';
+    collapseCategory: boolean = true;
 
     notificationMessage: string;
     notificationMessageTitle: string = '';
     daysArray = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-
     storesOpening: { 
         storeId: string,
         isOpen : boolean,
@@ -98,28 +163,24 @@ export class LandingStoreComponent implements OnInit
         message: string
     }[] = [];
 
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
      * Constructor
      */
     constructor(
-        @Inject(DOCUMENT) private _document: Document,
-        private _platformService: PlatformService,
-        private _storeService: StoreService,
-        private _storesService: StoresService,
-        private _productsService: ProductsService,
-        private _router: Router,
-        private _activatedRoute: ActivatedRoute,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _changeDetectorRef: ChangeDetectorRef,
         private _matIconRegistry: MatIconRegistry,
         private _domSanitizer: DomSanitizer,
-        private _route: ActivatedRoute,
+        private _scroller: ViewportScroller,
+        private _activatedRoute: ActivatedRoute,
+        private _storesService: StoresService,
+        private _productsService: ProductsService,
+        private _platformService: PlatformService,
         private _searchService: SearchService,
         private _datePipe: DatePipe,
-        private _scroller: ViewportScroller,
-        private _titleService: Title
-
+        private _shopService: ShopService
     )
     {
         this._matIconRegistry
@@ -128,243 +189,16 @@ export class LandingStoreComponent implements OnInit
         .addSvgIcon('list-view',this._domSanitizer.bypassSecurityTrustResourceUrl('assets/layouts/fnb/icons/list-view.svg'));
     }
 
-    ngOnInit(): void {        
+    // -----------------------------------------------------------------------------------------------------
+    // @ Lifecycle hooks
+    // -----------------------------------------------------------------------------------------------------
 
-        // Set route to 'store' on init
-        this._searchService.route = 'store'
+    ngOnInit(): void {  
 
-        this._platformService.platform$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((platform: Platform) => {
-                if (platform) {
-                    this.platform = platform;
-                }
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Get the products pagination
-        this._productsService.pagination$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((pagination: ProductPagination) => {
-                
-                // Update the pagination
-                this.pagination = pagination;                
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        this.storeDomain = this._route.snapshot.paramMap.get('store-slug');    
-        
-        this._storesService.store$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((response: Store) => {
-
-                if (response) {
-
-                    // set loading to true
-                    this.isLoading = true;
-                    this.store = response;
-    
-                    let storeLogo = this.displayStoreLogo(this.store.storeAssets);
-                    // To be sent to _search component
-                    this.storeDetails = {
-                        image : storeLogo,
-                        domain: this.storeDomain
-                    }
-                    // Setter for store details for _search component
-                    this._searchService.storeDetails = this.storeDetails;
-                    
-                    // check if store id exists
-                    if (this.store.id && this.store.id !== null) {
-    
-                        // -----------------------
-                        // Get Store Category
-                        // -----------------------
-    
-                        this._storesService.storeCategories$
-                            .pipe(takeUntil(this._unsubscribeAll))
-                            .subscribe((storeCategories: StoreCategory[])=>{
-                                if (storeCategories) {
-                                    this.storeCategories = storeCategories
-        
-                                    // If keyword from search exist, set catalogueSlug to null so that checkbox won't be checked
-                                    if (!this.catalogueSlug && this._activatedRoute.snapshot.queryParamMap.get('keyword')){
-                                        this.catalogueSlug = null;
-                                    }
-                                    // Else, set the catalogueSlug
-                                    else if (!this.catalogueSlug) {
-                                        this.catalogueSlug = this._activatedRoute.snapshot.paramMap.get('catalogue-slug');
-                                    }
-                                    
-                                    let index = this.storeCategories.findIndex(item => item.name.toLowerCase().replace(/ /g, '-').replace(/[-]+/g, '-').replace(/[^\w-]+/g, '') === this.catalogueSlug);
-                                    this.storeCategory = (index > -1) ? this.storeCategories[index] : null;
-
-                                    // move selected category to the front
-                                    this.storeCategories = this.moveArray(this.storeCategories, index, 0)
-                                }
-                            
-                                // get back the previous pagination page
-                                // more than 2 means it won't get back the previous pagination page when navigate back from 'carts' page
-                                if (this._storeService.getPreviousUrl() && this._storeService.getPreviousUrl().split("/").length > 4) {                            
-                                    this.oldPaginationIndex = this.pagination ? this.pagination.page : 0;
-                                }
-    
-                                // Get searches from url parameter 
-                                this._activatedRoute.queryParams.subscribe(params => {
-                                    this.searchValue = params['keyword'];
-                                    // If keyword exist
-                                    if (this.searchValue) {
-                                        // Get searched product
-                                        this._productsService.getProducts(this.store.id, {
-                                            name        : this.searchValue, 
-                                            page        : 0, 
-                                            size        : 12, 
-                                            sortByCol   : "name", 
-                                            sortingOrder: "ASC", 
-                                            status      : 'ACTIVE,OUTOFSTOCK', 
-                                            categoryId  :this.storeCategory ? this.storeCategory.id : ''
-                                        }, false)
-                                        .pipe(takeUntil(this._unsubscribeAll))
-                                        .subscribe(()=>{
-                                            // set loading to false
-                                            this.isLoading = false;
-        
-                                            // Mark for check
-                                            this._changeDetectorRef.markForCheck();
-                                        });
-                                    }
-                                    // Else, get all products
-                                    else {
-                                        this._productsService.getProducts(this.store.id, {
-                                            page        : this.oldPaginationIndex, 
-                                            size        : 12,
-                                            sortByCol   : "name", 
-                                            sortingOrder: "ASC",
-                                            status      : 'ACTIVE,OUTOFSTOCK',
-                                            categoryId  : this.storeCategory ? this.storeCategory.id : ''
-                                        }, false)
-                                        .pipe(takeUntil(this._unsubscribeAll))
-                                        .subscribe(()=>{
-                                            // set loading to false
-                                            this.isLoading = false;
-        
-                                            // Mark for check
-                                            this._changeDetectorRef.markForCheck();
-                                        });
-                                    }
-                                });
-    
-                                // Mark for check
-                                this._changeDetectorRef.markForCheck();
-                            });
-    
-                        // check store timing                
-                        this.storesOpening = [];
-                            
-                        this.checkStoreTiming(response);
-
-                    } else {
-                        // this._router.navigate(['']);
-                        // alert("no store id");
-                        console.error("No store found");
-                    }
-                }
-                // Mark for check
-                this._changeDetectorRef.markForCheck();                            
-            });
-
-        // Get the products
-        this._productsService.products$
-        .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((products: Product[]) => {
-                if (products) {
-                    this.products = products;
-                }
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Subscribe to search input field value changes
-        this.searchInputControl.valueChanges
-        .pipe(
-            takeUntil(this._unsubscribeAll),
-            debounceTime(300),
-            switchMap((query) => {     
-                
-                this.searchName = query;
-                
-                // set loading to true
-                this.isLoading = true;
-                return this._productsService.getProducts(this.store.id,{
-                    name        : this.searchName, 
-                    page        : 0, 
-                    size        : 12, 
-                    sortByCol   : "name", 
-                    sortingOrder: "ASC", 
-                    status      : "ACTIVE,OUTOFSTOCK", 
-                    categoryId  : this.storeCategory ? this.storeCategory.id : ''
-                }, false);
-            }),
-            map(() => {
-                // set loading to false
-                this.isLoading = false;
-            })
-        )
-        .subscribe();
-
-        this.sortInputControl.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribeAll),
-                debounceTime(300),
-                switchMap((query) => {
-
-                    if (query === "recent") {
-                        this.sortName = "created";
-                        this.sortOrder = "DESC";
-                    } else if (query === "cheapest") {
-                        this.sortName = "price";
-                        this.sortOrder = "ASC";
-                    } else if (query === "expensive") {
-                        this.sortName = "price";
-                        this.sortOrder = "DESC";
-                    } else if (query === "a-z") {
-                        this.sortName = "name";
-                        this.sortOrder = "ASC";
-                    } else if (query === "z-a") {
-                        this.sortName = "name";
-                        this.sortOrder = "DESC";
-                    } else {
-                        // default to recent (same as recent)
-                        this.sortName = "created";
-                        this.sortOrder = "DESC";
-                    }
-                    
-                    // set loading to true
-                    this.isLoading = true;
-                    return this._productsService.getProducts(this.store.id, {
-                        name        : this.searchName, 
-                        page        : 0, 
-                        size        : 12, 
-                        sortByCol   : "name", 
-                        sortingOrder: "ASC", 
-                        status      : "ACTIVE,OUTOFSTOCK", 
-                        categoryId  : this.storeCategory ? this.storeCategory.id : ''
-                    }, false);
-                }),
-                map(() => {
-                    // set loading to false
-                    this.isLoading = false;
-                })
-            ).subscribe();
-
-        // collapse category to false if desktop by default, 
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({matchingAliases}) => {
-
                 this.currentScreenSize = matchingAliases;
 
                 // Set the drawerMode and drawerOpened
@@ -380,7 +214,190 @@ export class LandingStoreComponent implements OnInit
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
-            }); 
+
+                // Check if the screen is small
+                this.isScreenSmall = !matchingAliases.includes('md');
+            });
+
+        this.sortInputControl.valueChanges
+        .pipe(
+            takeUntil(this._unsubscribeAll),
+            debounceTime(300),
+            switchMap((query) => {
+
+                console.log("query", query);
+                
+
+                if (query === "recent") {
+                    this.sortName = "created";
+                    this.sortOrder = "DESC";
+                } else if (query === "cheapest") {
+                    this.sortName = "price";
+                    this.sortOrder = "ASC";
+                } else if (query === "expensive") {
+                    this.sortName = "price";
+                    this.sortOrder = "DESC";
+                } else if (query === "a-z") {
+                    this.sortName = "name";
+                    this.sortOrder = "ASC";
+                } else if (query === "z-a") {
+                    this.sortName = "name";
+                    this.sortOrder = "DESC";
+                } else {
+                    // default to recent (same as recent)
+                    this.sortName = "created";
+                    this.sortOrder = "DESC";
+                }
+                
+                // set loading to true
+                this.isLoading = true;
+                return this._productsService.getProducts(this.store.id, {
+                    name        : this.searchName, 
+                    page        : 0, 
+                    size        : 12, 
+                    sortByCol   : this.sortName,
+                    sortingOrder: this.sortOrder,
+                    status      : "ACTIVE,OUTOFSTOCK" , 
+                    categoryId  : this.selectedCategory ? this.selectedCategory.id : null
+                }, false);
+            }),
+            map(() => {
+                // set loading to false
+                this.isLoading = false;
+            })
+        ).subscribe();
+
+        this._platformService.platform$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((platform: Platform) => {
+                if (platform) {
+                    this.platform = platform;
+                }
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this.storeDomain = this._activatedRoute.snapshot.paramMap.get('store-slug');    
+
+        this._storesService.store$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((store: Store) => {
+                if(store){
+                    this.store = store;
+
+                    let storeLogo = this.displayStoreLogo(this.store.storeAssets);
+                    
+                    // If keyword from search exist, set catalogueSlug to null so that checkbox won't be checked
+                    if (!this.catalogueSlug && this._activatedRoute.snapshot.queryParamMap.get('keyword')){
+                        this.catalogueSlug = null;
+                    }
+                    
+                    // To be sent to _search component
+                    this.storeDetails = {
+                        image : storeLogo,
+                        domain: this.storeDomain
+                    };
+                    // Setter for store details for _search component
+                    this._searchService.storeDetails = this.storeDetails;
+                }
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._storesService.storeCategories$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((storeCategories: StoreCategory[]) => {
+                if(storeCategories){
+                    this.storeCategories = storeCategories;
+                }
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._storesService.storeCategory$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((storeCategory: StoreCategory) => {
+                console.log("storeCategory", storeCategory);
+                
+                if(storeCategory){
+                    this.selectedCategory = storeCategory;
+                }
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        // Get the products
+        this.products$ = this._productsService.products$;  
+
+        // Get the products pagination
+        this._productsService.pagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: ProductPagination) => {
+                
+                // Update the pagination
+                this.pagination = pagination;                
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+
+        // Get searches from url parameter 
+        this._activatedRoute.queryParams
+            .subscribe(params => {
+
+
+                // get back the previous pagination page
+                // more than 2 means it won't get back the previous pagination page when navigate back from 'carts' page
+                if (this._shopService.getPreviousUrl() && this._shopService.getPreviousUrl().split("/").length > 4) {                            
+                    this.oldPaginationIndex = this.pagination ? this.pagination.page : 0;
+                }
+
+                this.searchName = params['keyword'] ? params['keyword'] : null;
+                // If keyword exist
+                if (this.searchName) {
+                    // Get searched product
+                    this._productsService.getProducts(this.store.id, {
+                        name        : this.searchName, 
+                        page        : 0, 
+                        size        : 12, 
+                        sortByCol   : "name", 
+                        sortingOrder: "ASC", 
+                        status      : 'ACTIVE,OUTOFSTOCK', 
+                        categoryId  :this.selectedCategory ? this.selectedCategory.id : null
+                    }, false)
+                    .pipe(takeUntil(this._unsubscribeAll))
+                    .subscribe(()=>{
+                        // set loading to false
+                        this.isLoading = false;
+
+                        // Mark for check
+                        this._changeDetectorRef.markForCheck();
+                    });
+
+                }
+                // Else, get all products
+                else {
+                    this._productsService.getProducts(this.store.id, {
+                        page        : this.oldPaginationIndex, 
+                        size        : 12,
+                        sortByCol   : "name", 
+                        sortingOrder: "ASC", 
+                        status      : 'ACTIVE,OUTOFSTOCK',
+                        categoryId  : this.selectedCategory ? this.selectedCategory.id : null
+                    }, false)
+                    .pipe(takeUntil(this._unsubscribeAll))
+                    .subscribe(()=>{
+                        // set loading to false
+                        this.isLoading = false;
+
+                        // Mark for check
+                        this._changeDetectorRef.markForCheck();
+                    });
+
+                }
+        });
+        
     }
 
     /**
@@ -393,33 +410,16 @@ export class LandingStoreComponent implements OnInit
         this._unsubscribeAll.complete();
     }
 
-    reload(){
-        this._router.routeReuseStrategy.shouldReuseRoute = () => false;
-        this._router.onSameUrlNavigation = 'reload';
-    }
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
 
-    isProductOutOfStock(product: Product): boolean
-    {
-        if (product.allowOutOfStockPurchases === true) {
-            return true;
-        } else {
-            if (product.productInventories.length > 0) {
-                let productInventoryQuantities = product.productInventories.map(item => item.quantity);
-                let totalProductInventoryQuantity = productInventoryQuantities.reduce((partialSum, a) => partialSum + a, 0);
-    
-                if (totalProductInventoryQuantity > 0) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
+    scroll(id) {
+        this._scroller.scrollToAnchor(id)
     }
 
     onChangePage(pageOfItems: Array<any>) {
-        
+
         // update current page of items
         this.pageOfItems = pageOfItems;
         
@@ -432,17 +432,49 @@ export class LandingStoreComponent implements OnInit
                 size        : this.pageOfItems['pageSize'], 
                 sortByCol   : "name", 
                 sortingOrder: "ASC", 
-                status      : "ACTIVE,OUTOFSTOCK", 
-                categoryId  : this.storeCategory ? this.storeCategory.id : ''
+                status      : "ACTIVE,OUTOFSTOCK" , 
+                categoryId  : this.selectedCategory ? this.selectedCategory.id : null
             }, false)
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(()=>{
+            .subscribe((response)=>{
                 // set loading to false
                 this.isLoading = false;
             });
         }
         // Mark for check
         this._changeDetectorRef.markForCheck();
+    }
+
+    chooseCategory(category : StoreCategory) {
+        
+        if (category) {
+            // Resolve selected category
+            this._storesService.getStoreCategoriesById(category.id).subscribe();
+        } else {
+            this._storesService.storeCategories = null;
+            this.selectedCategory = null;
+        }
+        
+        this.catalogueSlug = category ? category.name.toLowerCase().replace(/ /g, '-').replace(/[-]+/g, '-').replace(/[^\w-]+/g, '') : "all-products";
+
+        this.pageOfItems['currentPage'] = 1;
+        
+        // set loading to true
+        this.isLoading = true;
+        this._productsService.getProducts(this.store.id, { 
+            name        : this.searchName, 
+            page        : (this.pageOfItems['currentPage'] - 1) < 0 ? 0 : (this.pageOfItems['currentPage'] - 1), 
+            size        : this.pageOfItems['pageSize'], 
+            sortByCol   : "name", 
+            sortingOrder: "ASC", 
+            status      : "ACTIVE,OUTOFSTOCK", 
+            categoryId  : this.selectedCategory ? this.selectedCategory.id : null
+        }, false)
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe(()=>{
+            // set loading to false
+            this.isLoading = false;
+        });
     }
 
     displayStoreLogo(storeAssets: StoreAssets[]) {
@@ -454,35 +486,6 @@ export class LandingStoreComponent implements OnInit
         }
     }
 
-    getCategorySlug(categoryName: string) {
-        return categoryName.toLowerCase().replace(/ /g, '-').replace(/[-]+/g, '-').replace(/[^\w-]+/g, '');
-    }
-
-    changeCatalogue(value, event = null) {
-
-        // find if categoty exists
-        let index = this.storeCategories.findIndex(item => item.name.toLowerCase().replace(/ /g, '-').replace(/[-]+/g, '-').replace(/[^\w-]+/g, '') === value);
-        // since all-product is not a real category, it will set to null
-        this.storeCategory = (index > -1) ? this.storeCategories[index] : null;
-        // catalogue slug will be use in url
-        this.catalogueSlug = value;       
-        
-        this._router.navigate(['store/' + this.storeDomain + '/' + value]);
-
-        this.reload();
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    viewProduct(product: Product) {
-        let catalogue = this.catalogueSlug ? this.catalogueSlug : 'all-products'
-        this._router.navigate(['store/' + this.storeDomain + '/' + catalogue + '/' + product.seoName]);
-    }
-
-    redirectToProduct(url: string) {
-        this._document.location.href = url;
-    }
 
     //--------------------------
     //      store timing
@@ -728,20 +731,5 @@ export class LandingStoreComponent implements OnInit
         else 
             return false;
     }
-
-    scroll(id) {
-        this._scroller.scrollToAnchor(id)
-    }
-
-    moveArray(arr, old_index, new_index) {
-        if (new_index >= arr.length) {
-            var k = new_index - arr.length + 1;
-            while (k--) {
-                arr.push(undefined);
-            }
-        }
-        arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-        return arr; 
-    };
 
 }

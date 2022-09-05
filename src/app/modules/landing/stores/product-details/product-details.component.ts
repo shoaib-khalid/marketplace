@@ -336,7 +336,7 @@ export class LandingProductDetailsComponent implements OnInit
             
                                     // get product package if exists
                                     if (this.product.isPackage) {
-                                        this._productsService.getProductPackageOptions(this.product.id)
+                                        this._productsService.getProductPackageOptions(this.store.id, this.product.id)
                                         .subscribe((response)=>{
             
                                             this.combos = response["data"];
@@ -459,9 +459,6 @@ export class LandingProductDetailsComponent implements OnInit
      */
     ngOnDestroy(): void
     {
-        // Reset store id
-        this._storesService.storeId = "";
-
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
@@ -1277,4 +1274,5 @@ export class LandingProductDetailsComponent implements OnInit
             behavior: 'smooth' 
         });
     }
+    
 }

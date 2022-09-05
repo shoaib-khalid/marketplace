@@ -1999,10 +1999,7 @@ export class CartListComponent implements OnInit, OnDestroy
 
     redirect(type : string, store : Store, productSeo : string) {
         
-        let storeSlug = store.domain.split(".")[0]
-
-        // resolve store 
-        this._storesService.storeId = store.id;
+        let storeSlug = store.domain.split(".")[0];
 
         if (type === 'store' && storeSlug) {
             

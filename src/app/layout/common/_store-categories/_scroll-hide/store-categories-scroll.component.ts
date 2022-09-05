@@ -12,8 +12,8 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { fuseAnimations } from '@fuse/animations';
 
 @Component({
-    selector     : 'store-categories-top',
-    templateUrl  : './store-categories-top.component.html',
+    selector     : 'store-categories-scroll',
+    templateUrl  : './store-categories-scroll.component.html',
     encapsulation: ViewEncapsulation.None,
     animations     : fuseAnimations,
     styles       : [
@@ -34,7 +34,7 @@ import { fuseAnimations } from '@fuse/animations';
         `
     ]
 })
-export class _StoreCategoriesTopComponent implements OnInit, OnDestroy
+export class _StoreCategoriesScrollComponent implements OnInit, OnDestroy
 {
 
     @Input() categories: any;
@@ -45,6 +45,9 @@ export class _StoreCategoriesTopComponent implements OnInit, OnDestroy
     currentScreenSize: string[];
     collapseCategory: boolean = true;
     platform: Platform;
+
+    isHidden: boolean = false;
+
 
     /**
      * Constructor
@@ -77,7 +80,7 @@ export class _StoreCategoriesTopComponent implements OnInit, OnDestroy
         this._platformService.platform$
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((platform: Platform)=>{
-            this.platform = platform;
+            this.platform = platform;            
         })   
         
         // collapse category to false if desktop by default, 
@@ -138,10 +141,18 @@ export class _StoreCategoriesTopComponent implements OnInit, OnDestroy
         return categoryName.toLowerCase().replace(/ /g, '-').replace(/[-]+/g, '-').replace(/[^\w-]+/g, '');
     }
 
+    changeCata( _category) {
+        console.log("snjsyha", _category);
+
+        console.log("this.categories", this.categories);
+        
+        
+    }
+
     changeCatalogue(value, event = null) {
 
         console.log("value", value);
-
+        
 
         let storeDomain = this.store.domain.split(".")[0];
 

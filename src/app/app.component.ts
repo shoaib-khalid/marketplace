@@ -16,6 +16,7 @@ import { CustomerActivity } from './core/analytic/analytic.types';
 import { CurrentLocationService } from './core/_current-location/current-location.service';
 import { CurrentLocation } from './core/_current-location/current-location.types';
 import { StoresService } from './core/store/store.service';
+import { Store } from './core/store/store.types';
 
 declare let gtag: Function;
 
@@ -27,6 +28,7 @@ declare let gtag: Function;
 export class AppComponent
 {
     platform: Platform;
+    store: Store;
     ipAddress  : string;
     userSession : UserSession;
     customerActivity: CustomerActivity = {};
@@ -48,7 +50,7 @@ export class AppComponent
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _platformsService: PlatformService,
-        private _storeService: StoresService,
+        private _storesService: StoresService,
         private _analyticService: AnalyticService,
         private _changeDetectorRef: ChangeDetectorRef,
         private _currentLocationService: CurrentLocationService,
@@ -143,6 +145,14 @@ export class AppComponent
                 }
             });
 
+        this._storesService.store$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((store: Store)=>{
+                this.store = store;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+            
         this._userService.userSession$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((userSession: UserSession)=>{
@@ -175,7 +185,7 @@ export class AppComponent
         this._router.events.forEach((event) => {   
             if(event instanceof RoutesRecognized) {
                 // set store id
-                if (this._storeService.storeId$ !== "") this.customerActivity.storeId = this._storeService.storeId$;
+                if (this.store && this.store.id !== "") this.customerActivity.storeId = this.store.id;
                 // set page visited
                 this.customerActivity.pageVisited = 'https://' + this._apiServer.settings.marketplaceDomain + event["urlAfterRedirects"];
                 

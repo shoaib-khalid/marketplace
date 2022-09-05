@@ -1,0 +1,172 @@
+<ng-container *ngIf="store">
+    <!-- Main menu -->
+    <div class="flex flex-col items-center w-full h-auto">
+        <ng-container *ngIf="storeCategories && storeCategories.length">
+            <div class="flex flex-col w-full md:mt-2">
+                <!-- Store Header -->
+                <fuse-card class="relative flex flex-row h-30 sm:h-40 w-full border border-primary rounded-lg filter-article">
+                    <div *ngIf="isStoreClose(store.id)" 
+                        class="absolute bg-black bg-opacity-60 z-10 w-full h-full flex flex-col items-center justify-center rounded-lg lg:rounded gap-2">
+                        <div class="flex flex-col rounded-lg bg-red-500 text-white items-center p-3 leading-none uppercase">
+                            <span class="text-white text-base lg:text-2xl font-medium">{{notificationMessageTitle}}</span>
+                            <span class="text-white text-3xl lg:text-5xl font-semibold">CLOSED</span>
+                        </div>
+                        <span class="w-3/4 text-center text-white text-md lg:text-lg font-medium tracking-tight">{{notificationMessage}}</span>
+                    </div>
+                    <!-- Store Image -->
+                    <div class="flex-0 w-30 sm:w-44 h-full">
+                        <img
+                            class="w-full h-full shadow object-cover"
+                            [src]="displayStoreLogo(store.storeAssets)"
+                            [alt]="'Card cover image'">
+                    </div>
+                    <div class="flex flex-col flex-auto p-2 sm:p-3 justify-between">
+                        <!-- Store Details  -->
+                        <div class="flex flex-col">
+                            <!-- Store Name -->
+                            <div class="md:text-2xl text-lg font-semibold leading-tight">{{store.name}}</div>
+                            <!-- Store Description -->
+                            <p class="flex flex-row text-black overflow-hidden text-ellipsis text-xs sm:text-sm md:text-base break-all line-clamp-2" [innerHTML]="store.storeDescription"></p>
+                        </div>
+                        <!-- Saparator -->
+                        <div class="w-full border-t border-primary-200"></div>
+                        <!-- Contact -->
+                        <div class="flex flex-col">
+                            <!-- Address  -->
+                            <div class="w-full flex flex-row gap-x-1">
+                                <mat-icon class="block sm:hidden icon-size-3 text-primary pt-0.5" [svgIcon]="'mat_solid:location_on'"></mat-icon>
+                                <span class="hidden sm:block text-xs sm:text-sm md:text-base">Address:</span>
+                                <span class="text-xs sm:text-sm md:text-base line-clamp-2 font-medium">{{store.address}}</span>
+                            </div>
+                            <!-- Contact & Product -->
+                            <div class="flex flex-row justify-between gap-x-2">
+                                <div class="flex flex-row gap-x-1">
+                                    <mat-icon class="block sm:hidden icon-size-3 text-primary" [svgIcon]="'mat_solid:phone'"></mat-icon>
+                                    <span class="hidden sm:block text-xs sm:text-sm md:text-base">Contact Us:</span>
+                                    <a [href]="'tel:' + store.phoneNumber" class="text-xs sm:text-sm md:text-base font-medium underline">{{store.phoneNumber}}</a>
+                                </div>
+                                <div class="flex flex-row gap-x-1">
+                                    <mat-icon class="block sm:hidden icon-size-3 text-primary" [svgIcon]="'mat_solid:shopping_bag'"></mat-icon>
+                                    <span class="hidden sm:block text-xs sm:text-sm md:text-base">Products:</span>
+                                    <span class="text-xs sm:text-sm md:text-base font-medium">{{pagination?.length}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fuse-card>
+                <!-- Category -->                    
+                <div class="flex h-12 flex-nowrap items-center justify-start scrollbar-hide overflow-x-auto rounded-md w-screen md:w-full bg-card md:border-2 md:mx-0 -mx-2 sticky top-0 my-2 md:mt-4 z-40">
+                    <div class="h-full grid grid-flow-col grid-rows-1 gap-1 sm:gap-4">
+                        <div 
+                            [ngClass]="!selectedCategory ? 'border-primary border-b-4 ' : '' "
+                            class="flex flex-col w-28 filter-article justify-center cursor-pointer mx-1 first:ml-1 last:mr-1 hover:bg-primary-300 rounded" 
+                            (click)="chooseCategory(null)">
+                            <span class="m-1 text-sm text-center font-semibold line-clamp-2 leading-4">All</span>
+                        </div>
+                        <ng-container *ngFor="let category of storeCategories">
+                            <div 
+                                [ngClass]="selectedCategory && selectedCategory.id === category.id ? 'border-primary border-b-4 ' : '' "
+                                class="flex flex-col w-28 filter-article justify-center cursor-pointer mx-1 first:ml-1 last:mr-1 hover:bg-primary-300 rounded" 
+                                (click)="chooseCategory(category)">
+                                <span class="m-1 text-sm text-center font-semibold line-clamp-2 leading-4">{{category.name}}</span>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <search class="w-full mb-2 sm:mt-2 sm:mb-4 z-10" [storeId]="store.id" [store]="storeDetails"></search>
+
+                <!-- Sort -->
+                <div class="flex flex-row items-start justify-between md:justify-end mt-1 md:mt-0 md:mb-2 w-full pb-2 sm:pb-0">
+                    <mat-select
+                        class="order-1 md:order-2 border border-gray-300 w-40 p-2 rounded text-sm"
+                        placeholder="Sort by name"
+                        [formControl]="sortInputControl"
+                        #sortSelector="matSelect"
+                        >
+                        <mat-select-trigger>
+                            <span class="flex items-center">
+                                <span>{{ sortSelector.triggerValue }}</span>
+                            </span>
+                        </mat-select-trigger>
+                        <ng-container>
+                            <mat-option [value]="'recent'">Most Recent</mat-option>
+                            <mat-option [value]="'cheapest'">Price : Cheapest</mat-option>
+                            <mat-option [value]="'expensive'">Price : Most Expensive</mat-option>
+                            <mat-option [value]="'a-z'">Name : Ascending</mat-option>
+                            <mat-option [value]="'z-a'">Name : Descending</mat-option>
+                        </ng-container>
+                    </mat-select>
+        
+                    <div class="flex flex-row order-2 sm:order-1">
+                        <!-- Grid view -->
+                        <input
+                            id="grid-view-button"
+                            type="button"
+                            class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
+                            (click)="productViewOrientation = 'grid'"
+                            mat-button>
+                        <label 
+                            class="flex items-center justify-center h-10 px-1 cursor-pointer mr-1"
+                            for="grid-view-button"
+                            matRipple>
+                            <mat-icon
+                                [ngClass]="productViewOrientation === 'grid' ? 'text-black dark:text-white' : 'text-gray'"
+                                class="icon-size-4"
+                                [svgIcon]="'block-view'"></mat-icon>
+                        </label>
+        
+                        <!-- List view -->
+                        <input
+                            id="list-view-button"
+                            type="button"
+                            class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
+                            (click)="productViewOrientation = 'list'"
+                            mat-button>
+                        <label 
+                            class="flex items-center justify-center h-10 px-1 cursor-pointer sm:mr-2"
+                            for="list-view-button"
+                            matRipple>
+                            <mat-icon
+                                [ngClass]="productViewOrientation === 'list' ? 'text-black dark:text-white' : 'text-gray'"
+                                class="icon-size-4"
+                                [svgIcon]="'list-view'"></mat-icon>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Products Section -->
+                <div class="flex flex-col z-0">
+                    <!-- Products -->
+                    <ng-container *ngIf="(products$ | async) as products">
+                        <ng-container *ngIf="isLoading === false; else productLoading">
+                            <store-products class="w-full" [products]="products" [productViewOrientation]="productViewOrientation" [store]="store" [storeSlug]="storeDomain" [catalogueSlug]="catalogueSlug"></store-products>
+                            <!-- Pagination -->
+                            <ng-container *ngIf="pagination">
+                                <div class="flex w-full items-center justify-center">
+                                    <pagination 
+                                        [itemLength]="pagination.length" 
+                                        [initialPage]="pagination.page + 1"
+                                        [pageSize]="pagination.size"
+                                        (changePage)="onChangePage($event)"
+                                        (click)="scroll('scrollContainer')"
+                                        #productPaginator></pagination>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+
+                    <!-- Loading Product -->
+                    <ng-template #productLoading>
+                        <div class="flex flex-auto h-96 flex-col items-center justify-center rounded-lg border border-gray-300 dark:bg-transparent">
+                            <img class="w-20" src="assets/gif/loading.gif" alt="loading">
+                            <div class="mt-6 text-2xl font-semibold tracking-tight text-secondary">Loading Products</div>
+                        </div>
+                        <div class="mb-12"></div>
+                    </ng-template>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</ng-container>

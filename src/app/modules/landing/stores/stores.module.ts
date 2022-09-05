@@ -22,32 +22,36 @@ import { _StoreProductsModule } from 'app/layout/common/_store-products/store-pr
 import { _StoreCategoriesModule } from 'app/layout/common/_store-categories/store-categories.module';
 import { ErrorBackgroundModule } from 'app/shared/error-background/error-background.module';
 import { DatePipe } from '@angular/common';
+import { LandingShopComponent } from './shop/shop.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
     declarations: [
         LandingStoresComponent,
         LandingStoreComponent,
-        LandingProductDetailsComponent
+        LandingProductDetailsComponent,
+        LandingShopComponent
     ],
     imports     : [
         RouterModule.forChild(landingStoresRoutes),
         MatButtonModule,
         MatIconModule,
-        SharedModule,
         MatInputModule,
         MatSelectModule,
-        FuseCardModule,
         MatCheckboxModule,
         MatPaginatorModule,
         MatMenuModule,
+        SharedModule,
+        FuseCardModule,
         PaginationModule,
-        NgxGalleryModule,
+        FontAwesomeModule,
+        ErrorBackgroundModule,
         _SearchModule,
         _FeaturedStoresModule,
-        FontAwesomeModule,
         _StoreProductsModule,
         _StoreCategoriesModule,
-        ErrorBackgroundModule,
+        NgxGalleryModule,
+        MatTabsModule
     ],
     providers: [
         // CurrencyPipe,

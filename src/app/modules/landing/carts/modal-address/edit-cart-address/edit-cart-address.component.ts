@@ -153,7 +153,7 @@ export class EditCartAddressDialog implements OnInit {
                     this.storeStateCities = response;
 
                     // Get state cities (observable)
-                    this.storeStateCities$ = this._storesService.cities$;                    
+                    this.storeStateCities$ = this._storesService.storeRegionCities$;                    
 
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
@@ -168,7 +168,7 @@ export class EditCartAddressDialog implements OnInit {
                 this._storesService.getStoreRegionCountryStateCity({ stateId: result})
                 .subscribe((response)=>{
                     // Get the products
-                    this.storeStateCities$ = this._storesService.cities$;                    
+                    this.storeStateCities$ = this._storesService.storeRegionCities$;                    
 
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
@@ -404,7 +404,7 @@ export class EditCartAddressDialog implements OnInit {
                 this._storesService.getStoreRegionCountryStateCity({stateId: symplifiedCountryStateId})
                 .subscribe((response)=>{
                     // Get the products
-                    this.storeStateCities$ = this._storesService.cities$;                        
+                    this.storeStateCities$ = this._storesService.storeRegionCities$;                        
 
                     // Mark for check
                     this._changeDetectorRef.markForCheck();

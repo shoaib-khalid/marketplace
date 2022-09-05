@@ -15,6 +15,7 @@ import { _FeaturedLocationsModule } from 'app/layout/common/_featured-locations/
 import { _FeaturedProductsModule } from 'app/layout/common/_featured-products/featured-products.module';
 import { PaginationModule } from 'app/layout/common/pagination/pagination.module';
 import { _AdsBannerModule } from 'app/layout/common/_ads-banner/ads-banner.module';
+import { _BottomPopUpModule } from 'app/layout/common/_bottom-popup/bottom-popup.module';
 
 @NgModule({
     declarations: [
@@ -34,7 +35,8 @@ import { _AdsBannerModule } from 'app/layout/common/_ads-banner/ads-banner.modul
         _FeaturedProductsModule,
         _AdsBannerModule,
         _SwiperBannerModule,
-        PaginationModule
+        PaginationModule,
+        _BottomPopUpModule,
     ]
 })
 export class LandingHomeModule

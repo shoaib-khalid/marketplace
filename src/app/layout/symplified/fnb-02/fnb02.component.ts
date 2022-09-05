@@ -20,12 +20,11 @@ import { SearchService } from 'app/layout/common/_search/search.service';
     selector     : 'fnb02-layout',
     templateUrl  : './fnb02.component.html',
     encapsulation: ViewEncapsulation.None,
-    animations   : fuseAnimations
+    animations   : fuseAnimations,
 
 })
 export class Fnb2LayoutComponent implements OnInit, OnDestroy
 {
-    isSearchOpened: boolean = true;
     platform: Platform;
     user: User;
 
@@ -40,7 +39,11 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     
     floatingMessageData = {};
-    
+
+    isHidden: boolean = false;
+    isStorePage: boolean = false;
+    isSearchOpened: boolean = false;
+
     /**
      * Constructor
      */
@@ -86,6 +89,14 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
         // set route and storeDetails to null first
         this._searchService.route = '';
         this._searchService.storeDetails = null;
+        
+        if(this._router.url.split('/').length > 1 && this._router.url.split('/')[1] === 'store'){
+            this.isStorePage = true;
+        }
+        
+        if(this._router.url && this._router.url === '/') {
+            this.isSearchOpened = true;
+        } 
 
         this._router.events.pipe(
             filter((event) => event instanceof NavigationEnd),
@@ -96,15 +107,23 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
             let route = response.url.split('/');
             
             // If inside store page, set route to 'store'
+            if(response.url === '/') {
+                this.isSearchOpened = true
+            } else {
+                this.isSearchOpened = false
+            }
+
             if (route[1] === 'store') {
                 this._searchService.route = 'store';
-            }
-            // else set route and storeDetails to null
-            else
-            {
+                this.isStorePage = true;
+            } else {
+                // else set route and storeDetails to null
                 this._searchService.route = '';
                 this._searchService.storeDetails = null;
+                this.isStorePage = false;
             }
+            
+            
         });
 
         // Subscribe to navigation data

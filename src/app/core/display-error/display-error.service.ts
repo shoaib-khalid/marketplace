@@ -37,7 +37,7 @@ export class DisplayErrorService
     /**
      * Show the error 500
      */
-    show(error: { type: string, code: string, title: string, message: string} = null): void
+    show(error: { type: string, code: string, title: string, message: string, aftereffect?: string} = null): void
     {
         this._logging.debug("Response from DisplayErrorService (show)",error);
         this._errorMessage$.next(error);

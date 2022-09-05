@@ -67,7 +67,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex flex-row justify-between">
+                            <div class="flex flex-row items-center justify-between">
                                 <div *ngIf="product.productInventories.length > 0 && product.productInventories[0].itemDiscount;else noItemDiscountGrid">
                                     <p class="line-through text-sm">{{product.productInventories[0].price | currency: platform.currency}}</p>
                                     <p class="font-semibold text-black text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{product.productInventories[0].itemDiscount.discountedPrice | currency: platform.currency}}</p>
@@ -75,6 +75,11 @@
                                 <ng-template #noItemDiscountGrid>
                                     <p class="font-semibold text-black text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{ (product.productInventories.length > 0 ? product.productInventories[0].price : 0) | currency: platform.currency}}</p>
                                 </ng-template>
+                                <button
+                                    mat-icon-button
+                                    (click)="addProductToCart(product); $event.stopPropagation()">
+                                    <mat-icon class="text-primary" [svgIcon]="'mat_solid:add_box'"></mat-icon>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -141,7 +146,7 @@
                                         <span class="text-gray-500 text-xs sm:text-sm md:text-md line-clamp-2 md:line-clamp-4" [innerHtml]="product.description"></span>
                                     </div>
                                     <!-- <span class="text-gray-500 bottom-0 left-0 text-xs sm:text-sm md:text-md" [ngClass]="displaySeeMore(product.description) ? 'block' : 'hidden'">...more</span> -->
-                                    <div class="flex flex-row">
+                                    <div class="flex flex-row justify-between items-center">
                                         <!-- <p class="font-semibold line-through">{{product.productInventories[0].price | currency: platform.currency}}</p> -->
                                         <div class="flex flex-row items-center gap-1" *ngIf="product.productInventories.length > 0 && product.productInventories[0].itemDiscount; else noItemDiscountList">
                                             <p class="text-xs sm:text-base" style="text-decoration: line-through;">{{product.productInventories[0].price | currency: platform.currency}}</p>
@@ -150,6 +155,11 @@
                                         <ng-template #noItemDiscountList>
                                             <p class="font-semibold text-md sm:text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{ (product.productInventories.length > 0 ? product.productInventories[0].price : 0) | currency: platform.currency}}</p>
                                         </ng-template>
+                                        <button
+                                            mat-icon-button
+                                            (click)="addProductToCart(product); $event.stopPropagation()">
+                                            <mat-icon class="text-primary" [svgIcon]="'mat_solid:add_box'"></mat-icon>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -225,4 +235,32 @@
         </div>
     </div>
     <div class="mb-12"></div>
+</ng-template>
+
+<ng-template #openDetails>
+    <bottom-popup-content class="md:hidden">
+        <bottom-popup-header>
+            <span class="font-bold text-lg"></span>
+        </bottom-popup-header>
+        <!-- Combo -->
+        <fieldset 
+            [id]="combo.title" 
+            *ngFor="let combo of combos; let i = index;"
+            class="py-1">
+            <label class="font-semibold" for="{{combo.title}}">{{combo.title | uppercase}} : (Select {{ combo.totalAllow }} of {{ combo.productPackageOptionDetail.length }})</label>
+            <ul class="grid grid-cols-2">
+                <li *ngFor="let option of combo.productPackageOptionDetail; let i = index;" class="flex items-center">
+                    <input type="checkbox" 
+                        [id]="'combo-checkbox-' + combo.id + '-' + option.productId"
+                        [value]="option.productId" 
+                        [name]="'combo-checkbox-' + combo.id + '-' + option.productId"
+                        [checked]="selectedCombo[combo.id].indexOf(option.productId) > -1"
+                        (change)="onChangeCombo(combo.id, option.productId, $event)"
+                    >
+                    <label class="pl-2" [for]="'combo-checkbox-' + combo.id + '-' + option.productId">{{option.product.name}}</label>
+                    <!-- <label for="{{variant.name + i}}">{{option.value}} / {{ selectedVariants.indexOf(option.id) }} / {{option.id}}</label> -->
+                </li>
+            </ul>
+        </fieldset>
+    </bottom-popup-content>
 </ng-template>
