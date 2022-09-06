@@ -19,13 +19,13 @@
                 [ngClass]="isStorePage === false ? 'sticky top-0' : ''">
                 <!-- Top Header bar -->
                 <div class="flex flex-auto w-full justify-center items-center px-3 sm:px-4 lg:px-0 lg:max-w-300 bg-white z-40 dark:bg-gray-700">
-                    <div class="relative flex items-center justify-between w-full h-16">
+                    <div class="relative flex items-center justify-between w-full h-12 md:h-16">
                         <!-- Logo -->
                         <ng-container *ngIf="platform">
                             <div class="flex items-center">
                                 <img
                                     (click)="goToHome()"
-                                    class="w-36 cursor-pointer"
+                                    class="w-28 md:w-36 cursor-pointer"
                                     [src]="platform.logo"
                                     alt="Logo image">
                                 <!-- <span class="block md:hidden">{{headerTitle}}</span> -->
@@ -34,7 +34,7 @@
                         <!-- <search class="w-1/2 hidden sm:block"></search> -->
                         <!-- <vertical-mode></vertical-mode> -->
                         <search-location class="w-1/2 hidden md:block"></search-location>
-                        <div class="flex items-center flex-row py-4 pl-4 sm:p-0">
+                        <div class="flex items-center flex-row py-0 md:py-4 pl-4 sm:p-0">
                             <button class="md:hidden" mat-icon-button (click)="toggleSearch()">
                                 <mat-icon class="text-primary" [svgIcon]="'mat_outline:add_location_alt'"></mat-icon>
                             </button>

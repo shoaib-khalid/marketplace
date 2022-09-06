@@ -360,7 +360,7 @@
                     <div *ngIf="footerDetails.categories" class="border-0 border-t md:hidden border-gray-300 my-1"></div>
                 </div>
                 <!-- Social Media-->
-                <div class="flex flex-col w-full md:w-1/2 md:px-2">
+                <div *ngIf="landingPage || !isScreenSmall" class="flex flex-col w-full md:w-1/2 md:px-2">
                     <div class="flex flex-row justify-between items-center md:justify-start w-full">
                         <div class="w-1/2">
                             <span class="text-white font-semibold text-sm sm:text-base">FOLLOW US</span>
@@ -389,10 +389,10 @@
                     <!-- Address  -->
                     <div class="flex flex-col justify-between gap-y-2 text-white w-full mt-5">
                         <span class="text-white text-sm">Operated by: {{ marketplaceInfo.reg }}</span>
-                        <div class="flex flex-row">
+                        <!-- <div class="flex flex-row">
                             <mat-icon class="text-white" svgIcon="mat_solid:location_on"></mat-icon>
                             <address class="text-white text-sm">{{ marketplaceInfo.address }}</address>
-                        </div>
+                        </div> -->
                         <div class="flex flex-row">
                             <div class="flex flex-row">
                                 <mat-icon class="text-white" svgIcon="heroicons_solid:phone"></mat-icon>
@@ -407,7 +407,7 @@
                     </div>
                 </div>
                 <!-- Payment methods  -->
-                <div class="w-full flex flex-row justify-between md:justify-start md:flex-col md:items-end md:max-w-50 mt-2 md:mt-0 md:pl-2">
+                <div *ngIf="landingPage || !isScreenSmall" class="w-full flex flex-row justify-between md:justify-start md:flex-col md:items-end md:max-w-50 mt-2 md:mt-0 md:pl-2">
                     <div class="flex flex-col w-1/2 md:w-full">
                         <span class="text-white font-semibold text-sm sm:text-base">PAYMENT METHODS</span>
                         <div class="flex flex-row flex-wrap gap-1 mt-2">

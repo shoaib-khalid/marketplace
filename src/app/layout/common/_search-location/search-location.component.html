@@ -10,7 +10,7 @@
         <mat-label *ngIf="!currentScreenSize.includes('md')" class="text-sm text-white p-0 m-0">Deliver to</mat-label>
         <input
             id="inputElement"
-            class="pl-4 w-full grow text-sm"
+            class="pl-4 w-full grow text-xs md:text-sm"
             matInput
             [formControl]="searchControl"
             [autocomplete]="'off'"

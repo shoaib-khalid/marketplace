@@ -11,6 +11,7 @@ import { ParentCategory } from 'app/core/location/location.types';
 import { LocationService } from 'app/core/location/location.service';
 import { fuseAnimations } from '@fuse/animations';
 import { AppConfig } from 'app/config/service.config';
+import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 
 @Component({
     selector       : 'footer',
@@ -38,6 +39,7 @@ export class FooterComponent implements OnInit
     providerLogos: string[] = [];
 
     categories: ParentCategory[] = [];
+    isScreenSmall: boolean = false;
 
     /**
      * Constructor
@@ -50,6 +52,7 @@ export class FooterComponent implements OnInit
         private _changeDetectorRef: ChangeDetectorRef,
         private _locationService: LocationService,
         private _apiServer: AppConfig,
+        private _fuseMediaWatcherService: FuseMediaWatcherService,
     )
     {
     }
@@ -158,6 +161,18 @@ export class FooterComponent implements OnInit
             .subscribe((response: Store) => {
 
                 this.store = response;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        // Subscribe to media changes
+        this._fuseMediaWatcherService.onMediaChange$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(({matchingAliases}) => {
+
+                // Check if the screen is small
+                this.isScreenSmall = !matchingAliases.includes('md');
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
