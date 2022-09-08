@@ -1,5 +1,6 @@
 import { Component, OnDestroy, ChangeDetectionStrategy, ViewEncapsulation, Input, ElementRef, OnInit, ChangeDetectorRef, ViewChild, TemplateRef, ViewContainerRef } from '@angular/core';
 import { fuseAnimations } from '@fuse/animations';
+import { ProductsService } from 'app/core/product/product.service';
 import { Subject, takeUntil } from 'rxjs';
 import { BottomPopUpService } from '../bottom-popup.service';
 
@@ -16,6 +17,7 @@ export class BottomPopupContentComponent implements OnInit, OnDestroy
 
     constructor(
         private _bottomPopUpService: BottomPopUpService,
+        private _productsService: ProductsService
     ) 
     {
     }
@@ -32,6 +34,8 @@ export class BottomPopupContentComponent implements OnInit, OnDestroy
     }
 
     closePopup() {
-        this._bottomPopUpService.get(null).subscribe();
+        this._bottomPopUpService.set(null);
+        this._productsService.selectProduct(null);
+
     }
 }

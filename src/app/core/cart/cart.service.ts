@@ -611,7 +611,8 @@ export class CartService
             platformVoucherCode : null,
             customerId          : null, 
             email               : null, 
-        }
+        },
+        isGlobal: boolean = false
         ): Observable<DiscountOfCartGroup> 
     {
         let orderService = this._apiServer.settings.apiServer.orderService;
@@ -638,7 +639,9 @@ export class CartService
                 map((response) => {
                     this._logging.debug("Response from StoresService (getDiscountOfCartGroup)",response);
 
-                    this._cartSummary.next(response['data']);
+                    // Set the observable only for isGlobal false
+                    if (isGlobal === false) 
+                        this._cartSummary.next(response['data']);
 
                     // Return the new notification from observable
                     return response['data'];

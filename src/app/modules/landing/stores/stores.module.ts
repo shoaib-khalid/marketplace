@@ -24,6 +24,8 @@ import { ErrorBackgroundModule } from 'app/shared/error-background/error-backgro
 import { DatePipe } from '@angular/common';
 import { LandingShopComponent } from './shop/shop.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { FuseScrollbarModule } from '@fuse/directives/scrollbar';
+import { _BottomPopUpModule } from 'app/layout/common/_bottom-popup/bottom-popup.module';
 
 @NgModule({
     declarations: [
@@ -51,7 +53,9 @@ import { MatTabsModule } from '@angular/material/tabs';
         _StoreProductsModule,
         _StoreCategoriesModule,
         NgxGalleryModule,
-        MatTabsModule
+        MatTabsModule,
+        FuseScrollbarModule,
+        _BottomPopUpModule
     ],
     providers: [
         // CurrencyPipe,

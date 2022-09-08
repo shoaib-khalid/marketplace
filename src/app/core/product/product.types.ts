@@ -56,6 +56,18 @@ export interface ProductInventory
     productInventoryItems?: ProductInventoryItem[];
     sku: string;
     status: string;
+    itemDiscount: {
+        calculationType: string;
+        discountAmount: number;
+        discountEndTime: string;
+        discountId: string;
+        discountLabel: string;
+        discountStartTime: string;
+        discountedPrice: number;
+        lastUpdateTime: string;
+        normalItemOnly: boolean;
+        normalPrice: number;
+    }
 }
 
 

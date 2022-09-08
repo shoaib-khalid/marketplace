@@ -142,17 +142,10 @@ export class _StoreCategoriesScrollComponent implements OnInit, OnDestroy
     }
 
     changeCata( _category) {
-        console.log("snjsyha", _category);
-
-        console.log("this.categories", this.categories);
-        
         
     }
 
     changeCatalogue(value, event = null) {
-
-        console.log("value", value);
-        
 
         let storeDomain = this.store.domain.split(".")[0];
 

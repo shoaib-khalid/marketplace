@@ -41,12 +41,12 @@ export class BottomPopUpService
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Get the current logged in user data
+     * Set popup
      */
-    get(bottomPopUp: any): Observable<any>
+    set(bottomPopUp: any)
     {
         this._bottomPopUp.next(bottomPopUp);
-        return of(false); 
+        // return of(false); 
     }
 
 }

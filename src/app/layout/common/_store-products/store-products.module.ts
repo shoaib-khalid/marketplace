@@ -18,7 +18,7 @@ import { _StoreProductsComponent } from './store-products.component';
         SharedModule
     ],
     exports     : [
-        _StoreProductsComponent
+        _StoreProductsComponent,
     ]
 })
 export class _StoreProductsModule
