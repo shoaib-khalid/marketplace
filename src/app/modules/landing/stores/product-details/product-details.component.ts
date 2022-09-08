@@ -207,7 +207,7 @@ export class LandingProductDetailsComponent implements OnInit
                     this._productsService.product$
                         .pipe(takeUntil(this._unsubscribeAll))
                         .subscribe((product: Product) => {
-                            if(product){
+                            if (product){
         
                                 this.product = product;           
             
@@ -339,7 +339,7 @@ export class LandingProductDetailsComponent implements OnInit
                                         this._productsService.getProductPackageOptions(this.store.id, this.product.id)
                                         .subscribe((response)=>{
             
-                                            this.combos = response["data"];
+                                            this.combos = response;
                                             
                                             this.combos.forEach(element => {
                                                 this.selectedCombo[element.id] = [];
@@ -462,6 +462,8 @@ export class LandingProductDetailsComponent implements OnInit
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
+
+        this._productsService.product = null;
     }
 
     // -----------------------------------------------------------------------------------------------------

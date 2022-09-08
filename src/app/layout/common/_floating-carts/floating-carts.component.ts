@@ -1,25 +1,33 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseConfigService } from '@fuse/services/config';
+import { CartService } from 'app/core/cart/cart.service';
+import { CartWithDetails, DiscountOfCartGroup } from 'app/core/cart/cart.types';
+import { CartDiscount, CheckoutItems } from 'app/core/checkout/checkout.types';
 
 
 @Component({
     selector     : 'floating-carts',
     templateUrl  : './floating-carts.component.html',
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FloatingCartsComponent implements OnInit, OnDestroy
 {
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    subTotal = 0;
+    currencySymbol: string = 'RM'
+    totalItems: number = 0;
     /**
      * Constructor
      */
     constructor(
         private _router: Router,
-        private _fuseConfigService: FuseConfigService
+        private _fuseConfigService: FuseConfigService,
+        private _cartService: CartService,
+        private _changeDetectorRef: ChangeDetectorRef
     )
     {
     }
@@ -33,6 +41,51 @@ export class FloatingCartsComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+
+        // Get cartSummary data
+        this._cartService.cartsHeaderWithDetails$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((carts: CartWithDetails[])=>{
+                if (carts.length > 0) {
+                    this.totalItems = carts.length;
+                    let checkoutListBody = carts.map(item => {
+                        this.currencySymbol
+                        return {
+                            cartId: item.id,
+                            selectedItemId: item.cartItems.map(element => {
+                                return element.id
+                            // to remove if selected = false (undefined array of cart item)
+                            }).filter(x => x),
+                        }
+                    // to remove if selected = false (undefined array of selectedItemId)
+                    }).filter(n => {
+                        if (n.selectedItemId && n.selectedItemId.length > 0) {
+                            return n;
+                        }
+                    });
+
+                    // Get the curreny symbol
+                    this.currencySymbol = carts[0].store.regionCountry.currencySymbol;
+                    
+                    this._cartService.getDiscountOfCartGroup(checkoutListBody, {
+                            platformVoucherCode: null, 
+                            customerId: null, 
+                            email: null
+                        }, true)
+                        .subscribe((response : DiscountOfCartGroup) => {
+                            this.subTotal = response.sumCartSubTotal;
+                            // Mark for change
+                            this._changeDetectorRef.markForCheck();
+                        })
+                }
+                else {
+                    this.totalItems = 0;
+                    this.subTotal = 0
+                    // Mark for change
+                    this._changeDetectorRef.markForCheck();
+                }
+
+            });
 
     }
 
@@ -50,4 +103,7 @@ export class FloatingCartsComponent implements OnInit, OnDestroy
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
+    cartCheckout() {
+        this._router.navigate(['carts'])
+    }
 }

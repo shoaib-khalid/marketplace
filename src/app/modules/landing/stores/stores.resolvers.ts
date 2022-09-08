@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
-import { tap, Observable} from 'rxjs';
+import { tap, Observable, switchMap, map, take, of} from 'rxjs';
 import { StoresService } from 'app/core/store/store.service';
 import { ProductsService } from 'app/core/product/product.service';
 import { AppConfig } from 'app/config/service.config';
-import { Store } from 'app/core/store/store.types';
+import { Store, StoreCategory } from 'app/core/store/store.types';
 import { DisplayErrorService } from 'app/core/display-error/display-error.service';
 
 @Injectable({
@@ -38,18 +38,16 @@ export class StoresResolver implements Resolve<any>
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>
     {
         let storeFrontUrl = this._apiServer.settings.storeFrontDomain;
-        let storeDomain = route.paramMap.get('store-slug');        
+        let storeDomain = route.paramMap.get('store-slug');  
 
         return this._storesService.getStoreByDomainName(storeDomain + storeFrontUrl)
-                .pipe(
-                    tap((store: Store) => {                        
-                        if (store) {
-                            this._storesService.getStoreCategories(store.id).subscribe();
-                            this._productsService.getProducts(store.id, { page: 0, size: 8, sortByCol: "created", sortingOrder: "DESC", status: 'ACTIVE,OUTOFSTOCK'}, false).subscribe();
-                        } else {
-                            this._displayErrorService.show({title: "Store Not Found", type: '4xx', message: "The store you are looking for might have been removed, had its name changed or is temporarily unavailable.", code: "404"});
-                        }
-                    })
-                );
+            .pipe(
+                map((store: Store) => {                        
+                    if (!store) {
+                        this._displayErrorService.show({title: "Store Not Found", type: '4xx', message: "The store you are looking for might have been removed, had its name changed or is temporarily unavailable.", code: "404"});
+
+                    } 
+                })
+            );
     }
 }

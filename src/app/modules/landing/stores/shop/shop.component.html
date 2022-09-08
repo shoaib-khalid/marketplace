@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="flex flex-row gap-x-1">
                                     <mat-icon class="block sm:hidden icon-size-3 text-primary" [svgIcon]="'mat_solid:shopping_bag'"></mat-icon>
-                                    <span class="hidden sm:block text-xs sm:text-sm md:text-base">Products:</span>
+                                    <span class="hidden sm:block text-xs sm:text-sm md:text-base">Items:</span>
                                     <span class="text-xs sm:text-sm md:text-base font-medium">{{pagination?.length}}</span>
                                 </div>
                             </div>
@@ -55,84 +55,87 @@
                     </div>
                 </fuse-card>
                 <!-- Category -->                    
-                <div class="flex h-12 flex-nowrap items-center justify-start scrollbar-hide overflow-x-auto rounded-md w-screen md:w-full bg-card md:border-2 md:mx-0 -mx-2 sticky top-0 my-2 md:mt-4 z-40">
-                    <div class="h-full grid grid-flow-col grid-rows-1 gap-1 sm:gap-4">
+                <div fuseScrollbar
+                [fuseScrollbarOptions]="{wheelPropagation: false, suppressScrollY: true}" class="scrollbar-hide flex h-14 flex-nowrap items-center justify-start overflow-x-auto md:rounded-md w-screen md:w-full bg-card md:ring-1 md:ring-gray-300 md:mx-0 -mx-2 sticky top-0 my-2 md:mt-4 z-40">
+                    <div class="h-full grid grid-flow-col grid-rows-1">
                         <div 
                             [ngClass]="!selectedCategory ? 'border-primary border-b-4 ' : '' "
-                            class="flex flex-col w-28 filter-article justify-center cursor-pointer mx-1 first:ml-1 last:mr-1 hover:bg-primary-300 rounded" 
+                            class="flex flex-col w-28 filter-article justify-center cursor-pointer hover:bg-primary-300 " 
                             (click)="chooseCategory(null)">
                             <span class="m-1 text-sm text-center font-semibold line-clamp-2 leading-4">All</span>
                         </div>
-                        <ng-container *ngFor="let category of storeCategories">
+                        <ng-container #categoriesElement *ngFor="let category of storeCategories; let i = index">
                             <div 
+                                id="cat-{{i}}"
                                 [ngClass]="selectedCategory && selectedCategory.id === category.id ? 'border-primary border-b-4 ' : '' "
-                                class="flex flex-col w-28 filter-article justify-center cursor-pointer mx-1 first:ml-1 last:mr-1 hover:bg-primary-300 rounded" 
+                                class="flex flex-col w-30 filter-article justify-center cursor-pointer hover:bg-primary-300 " 
                                 (click)="chooseCategory(category)">
-                                <span class="m-1 text-sm text-center font-semibold line-clamp-2 leading-4">{{category.name}}</span>
+                                <span class="my-1 mx-2 text-sm text-center font-semibold line-clamp-2 leading-4">{{category.name}}</span>
                             </div>
                         </ng-container>
                     </div>
                 </div>
 
-                <!-- Search -->
-                <search class="w-full mb-2 sm:mt-2 sm:mb-4 z-10" [storeId]="store.id" [store]="storeDetails"></search>
-
-                <!-- Sort -->
-                <div class="flex flex-row items-start justify-between md:justify-end mt-1 md:mt-0 md:mb-2 w-full pb-2 sm:pb-0">
-                    <mat-select
-                        class="order-1 md:order-2 border border-gray-300 w-40 p-2 rounded text-sm"
-                        placeholder="Sort by name"
-                        [formControl]="sortInputControl"
-                        #sortSelector="matSelect"
-                        >
-                        <mat-select-trigger>
-                            <span class="flex items-center">
-                                <span>{{ sortSelector.triggerValue }}</span>
-                            </span>
-                        </mat-select-trigger>
-                        <ng-container>
-                            <mat-option [value]="'recent'">Most Recent</mat-option>
-                            <mat-option [value]="'cheapest'">Price : Cheapest</mat-option>
-                            <mat-option [value]="'expensive'">Price : Most Expensive</mat-option>
-                            <mat-option [value]="'a-z'">Name : Ascending</mat-option>
-                            <mat-option [value]="'z-a'">Name : Descending</mat-option>
-                        </ng-container>
-                    </mat-select>
-        
-                    <div class="flex flex-row order-2 sm:order-1">
-                        <!-- Grid view -->
-                        <input
-                            id="grid-view-button"
-                            type="button"
-                            class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
-                            (click)="productViewOrientation = 'grid'"
-                            mat-button>
-                        <label 
-                            class="flex items-center justify-center h-10 px-1 cursor-pointer mr-1"
-                            for="grid-view-button"
-                            matRipple>
-                            <mat-icon
-                                [ngClass]="productViewOrientation === 'grid' ? 'text-black dark:text-white' : 'text-gray'"
-                                class="icon-size-4"
-                                [svgIcon]="'block-view'"></mat-icon>
-                        </label>
-        
-                        <!-- List view -->
-                        <input
-                            id="list-view-button"
-                            type="button"
-                            class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
-                            (click)="productViewOrientation = 'list'"
-                            mat-button>
-                        <label 
-                            class="flex items-center justify-center h-10 px-1 cursor-pointer sm:mr-2"
-                            for="list-view-button"
-                            matRipple>
-                            <mat-icon
-                                [ngClass]="productViewOrientation === 'list' ? 'text-black dark:text-white' : 'text-gray'"
-                                class="icon-size-4"
-                                [svgIcon]="'list-view'"></mat-icon>
-                        </label>
+                <div class="flex flex-col md:flex-row w-full gap-0 md:gap-4">
+                    <!-- Search -->
+                    <search class="w-full mb-2 sm:mt-2 sm:mb-4 z-10" [storeId]="store.id" [store]="storeDetails"></search>
+                    <!-- Sort -->
+                    <div class="flex flex-row items-center justify-between md:justify-end mt-1 md:mt-0 md:mb-2 w-full pb-2 sm:pb-0">
+                        <mat-select
+                            class="order-1 md:order-2 border border-gray-300 w-44 p-2 rounded text-sm"
+                            placeholder="Sort by name"
+                            [formControl]="sortInputControl"
+                            #sortSelector="matSelect"
+                            >
+                            <mat-select-trigger>
+                                <span class="flex items-center">
+                                    <span>{{ sortSelector.triggerValue }}</span>
+                                </span>
+                            </mat-select-trigger>
+                            <ng-container>
+                                <mat-option [value]="'recent'">Most Recent</mat-option>
+                                <mat-option [value]="'cheapest'">Price : Cheapest</mat-option>
+                                <mat-option [value]="'expensive'">Price : Most Expensive</mat-option>
+                                <mat-option [value]="'a-z'">Name : Ascending</mat-option>
+                                <mat-option [value]="'z-a'">Name : Descending</mat-option>
+                            </ng-container>
+                        </mat-select>
+            
+                        <div class="flex flex-row order-2 sm:order-1">
+                            <!-- Grid view -->
+                            <input
+                                id="grid-view-button"
+                                type="button"
+                                class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
+                                (click)="productViewOrientation = 'grid'"
+                                mat-button>
+                            <label 
+                                class="flex items-center justify-center h-10 px-1 cursor-pointer mr-1"
+                                for="grid-view-button"
+                                matRipple>
+                                <mat-icon
+                                    [ngClass]="productViewOrientation === 'grid' ? 'text-black dark:text-white' : 'text-gray'"
+                                    class="icon-size-4"
+                                    [svgIcon]="'block-view'"></mat-icon>
+                            </label>
+            
+                            <!-- List view -->
+                            <input
+                                id="list-view-button"
+                                type="button"
+                                class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
+                                (click)="productViewOrientation = 'list'"
+                                mat-button>
+                            <label 
+                                class="flex items-center justify-center h-10 px-1 cursor-pointer sm:mr-2"
+                                for="list-view-button"
+                                matRipple>
+                                <mat-icon
+                                    [ngClass]="productViewOrientation === 'list' ? 'text-black dark:text-white' : 'text-gray'"
+                                    class="icon-size-4"
+                                    [svgIcon]="'list-view'"></mat-icon>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -144,7 +147,7 @@
                             <store-products class="w-full" [products]="products" [productViewOrientation]="productViewOrientation" [store]="store" [storeSlug]="storeDomain" [catalogueSlug]="catalogueSlug"></store-products>
                             <!-- Pagination -->
                             <ng-container *ngIf="pagination">
-                                <div class="flex w-full items-center justify-center">
+                                <div class="flex w-full items-center justify-center mb-2">
                                     <pagination 
                                         [itemLength]="pagination.length" 
                                         [initialPage]="pagination.page + 1"
@@ -165,6 +168,276 @@
                         </div>
                         <div class="mb-12"></div>
                     </ng-template>
+                </div>
+            </div>
+            <ng-template #openDetails>
+                <bottom-popup-content class="md:hidden">
+                    <bottom-popup-header>
+                        <span class="font-bold text-lg">{{store.name}}</span>
+                    </bottom-popup-header>
+                    <!-- Content -->
+                    <div class="flex flex-col mb-4 mt-1">
+                        <!-- Product Assets -->
+                        <div class="flex justify-center md:w-140 lg:w-1/2 md:max-h-120 md:min-h-120 mb-2">
+                            <ngx-gallery 
+                                (previewOpen)="openPreview = true"
+                                (previewClose)="openPreview = false"
+                                class="shadow md:h-full" 
+                                [ngClass]="openPreview ? 'z-50' : 'z-30'"
+                                [options]="galleryOptions" 
+                                [images]="galleryImages"></ngx-gallery>
+                        </div>
+                        <!-- Details/Price -->
+                        <div class="flex flex-col">
+                            <!-- Details -->
+                            <div class="flex flex-col gap-1">
+                                <span class="font-semibold line-clamp-2">{{selectedProduct.name}}</span> 
+                                <!-- <div class="md:overflow-y-auto h-auto md:max-h-32">
+                                    <span class="text-sm font-normal text-gray-400" [innerHTML]="selectedProduct.description"></span>
+                                </div> -->
+                            </div>
+                            <!-- Price -->
+                            <div class="flex mt-2">
+                                <ng-container *ngIf="displayedProduct.discountAmount > 0; else noItemDiscount" >
+                                    <div class="font-semibold flex flex-col shrink">
+                                        <div class="text-xs items-center text-primary-100 flex justify-start items-center">
+                                            <span class="py-0.5 px-1 w-auto flex bg-red-600 rounded">{{displayedProduct.discountAmount}}% Off</span>
+                                        </div> 
+                                        <span class="mt-[0.15rem] text-xs line-through">{{displayedProduct.price | currency: store.regionCountry.currencySymbol}}</span> 
+                                        <span class="-mt-[0.15rem] text-base font-semibold text-primary ">{{displayedProduct.discountedPrice | currency: store.regionCountry.currencySymbol}}</span> 
+                                    </div>
+                                </ng-container>
+                                <ng-template #noItemDiscount>
+                                    <div>
+                                        <span class="text-base font-semibold text-primary">{{displayedProduct.price | currency: store.regionCountry.currencySymbol}}</span>
+                                    </div>
+                                </ng-template>
+                            </div>
+                        </div>
+                        <!-- Variants / Combo -->
+                        <ng-container *ngIf="!selectedProduct.isPackage; else comboProduct">
+                            <!-- Variants -->
+                            <ng-container *ngFor="let variant of selectedProduct.productVariants; let i = index;">
+                                <div 
+                                    [id]="variant.name" 
+                                    class="py-1 flex flex-col gap-1">
+                                    <label class="font-semibold text-sm" for="{{variant.name}}">{{variant.name | titlecase }}: </label>
+                                    <ul class="grid grid-cols-2 gap-1">
+                                        <li *ngFor="let option of variant.productVariantsAvailable; let i = index;" class="flex items-center">
+                                            <input type="radio"
+                                                class=""
+                                                id="{{variant.name + i}}" 
+                                                value="{{option.value}}" 
+                                                name="{{variant.name}}" 
+                                                [checked]="selectedVariants.indexOf(option.id) > -1"
+                                                (change)="onChangeVariant(option.id, variant.name, option.productId)"
+                                            >
+                                            <label class="pl-2 leading-tight text-sm" for="{{variant.name + i}}">{{option.value}}</label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <ng-template #comboProduct>
+                            <!-- Combo -->
+                            <ng-container *ngFor="let combo of combos; let i = index;">
+                                <div 
+                                    [id]="combo.title" 
+                                    class="py-1 flex flex-col gap-1">
+                                    <label class="font-semibold text-sm" for="{{combo.title}}">{{combo.title | uppercase}}: (Select {{ combo.totalAllow }} of {{ combo.productPackageOptionDetail.length }})</label>
+                                    <ul class="grid grid-cols-2 gap-1">
+                                        <li *ngFor="let option of combo.productPackageOptionDetail; let i = index;" class="flex items-center">
+                                            <input type="checkbox" 
+                                                [id]="'combo-checkbox-' + combo.id + '-' + option.productId"
+                                                [value]="option.productId" 
+                                                [name]="'combo-checkbox-' + combo.id + '-' + option.productId"
+                                                [checked]="selectedCombo[combo.id].indexOf(option.productId) > -1"
+                                                (change)="onChangeCombo(combo.id, option.productId, $event)"
+                                            >
+                                            <label class="pl-2 leading-tight text-sm" [for]="'combo-checkbox-' + combo.id + '-' + option.productId">{{option.product.name}}</label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </ng-container>
+                        </ng-template>
+                        <!-- Quantity/Add to Cart -->
+                        <div class="flex flex-row w-full mt-3 gap-2">
+                            <!-- Quantity -->
+                            <div class="flex w-1/3 flex-row justify-between items-center gap-2">
+                                <div class="flex flex-row h-7 w-24 rounded ring-1 ring-primary relative bg-white">
+                                    <button (click)="checkQuantity('decrement', product.id); $event.stopPropagation()" 
+                                        class="px-2 text-black group hover:bg-primary hover:text-white cursor-pointer outline-none flex justify-between items-center">
+                                        <mat-icon 
+                                            class="icon-size-4 text-black group-hover:text-white" 
+                                            [svgIcon]="'heroicons_solid:minus-sm'"></mat-icon>
+                                    </button>
+                                    <input [(ngModel)]="quantity" (change)="checkQuantity()" type="number" 
+                                        class="focus:outline-none text-center w-full font-medium text-sm text-black focus:text-black md:text-base cursor-default flex items-center outline-none" name="custom-input-number" value="0"/>
+                                    <button (click)="checkQuantity('increment', product.id); $event.stopPropagation()" 
+                                        class="px-2 text-black group hover:bg-primary hover:text-white cursor-pointer outline-none flex justify-between items-center">
+                                        <mat-icon 
+                                            class="icon-size-4 text-black group-hover:text-white" 
+                                            [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Add to Cart -->
+                            <div class="flex flex-row w-2/3">
+                                <input
+                                    id="add-to-cart-button"
+                                    type="button"
+                                    class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
+                                    
+                                    mat-button>
+                                <label 
+                                    class="flex items-center justify-center h-7 px-2 rounded cursor-pointer bg-primary group hover:bg-primary-600 w-full ring-1 ring-primary"
+                                    for="add-to-cart-button"
+                                    matRipple>
+                                    <mat-icon
+                                        class="pr-1 text-white transform scale-75 group-hover:text-black"
+                                        [svgIcon]="'heroicons_solid:shopping-cart'"></mat-icon>
+                                    <span class="text-sm font-semibold text-white group-hover:text-black">Add to Cart</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </bottom-popup-content>
+            </ng-template>
+        </ng-container>
+    </div>
+</ng-container>
+<ng-container>
+    <div class="cupertino-pane">
+        <ng-container *ngIf="selectedProduct">
+            <div class="flex flex-col px-4 pb-4">
+                <span class="font-bold text-lg">{{store.name}}</span>
+                <div class="content pt-2">
+                    <!-- Content -->
+                    <div class="flex flex-col mb-4 mt-1">
+                        <!-- Product Assets -->
+                        <div class="flex justify-center md:w-140 lg:w-1/2 md:max-h-120 md:min-h-120 mb-2">
+                            <ngx-gallery 
+                                (previewOpen)="openPreview = true"
+                                (previewClose)="openPreview = false"
+                                class="shadow md:h-full" 
+                                [ngClass]="openPreview ? 'z-50' : 'z-30'"
+                                [options]="galleryOptions" 
+                                [images]="galleryImages"></ngx-gallery>
+                        </div>
+                        <!-- Details/Price -->
+                        <div class="flex flex-col">
+                            <!-- Details -->
+                            <div class="flex flex-col gap-1">
+                                <span class="font-semibold line-clamp-2">{{selectedProduct.name}}</span> 
+                                <!-- <div class="md:overflow-y-auto h-auto md:max-h-32">
+                                    <span class="text-sm font-normal text-gray-400" [innerHTML]="selectedProduct.description"></span>
+                                </div> -->
+                            </div>
+                            <!-- Price -->
+                            <div class="flex mt-2">
+                                <ng-container *ngIf="displayedProduct.discountAmount > 0; else noItemDiscount" >
+                                    <div class="font-semibold flex flex-col shrink">
+                                        <div class="text-xs items-center text-primary-100 flex justify-start items-center">
+                                            <span class="py-0.5 px-1 w-auto flex bg-red-600 rounded">{{displayedProduct.discountAmount}}% Off</span>
+                                        </div> 
+                                        <span class="mt-[0.15rem] text-xs line-through">{{displayedProduct.price | currency: store.regionCountry.currencySymbol}}</span> 
+                                        <span class="-mt-[0.15rem] text-base font-semibold text-primary ">{{displayedProduct.discountedPrice | currency: store.regionCountry.currencySymbol}}</span> 
+                                    </div>
+                                </ng-container>
+                                <ng-template #noItemDiscount>
+                                    <div>
+                                        <span class="text-base font-semibold text-primary">{{displayedProduct.price | currency: store.regionCountry.currencySymbol}}</span>
+                                    </div>
+                                </ng-template>
+                            </div>
+                        </div>
+                        <!-- Variants / Combo -->
+                        <ng-container *ngIf="!selectedProduct.isPackage; else comboProduct">
+                            <!-- Variants -->
+                            <ng-container *ngFor="let variant of selectedProduct.productVariants; let i = index;">
+                                <div 
+                                    [id]="variant.name" 
+                                    class="py-1 flex flex-col gap-1">
+                                    <label class="font-semibold text-sm" for="{{variant.name}}">{{variant.name | titlecase }}: </label>
+                                    <ul class="grid grid-cols-2 gap-1">
+                                        <li *ngFor="let option of variant.productVariantsAvailable; let i = index;" class="flex items-center">
+                                            <input type="radio"
+                                                class=""
+                                                id="{{variant.name + i}}" 
+                                                value="{{option.value}}" 
+                                                name="{{variant.name}}" 
+                                                [checked]="selectedVariants.indexOf(option.id) > -1"
+                                                (change)="onChangeVariant(option.id, variant.name, option.productId)"
+                                            >
+                                            <label class="pl-2 leading-tight text-sm" for="{{variant.name + i}}">{{option.value}}</label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <ng-template #comboProduct>
+                            <!-- Combo -->
+                            <ng-container *ngFor="let combo of combos; let i = index;">
+                                <div 
+                                    [id]="combo.title" 
+                                    class="py-1 flex flex-col gap-1">
+                                    <label class="font-semibold text-sm" for="{{combo.title}}">{{combo.title | uppercase}}: (Select {{ combo.totalAllow }} of {{ combo.productPackageOptionDetail.length }})</label>
+                                    <ul class="grid grid-cols-2 gap-1">
+                                        <li *ngFor="let option of combo.productPackageOptionDetail; let i = index;" class="flex items-center">
+                                            <input type="checkbox" 
+                                                [id]="'combo-checkbox-' + combo.id + '-' + option.productId"
+                                                [value]="option.productId" 
+                                                [name]="'combo-checkbox-' + combo.id + '-' + option.productId"
+                                                [checked]="selectedCombo[combo.id].indexOf(option.productId) > -1"
+                                                (change)="onChangeCombo(combo.id, option.productId, $event)"
+                                            >
+                                            <label class="pl-2 leading-tight text-sm" [for]="'combo-checkbox-' + combo.id + '-' + option.productId">{{option.product.name}}</label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </ng-container>
+                        </ng-template>
+                        <!-- Quantity/Add to Cart -->
+                        <div class="flex flex-row w-full mt-3 gap-2">
+                            <!-- Quantity -->
+                            <div class="flex w-1/3 flex-row justify-between items-center gap-2">
+                                <div class="flex flex-row h-7 w-24 rounded ring-1 ring-primary relative bg-white">
+                                    <button (click)="checkQuantity('decrement', selectedProduct.id); $event.stopPropagation()" 
+                                        class="px-2 text-black group hover:bg-primary hover:text-white cursor-pointer outline-none flex justify-between items-center">
+                                        <mat-icon 
+                                            class="icon-size-4 text-black group-hover:text-white" 
+                                            [svgIcon]="'heroicons_solid:minus-sm'"></mat-icon>
+                                    </button>
+                                    <input [(ngModel)]="quantity" (change)="checkQuantity()" type="number" 
+                                        class="focus:outline-none text-center w-full font-medium text-sm text-black focus:text-black md:text-base cursor-default flex items-center outline-none" name="custom-input-number" value="0"/>
+                                    <button (click)="checkQuantity('increment', selectedProduct.id); $event.stopPropagation()" 
+                                        class="px-2 text-black group hover:bg-primary hover:text-white cursor-pointer outline-none flex justify-between items-center">
+                                        <mat-icon 
+                                            class="icon-size-4 text-black group-hover:text-white" 
+                                            [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Add to Cart -->
+                            <div class="flex flex-row w-2/3">
+                                <input
+                                    id="add-to-cart-button"
+                                    type="button"
+                                    class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
+                                    (click)="addToCart()"
+                                    mat-button>
+                                <label 
+                                    class="flex items-center justify-center h-7 px-2 rounded cursor-pointer bg-primary group hover:bg-primary-600 w-full ring-1 ring-primary"
+                                    for="add-to-cart-button"
+                                    matRipple>
+                                    <mat-icon
+                                        class="pr-1 text-white transform scale-75 group-hover:text-black"
+                                        [svgIcon]="'heroicons_solid:shopping-cart'"></mat-icon>
+                                    <span class="text-sm font-semibold text-white group-hover:text-black">Add to Cart</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </ng-container>

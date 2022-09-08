@@ -2,16 +2,16 @@
     <!-- Grid -->
     <ng-container *ngIf="productViewOrientation === 'grid'">
         <div class="container mx-auto w-full">
-            <div class="w-full grid grid-cols-2 md:grid-cols-3 gap-6 mb-4 sm:mb-8">
+            <div class="w-full grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6 mb-4 sm:mb-8">
                 <!-- Products -->
                 <ng-container *ngFor="let product of products">
                     <!-- Product -->
-                    <div class="flex flex-col h-120 w-full lg:max-w-65 shadow border group duration-100 ring-0 hover:ring-2 ring-primary-600 rounded-lg overflow-hidden cursor-pointer"
+                    <div class="flex flex-col h-80 md:h-120 w-full lg:max-w-65 shadow border group duration-100 ring-0 hover:ring-2 ring-primary-600 rounded-lg overflow-hidden cursor-pointer"
                         [ngClass]="isProductOutOfStock(product) ? 'bg-card hover:border-primary' : 'bg-gray-200 hover:border-gray-600'"
                         (click)="redirectToProduct(product.seoNameMarketplace)">
                         <!-- Product Header -->
-                        <div class="relative flex flex-col p-2 h-60 bg-white bg-no-repeat bg-cover bg-center" 
-                        [style]="(product.thumbnailUrl ? 
+                        <div class="relative flex flex-col p-2 h-40 md:h-60 bg-white bg-no-repeat bg-cover bg-center" 
+                            [style]="(product.thumbnailUrl ? 
                                   'background-image: url(\'' + product.thumbnailUrl + '\');' 
                                 : (
                                     (product.storeCategory && product.storeCategory.parentCategory) ? 
@@ -44,40 +44,29 @@
                             </ng-container>
                         </div>
                         <!-- Product Footer -->
-                        <div class="flex flex-col px-4 mb-4 h-60 w-full justify-between">
-                            <!-- min-h-[48px] -->
-                            <!-- <div class="relative h-40">
-                                <div 
-                                    class="mt-2 mb-4 text-ellipsis overflow-hidden"
-                                    [ngClass]="( ( displaySeeMore(product.description) ) && !( product.productInventories.length > 0 && product.productInventories[0].itemDiscount ) ) ? 'h-26' : 
-                                    ( ( displaySeeMore(product.description) ) && ( product.productInventories.length > 0 && product.productInventories[0].itemDiscount ) ) ? 'h-[5.5rem]' :
-                                    'h-auto'"
-                                    >
-                                    <span class="text-gray-500" [innerHtml]="product.description"></span>
-                                </div>
-                                <span class="absolute text-gray-500 bottom-0 left-0" [ngClass]="displaySeeMore(product.description) ? 'block' : 'hidden'">...more</span>
-                            </div> -->
-                            <div class="mt-4 mb-2">
+                        <div class="flex flex-col px-3 md:px-4 mb-3 md:mb-4 h-56 md:h-60 w-full justify-between">
+                            <div class="mt-2 md:mt-4 mb-2">
                                 <!-- Product name  -->
-                                <span class=" line-clamp-2 font-bold sm:text-xl">{{product.name}}</span>
+                                <span class=" line-clamp-2 font-bold text-base md:text-xl">{{product.name}}</span>
                                 <!-- Description -->
                                 <div class="h-auto">
                                     <div class="mt-2 mb-4 text-ellipsis overflow-hidden">
-                                        <span class="text-gray-500 line-clamp-4" [innerHtml]="product.description"></span>
+                                        <span class="text-gray-500 line-clamp-3 md:line-clamp-4 text-sm md:text-base" [innerHtml]="product.description"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex flex-row items-center justify-between">
                                 <div *ngIf="product.productInventories.length > 0 && product.productInventories[0].itemDiscount;else noItemDiscountGrid">
-                                    <p class="line-through text-sm">{{product.productInventories[0].price | currency: platform.currency}}</p>
-                                    <p class="font-semibold text-black text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{product.productInventories[0].itemDiscount.discountedPrice | currency: platform.currency}}</p>
+                                    <p class="line-through text-xs md:text-sm">{{product.productInventories[0].price | currency: platform.currency}}</p>
+                                    <p class="font-semibold text-black text-lg md:text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{product.productInventories[0].itemDiscount.discountedPrice | currency: platform.currency}}</p>
                                 </div>
                                 <ng-template #noItemDiscountGrid>
-                                    <p class="font-semibold text-black text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{ (product.productInventories.length > 0 ? product.productInventories[0].price : 0) | currency: platform.currency}}</p>
+                                    <p class="font-semibold text-black text-lg md:text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{ (product.productInventories.length > 0 ? product.productInventories[0].price : 0) | currency: platform.currency}}</p>
                                 </ng-template>
                                 <button
+                                    *ngIf="!currentScreenSize.includes('md')"
                                     mat-icon-button
-                                    (click)="addProductToCart(product); $event.stopPropagation()">
+                                    (click)="selectProduct(product); $event.stopPropagation()">
                                     <mat-icon class="text-primary" [svgIcon]="'mat_solid:add_box'"></mat-icon>
                                 </button>
                             </div>
@@ -117,15 +106,6 @@
                                                 {{product.productInventories[0].itemDiscount.discountAmount}}% Off
                                             </div>
                                         </ng-container>
-                                        <!-- Badges -->
-                                        <!-- <div class="flex items-center">
-                                            <ng-container>
-                                                <mat-icon
-                                                    class="icon-size-5 text-green-600"
-                                                    [svgIcon]="'heroicons_solid:badge-check'"
-                                                    [matTooltip]="'You completed this course at least once'"></mat-icon>
-                                            </ng-container>
-                                        </div> -->
                                     </div>
                                 </ng-container>
 
@@ -145,9 +125,7 @@
                                         </span>
                                         <span class="text-gray-500 text-xs sm:text-sm md:text-md line-clamp-2 md:line-clamp-4" [innerHtml]="product.description"></span>
                                     </div>
-                                    <!-- <span class="text-gray-500 bottom-0 left-0 text-xs sm:text-sm md:text-md" [ngClass]="displaySeeMore(product.description) ? 'block' : 'hidden'">...more</span> -->
                                     <div class="flex flex-row justify-between items-center">
-                                        <!-- <p class="font-semibold line-through">{{product.productInventories[0].price | currency: platform.currency}}</p> -->
                                         <div class="flex flex-row items-center gap-1" *ngIf="product.productInventories.length > 0 && product.productInventories[0].itemDiscount; else noItemDiscountList">
                                             <p class="text-xs sm:text-base" style="text-decoration: line-through;">{{product.productInventories[0].price | currency: platform.currency}}</p>
                                             <p class="font-semibold text-md sm:text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{product.productInventories[0].itemDiscount.discountedPrice | currency: platform.currency}}</p>
@@ -156,8 +134,9 @@
                                             <p class="font-semibold text-md sm:text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{ (product.productInventories.length > 0 ? product.productInventories[0].price : 0) | currency: platform.currency}}</p>
                                         </ng-template>
                                         <button
+                                            *ngIf="!currentScreenSize.includes('md')"
                                             mat-icon-button
-                                            (click)="addProductToCart(product); $event.stopPropagation()">
+                                            (click)="selectProduct(product); $event.stopPropagation()">
                                             <mat-icon class="text-primary" [svgIcon]="'mat_solid:add_box'"></mat-icon>
                                         </button>
                                     </div>
@@ -176,7 +155,7 @@
     <!-- Main -->
     <div class="flex flex-auto justify-center w-full h-full p-6 sm:p-10">
         <!-- @formatter:off -->
-        <div class="h-auto md:h-160 items-center justify-center z-0 absolute inset-0 w-full opacity-40">
+        <div class="h-auto md:h-160 items-center justify-center z-0 absolute inset-0 top-50 w-full opacity-40">
             <svg width="100%" height="100%" viewBox="0 0 663 630" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M456.31 275.876C507.226 275.876 548.813 233.934 548.813 182.584C548.813 131.179 507.226 89.292 456.31 89.292C405.34 89.292 363.807 131.179 363.807 182.584C363.807 233.934 405.34 275.876 456.31 275.876Z" fill="white" stroke="var(--fuse-primary)" stroke-width="1.469" stroke-miterlimit="10"/>
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M471.184 208.824C496.936 208.824 517.943 187.638 517.943 161.666C517.943 135.695 496.936 114.51 471.184 114.51C445.433 114.51 424.427 135.696 424.427 161.666C424.427 187.637 445.433 208.824 471.184 208.824Z" fill="var(--fuse-primary)" stroke="var(--fuse-primary)" stroke-width="1.469" stroke-miterlimit="10"/>
@@ -222,8 +201,8 @@
         <div class="items-center justify-center z-10">
             <div class="mt-18 text-4xl md:text-7xl font-extrabold tracking-tight leading-tight md:leading-none text-center">Oops!</div>
             <div class="mt-2 text-4xl md:text-10xl font-semibold tracking-tight leading-tight md:leading-none text-primary text-center">404</div>
-            <div class="mt-2 text-4xl md:text-5xl font-semibold tracking-tight leading-tight md:leading-none text-center">Page Not Found !</div>
-            <div class="mt-4 max-w-120 text-lg md:text-xl font-medium tracking-tight text-center text-secondary">The product you are looking for might have been removed, had its name changed or is temporarily unavailable.</div>
+            <div class="mt-2 text-4xl md:text-5xl font-semibold tracking-tight leading-tight md:leading-none text-center">Items Not Found !</div>
+            <div class="mt-4 max-w-120 text-lg md:text-xl font-medium tracking-tight text-center text-secondary">The items you are looking for might have been removed, had its name changed or is temporarily unavailable.</div>
             <!-- <a
                 class="flex flex-row items-center mt-12 font-medium bg-primary-500 py-2 px-4 rounded"
                 [routerLink]="['/catalogue/' + 'all-products']">
@@ -237,30 +216,3 @@
     <div class="mb-12"></div>
 </ng-template>
 
-<ng-template #openDetails>
-    <bottom-popup-content class="md:hidden">
-        <bottom-popup-header>
-            <span class="font-bold text-lg"></span>
-        </bottom-popup-header>
-        <!-- Combo -->
-        <fieldset 
-            [id]="combo.title" 
-            *ngFor="let combo of combos; let i = index;"
-            class="py-1">
-            <label class="font-semibold" for="{{combo.title}}">{{combo.title | uppercase}} : (Select {{ combo.totalAllow }} of {{ combo.productPackageOptionDetail.length }})</label>
-            <ul class="grid grid-cols-2">
-                <li *ngFor="let option of combo.productPackageOptionDetail; let i = index;" class="flex items-center">
-                    <input type="checkbox" 
-                        [id]="'combo-checkbox-' + combo.id + '-' + option.productId"
-                        [value]="option.productId" 
-                        [name]="'combo-checkbox-' + combo.id + '-' + option.productId"
-                        [checked]="selectedCombo[combo.id].indexOf(option.productId) > -1"
-                        (change)="onChangeCombo(combo.id, option.productId, $event)"
-                    >
-                    <label class="pl-2" [for]="'combo-checkbox-' + combo.id + '-' + option.productId">{{option.product.name}}</label>
-                    <!-- <label for="{{variant.name + i}}">{{option.value}} / {{ selectedVariants.indexOf(option.id) }} / {{option.id}}</label> -->
-                </li>
-            </ul>
-        </fieldset>
-    </bottom-popup-content>
-</ng-template>

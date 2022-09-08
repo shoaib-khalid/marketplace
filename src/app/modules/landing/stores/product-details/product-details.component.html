@@ -178,7 +178,7 @@
                     </ng-template>
 
                     <!-- Quantity -->
-                    <div class="flex flex-row justify-between items-center mt-4">
+                    <!-- <div class="flex flex-row justify-between items-center mt-4">
                         <span class="font-semibold">Quantity:</span> 
                         <div class="flex flex-row h-8 w-20 rounded-md relative bg-primary">
                             <button (click)="checkQuantity('decrement')" class="text-white hover:bg-white hover:text-primary border border-primary h-full w-20 rounded-l-md cursor-pointer outline-none pb-2">
@@ -187,6 +187,25 @@
                             <input [(ngModel)]="quantity" (change)="checkQuantity()" type="number" class="focus:outline-none text-center w-full font-semibold text-md text-white focus:text-white md:text-basecursor-default flex items-center outline-none" name="custom-input-number" value="0"/>
                             <button (click)="checkQuantity('increment')" class="text-white hover:bg-white hover:text-primary border border-primary h-full w-20 rounded-r-md cursor-pointer pb-2">
                                 <span class="text-2xl">+</span>
+                            </button>
+                        </div>
+                    </div> -->
+                    <!-- Quantity -->
+                    <div class="flex flex-row justify-between items-center gap-2 mt-4">
+                        <div class="flex flex-row h-6 w-16 rounded ring-1 ring-primary relative bg-white">
+                            <button (click)="checkQuantity('decrement', product.id); $event.stopPropagation()" 
+                                class="px-1 text-black group hover:bg-primary hover:text-white cursor-pointer outline-none flex justify-between items-center">
+                                <mat-icon 
+                                    class="icon-size-4 text-black group-hover:text-white" 
+                                    [svgIcon]="'heroicons_solid:minus-sm'"></mat-icon>
+                            </button>
+                            <input [(ngModel)]="quantity" (change)="checkQuantity()" type="number" 
+                                class="focus:outline-none text-center w-full font-medium text-sm text-black focus:text-black md:text-base cursor-default flex items-center outline-none" name="custom-input-number" value="0"/>
+                            <button (click)="checkQuantity('increment', product.id); $event.stopPropagation()" 
+                                class="px-1 text-black group hover:bg-primary hover:text-white cursor-pointer outline-none flex justify-between items-center">
+                                <mat-icon 
+                                    class="icon-size-4 text-black group-hover:text-white" 
+                                    [svgIcon]="'heroicons_solid:plus'"></mat-icon>
                             </button>
                         </div>
                     </div>

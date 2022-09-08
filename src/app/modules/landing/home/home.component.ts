@@ -227,10 +227,5 @@ export class LandingHomeComponent implements OnInit
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
     }
-
-    openPopup() {
-        this._bottomPopUpService.get(this._openDetails).subscribe();
-    }
-
     
 }

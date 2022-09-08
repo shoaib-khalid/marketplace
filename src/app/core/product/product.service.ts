@@ -30,6 +30,11 @@ export class ProductsService
     private _package: BehaviorSubject<ProductPackageOption | null> = new BehaviorSubject(null);
     private _packages: BehaviorSubject<ProductPackageOption[] | null> = new BehaviorSubject(null);
 
+    private _sortProduct: BehaviorSubject<{sortByCol: string, sortingOrder: 'ASC' | 'DESC' | ''} | null> = new BehaviorSubject(null);
+    private _sortProductByLabel: BehaviorSubject<string | null> = new BehaviorSubject(null);
+
+    private _selectedProduct: BehaviorSubject<Product | null> = new BehaviorSubject(null);
+
     /**
      * Constructor
      */
@@ -52,6 +57,14 @@ export class ProductsService
     get product$(): Observable<Product>
     {
         return this._product.asObservable();
+    }
+
+    /**
+     * Setter for product
+     */
+    set product(value)
+    {
+        this._product.next(value);
     }
 
     /**
@@ -111,6 +124,19 @@ export class ProductsService
     {
         return localStorage.getItem('accessToken') ?? '';
     }
+
+    /** Getter for sort product by name */
+    get sortProduct$(): Observable<{sortByCol: string, sortingOrder: 'ASC' | 'DESC' | ''}> { return this._sortProduct.asObservable(); }
+    /** Setter for sort product by name */
+    set sortProduct(sort: {sortByCol: string, sortingOrder: 'ASC' | 'DESC' | ''}) { this._sortProduct.next(sort); }
+
+    /** Getter for sort product by name */
+    get sortProductByLabel$(): Observable<string> { return this._sortProductByLabel.asObservable(); }
+    /** Setter for sort product by name */
+    set sortProductByLabel(value) { this._sortProductByLabel.next(value); }
+
+    /** Getter for selected product */
+    get selectedProduct$(): Observable<Product> { return this._selectedProduct.asObservable(); }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -1213,9 +1239,11 @@ export class ProductsService
         };
 
         return this._httpClient.get<any>(productService + '/stores/' +   storeId   + '/package/' + packageId + '/options',header).pipe(
-            tap((packages) => {
+            map((packages) => {
                 this._logging.debug("Response from ProductsService (getProductPackageOptions)",packages);
                 this._packages.next(packages.data);
+
+                return packages['data']
             })
         );
     }
@@ -1372,12 +1400,23 @@ export class ProductsService
                     // Delete the product
                     packages.splice(index, 1);
 
-                    this._logging.debug("Response from ProductsService (deleteProductsOptionById)",response);
+                    this._logging.debug("Response from ProductsService (deleteProductsOptionById)", response);
 
                     // Return the deleted status
                     return response.status;
                 })
             ))
         );
+    }
+
+    /**
+     * Select product to be used for popup bottom panel
+     * 
+     * @param product 
+     */
+    selectProduct(product: Product) 
+    {
+        if (product) this._logging.debug("Response from ProductsService (selectProduct)", product);
+        this._selectedProduct.next(product)
     }
 }

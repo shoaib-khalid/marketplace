@@ -140,9 +140,6 @@ export class _StoreCategoriesTopComponent implements OnInit, OnDestroy
 
     changeCatalogue(value, event = null) {
 
-        console.log("value", value);
-
-
         let storeDomain = this.store.domain.split(".")[0];
 
         // find if categoty exists

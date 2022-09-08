@@ -333,7 +333,6 @@ export class StoresService
             headers: new HttpHeaders().set("Authorization", `Bearer ${accessToken}`),
             params: {
                 name        : '' + name,
-                // storeId     : this.storeId$,
                 storeId     : '' + storeId,
                 page        : '' + page,
                 pageSize    : '' + size,
@@ -344,11 +343,27 @@ export class StoresService
 
         return this._httpClient.get<any>(productService + '/store-categories', header)
             .pipe(
-                tap((response) => {
+                map((response) => {
                     this._logging.debug("Response from StoresService (getStoreCategories)",response);
+                    
+                    if (this._storeCategories.getValue()) {
 
+                        let obsArray = this._storeCategories.getValue().map(x => x.id);
+                        let respArray = response["data"].content.map(y => y.id);
+    
+                        // A function to compare arrays
+                        const equals = (a: any[], b: any[]) =>
+                        a.length === b.length &&
+                        a.every((v, i) => v === b[i]);
+
+                        // If not equals means we navigated to a different store, so set this._storeCategory to null
+                        // This is to reset this._storeCategory observable
+                        if (!equals(obsArray, respArray)) {
+                            this._storeCategory.next(null);
+                        }
+
+                    }
                     this._storeCategories.next(response["data"].content);
-
                     return response["data"].content;
                 })
             );
@@ -358,11 +373,11 @@ export class StoresService
     {
         return this._storeCategories.pipe(
             take(1),
-            map((storeCategries) => {
-                if (storeCategries) {
+            map((storeCategories) => {
+                if (storeCategories) {
 
                     // Find the storeCategory 
-                    const storeCategory = storeCategries.find(item => item.id === id) || null;
+                    const storeCategory = storeCategories.find(item => item.id === id) || null;
     
                     this._logging.debug("Response from StoresService (getStoreCategoriesById)", storeCategory);
     

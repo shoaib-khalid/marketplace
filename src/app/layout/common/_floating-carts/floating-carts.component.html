@@ -3,12 +3,16 @@
     >
     <div class="w-full rounded-md p-3 flex flex-row items-center justify-between">
         <div class="flex flex-row items-center">
-            <mat-icon class="text-white" svgIcon="feather:shopping-cart"></mat-icon>
-            <span class="text-white font-semibold pl-2">RM 100.00</span>
+            <mat-icon class="text-white icon-size-5" svgIcon="feather:shopping-cart"></mat-icon>
+            <span class="text-white font-semibold pl-2">{{subTotal | currency: currencySymbol }}</span>
+            <ng-container *ngIf="subTotal !== 0">
+                <span *ngIf="totalItems < 2" class="pt-1 text-xs pl-1 text-white">({{totalItems}} item)</span>
+                <span *ngIf="totalItems > 1" class="pt-1 text-xs pl-1 text-white">({{totalItems}} items)</span>
+            </ng-container>
         </div>
-        <div class="flex flex-row items-center">
-            <span class="text-white font-semibold pl-2">CHECKOUT</span>
-            <mat-icon class="text-white" svgIcon="heroicons_outline:chevron-right"></mat-icon>
+        <div (click)="cartCheckout()" class="flex flex-row items-center cursor-pointer">
+            <span class="text-white font-semibold pl-2">View Carts</span>
+            <mat-icon class="text-white icon-size-5" svgIcon="heroicons_outline:chevron-right"></mat-icon>
         </div>
     </div>
 </div>
