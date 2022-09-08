@@ -8,7 +8,7 @@
                     <!-- Product -->
                     <div class="flex flex-col h-80 md:h-120 w-full lg:max-w-65 shadow border group duration-100 ring-0 hover:ring-2 ring-primary-600 rounded-lg overflow-hidden cursor-pointer"
                         [ngClass]="isProductOutOfStock(product) ? 'bg-card hover:border-primary' : 'bg-gray-200 hover:border-gray-600'"
-                        (click)="redirectToProduct(product.seoNameMarketplace)">
+                        (click)="redirectToProduct(product)">
                         <!-- Product Header -->
                         <div class="relative flex flex-col p-2 h-40 md:h-60 bg-white bg-no-repeat bg-cover bg-center" 
                             [style]="(product.thumbnailUrl ? 
@@ -67,7 +67,7 @@
                                     *ngIf="!currentScreenSize.includes('md')"
                                     mat-icon-button
                                     (click)="selectProduct(product); $event.stopPropagation()">
-                                    <mat-icon class="text-primary" [svgIcon]="'mat_solid:add_box'"></mat-icon>
+                                    <mat-icon class="text-primary icon-size-7" [svgIcon]="'mat_solid:add_box'"></mat-icon>
                                 </button>
                             </div>
                         </div>
@@ -84,7 +84,7 @@
                     <div class="flex flex-col h-28 sm:h-56 mb-4">
                         <div class="flex flex-row h-full w-full bg-card shadow border group duration-100 ring-0 hover:ring-2 ring-primary-600 rounded-lg justify-between items-center cursor-pointer"
                             [ngClass]="isProductOutOfStock(product) ? 'bg-card hover:border-primary' : 'bg-gray-200 hover:border-gray-600'"
-                            (click)="redirectToProduct(product.seoNameMarketplace)"
+                            (click)="redirectToProduct(product)"
                         >
                             <!-- Image Thumbnail -->
                             <div class="relative h-full w-32 sm:w-72 rounded-l-lg p-2 bg-white bg-no-repeat shadow bg-cover bg-center" 
@@ -137,7 +137,7 @@
                                             *ngIf="!currentScreenSize.includes('md')"
                                             mat-icon-button
                                             (click)="selectProduct(product); $event.stopPropagation()">
-                                            <mat-icon class="text-primary" [svgIcon]="'mat_solid:add_box'"></mat-icon>
+                                            <mat-icon class="text-primary icon-size-7" [svgIcon]="'mat_solid:add_box'"></mat-icon>
                                         </button>
                                     </div>
                                 </div>

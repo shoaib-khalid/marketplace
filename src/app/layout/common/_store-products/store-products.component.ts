@@ -108,10 +108,12 @@ export class _StoreProductsComponent implements OnInit, OnDestroy
         this._router.navigate(['/store/' + slug]);
     }
 
-    redirectToProduct(url: string) {
+    redirectToProduct(product: Product) {
         if (this.currentScreenSize.includes('md'))
-            this._router.navigate(['store/' + this.storeSlug + '/' + this.catalogueSlug + '/' + url]);
-        else return
+            this._router.navigate(['store/' + this.storeSlug + '/' + this.catalogueSlug + '/' + product.seoNameMarketplace]);
+        else {
+            this._productsService.selectProduct(product);
+        }
     }
 
     selectProduct(product: Product){

@@ -14,7 +14,6 @@
     <div class="flex flex-col flex-auto w-full min-w-0 bg-card lg:items-center relative h-screen overflow-hidden">
         <!-- Header --> <!-- Add md:relative to disable header floating-->
         <div class="flex flex-col flex-auto w-full h-full items-center overflow-auto">
-
             <div class="flex flex-col flex-0 justify-center lg:items-center w-full h-auto overflow-hidden z-40 shadow dark:shadow-none bg-white print:hidden"
                 [ngClass]="isStorePage === false ? 'sticky top-0' : ''">
                 <!-- Top Header bar -->
@@ -100,8 +99,5 @@
                 <footer [footerType]="'footer-02'" class="w-full max-w-300"></footer>
             </div>
         </div>
-
-
-        <bottom-popup class="md:hidden w-full absolute z-60"></bottom-popup>
     </div>
 </ng-template>

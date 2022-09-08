@@ -25,6 +25,7 @@ export interface Product
     productDeliveryDetail?: string;
     customNote?: string;
     isNoteOptional?: boolean;
+    seoNameMarketplace: string
 }
 
 /**

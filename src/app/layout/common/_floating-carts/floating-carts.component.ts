@@ -46,7 +46,7 @@ export class FloatingCartsComponent implements OnInit, OnDestroy
         this._cartService.cartsHeaderWithDetails$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((carts: CartWithDetails[])=>{
-                if (carts.length > 0) {
+                if (carts && carts.length > 0) {
                     this.totalItems = carts.length;
                     let checkoutListBody = carts.map(item => {
                         this.currencySymbol

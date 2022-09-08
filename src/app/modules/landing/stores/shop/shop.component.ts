@@ -643,6 +643,11 @@ export class LandingShopComponent implements OnInit
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
                 }
+                else {
+                    // if (this.drawer) {
+                    //     this.drawer.destroy({animate: true});
+                    // }
+                }
                 
             })
         
@@ -1023,10 +1028,14 @@ export class LandingShopComponent implements OnInit
         else if (product.productVariants.length > 0) {
             // this._bottomPopUpService.set(this._openDetails);
             this.openDrawer();
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
         }
         // Normal product
         else {
             this.openDrawer();
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
         }
         
     }
@@ -1562,21 +1571,26 @@ export class LandingShopComponent implements OnInit
             cssClass: 'cupertino-class',
             events: {
                 onBackdropTap: () => {
-                    this.drawer.destroy({animate: true});
+                    this.drawer.destroy({animate: true, destroyButton: true});
+                    this.drawer = null;
                     this._productsService.selectProduct(null);
                     this.selectedProduct = null;
                 } ,
                 onDidDismiss: () => {
                     this._productsService.selectProduct(null);
                     this.selectedProduct = null;
+                    this.drawer = null;
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
                 }
               }
         });
         setTimeout(() => {
             this.drawer.present({ animate: true });
-        }, 0);
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }, 10);
         
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
     }
 }
