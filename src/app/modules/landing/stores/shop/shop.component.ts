@@ -530,6 +530,7 @@ export class LandingShopComponent implements OnInit
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((product: Product) => {
                 if (product) {
+                    
                     this.selectedProduct = product;
 
                     // Reset quantity on getting new product
@@ -638,6 +639,9 @@ export class LandingShopComponent implements OnInit
                     }
                     this.preLoadProduct(product)
                     // this._bottomPopUpService.set(this._openDetails);
+
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
                 }
                 
             })
@@ -1568,7 +1572,10 @@ export class LandingShopComponent implements OnInit
                 }
               }
         });
-        this.drawer.present({ animate: true });
+        setTimeout(() => {
+            this.drawer.present({ animate: true });
+        }, 0);
+        
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
