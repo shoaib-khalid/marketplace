@@ -162,7 +162,7 @@ import { JwtService } from 'app/core/jwt/jwt.service';
             }  
 
             .cupertino-class {
-                z-index:99;
+                z-index: 99;
             }
             
         `
