@@ -316,6 +316,40 @@ export class LandingShopComponent implements OnInit
 
     ngOnInit(): void {  
 
+        this.drawer = new CupertinoPane('.cupertino-pane', { 
+            parentElement: "fnb02-layout", // Parent container
+            backdrop: true,
+            initialBreak: 'top',
+            fitHeight: true,
+            bottomClose: true,
+            // fitScreenHeight: false,
+            // breaks: {
+            //     top: {enabled: true, height: 600},
+            //     middle: {enabled: true, height: 300},
+            //     bottom: {enabled: false}
+            // },
+            backdropOpacity: 0.5, 
+            cssClass: 'cupertino-class',
+            events: {
+                onBackdropTap: () => {
+                    this.drawer.destroy({animate: true, destroyButton: true});
+                    // this.drawer = null;
+                    this._productsService.selectProduct(null);
+                    this.selectedProduct = null;
+                } ,
+                onDidDismiss: () => {
+                    // this.drawer.calcFitHeight();
+                    // this._productsService.selectProduct(null);
+                    // this.selectedProduct = null;
+                    // this.drawer = null;
+                    
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                }
+            }
+        });
+        
+
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -685,7 +719,7 @@ export class LandingShopComponent implements OnInit
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
-        if (this.drawer) 
+        if (this.drawer.isPanePresented()) 
             this.drawer.destroy()
         this._productsService.selectProduct(null);
     }
@@ -1556,41 +1590,48 @@ export class LandingShopComponent implements OnInit
     }
 
     openDrawer(){
-        this.drawer = new CupertinoPane('.cupertino-pane', { 
-            parentElement: "fnb02-layout", // Parent container
-            backdrop: true,
-            initialBreak: 'top',
-            fitHeight: true,
-            bottomClose: true,
-            // breaks: {
-            //     top: {enabled: true, height: 600},
-            //     middle: {enabled: true, height: 300},
-            //     bottom: {enabled: false}
-            // },
-            backdropOpacity: 0.5, 
-            cssClass: 'cupertino-class',
-            events: {
-                onBackdropTap: () => {
-                    this.drawer.destroy({animate: true, destroyButton: true});
-                    this.drawer = null;
-                    this._productsService.selectProduct(null);
-                    this.selectedProduct = null;
-                } ,
-                onDidDismiss: () => {
-                    this._productsService.selectProduct(null);
-                    this.selectedProduct = null;
-                    this.drawer = null;
+        
+        // this.drawer = new CupertinoPane('.cupertino-pane', { 
+        //     // parentElement: "fnb02-layout", // Parent container
+        //     // backdrop: true,
+        //     // initialBreak: 'top',
+        //     fitHeight: true,
+        //     bottomClose: true,
+        //     // breaks: {
+        //     //     top: {enabled: true, height: 600},
+        //     //     middle: {enabled: true, height: 300},
+        //     //     bottom: {enabled: false}
+        //     // },
+        //     backdropOpacity: 0.5, 
+        //     cssClass: 'cupertino-class',
+        //     events: {
+        //         onBackdropTap: () => {
+        //             this.drawer.destroy({animate: true, destroyButton: true});
+        //             // this.drawer = null;
+        //             this._productsService.selectProduct(null);
+        //             this.selectedProduct = null;
+        //         } ,
+        //         onDidDismiss: () => {
+        //             this._productsService.selectProduct(null);
+        //             this.selectedProduct = null;
+        //             // this.drawer = null;
+        //             // Mark for check
+        //             this._changeDetectorRef.markForCheck();
+        //         }
+        //       }
+        // });
+
+        this.drawer.present({animate: false}).then(() => {
+            this.drawer.destroy({animate: false}).then(() => {
+                setTimeout(() => {
+                    this.drawer.present({ animate: true });
+                    
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
-                }
-              }
-        });
-        setTimeout(() => {
-            this.drawer.present({ animate: true });
+                }, 0);
 
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        }, 10);
+            })
+        })
         
     }
 }
