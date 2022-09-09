@@ -424,11 +424,11 @@
                                     id="add-to-cart-button"
                                     type="button"
                                     class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
-                                    (click)="addToCart()"
                                     mat-button>
                                 <label 
                                     class="flex items-center justify-center h-9 px-2 rounded cursor-pointer bg-primary group hover:bg-primary-600 w-full ring-1 ring-primary"
                                     for="add-to-cart-button"
+                                    (click)="addToCart(); $event.stopPropagation()"
                                     matRipple>
                                     <mat-icon
                                         class="pr-1 text-white transform scale-75 group-hover:text-black"
