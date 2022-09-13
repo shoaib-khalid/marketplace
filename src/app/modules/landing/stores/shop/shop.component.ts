@@ -1,6 +1,6 @@
 import { DatePipe, ViewportScroller } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -164,12 +164,11 @@ import { JwtService } from 'app/core/jwt/jwt.service';
             .cupertino-class {
                 z-index: 99;
             }
-            
         `
     ],
     encapsulation: ViewEncapsulation.None,
     animations     : fuseAnimations,
-    // changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LandingShopComponent implements OnInit
 {
@@ -246,7 +245,9 @@ export class LandingShopComponent implements OnInit
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     @ViewChild('openDetails', { read: TemplateRef }) _openDetails:TemplateRef<any>;
     drawer: CupertinoPane;
-    
+    specialInstructionForm = this._formBuilder.group({
+        specialInstructionValue     : ['']
+    });
 
     /**
      * Constructor
@@ -269,7 +270,8 @@ export class LandingShopComponent implements OnInit
         private _apiServer: AppConfig,
         private _cartService: CartService,
         private _authService: AuthService,
-        private _jwtService: JwtService
+        private _jwtService: JwtService,
+        private _formBuilder: FormBuilder,
 
     )
     {
@@ -307,7 +309,6 @@ export class LandingShopComponent implements OnInit
                 height: '200px',
             }
         ];
-        
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -324,16 +325,15 @@ export class LandingShopComponent implements OnInit
             bottomClose: true,
             // fitScreenHeight: false,
             // breaks: {
-            //     top: {enabled: true, height: 600},
+            //     top: {enabled: true, height: 700},
             //     middle: {enabled: true, height: 300},
             //     bottom: {enabled: false}
             // },
-            backdropOpacity: 0.5, 
+            backdropOpacity: 0.7, 
             cssClass: 'cupertino-class',
             events: {
                 onBackdropTap: () => {
-                    this.drawer.destroy({animate: true, destroyButton: true});
-                    // this.drawer = null;
+                    this.drawer.destroy({animate: true});
                     this._productsService.selectProduct(null);
                     this.selectedProduct = null;
                 } ,
@@ -1493,6 +1493,8 @@ export class LandingShopComponent implements OnInit
         });
 
         this.findInventory()
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
     }
 
     findInventory() {
@@ -1591,36 +1593,7 @@ export class LandingShopComponent implements OnInit
 
     openDrawer(){
         
-        // this.drawer = new CupertinoPane('.cupertino-pane', { 
-        //     // parentElement: "fnb02-layout", // Parent container
-        //     // backdrop: true,
-        //     // initialBreak: 'top',
-        //     fitHeight: true,
-        //     bottomClose: true,
-        //     // breaks: {
-        //     //     top: {enabled: true, height: 600},
-        //     //     middle: {enabled: true, height: 300},
-        //     //     bottom: {enabled: false}
-        //     // },
-        //     backdropOpacity: 0.5, 
-        //     cssClass: 'cupertino-class',
-        //     events: {
-        //         onBackdropTap: () => {
-        //             this.drawer.destroy({animate: true, destroyButton: true});
-        //             // this.drawer = null;
-        //             this._productsService.selectProduct(null);
-        //             this.selectedProduct = null;
-        //         } ,
-        //         onDidDismiss: () => {
-        //             this._productsService.selectProduct(null);
-        //             this.selectedProduct = null;
-        //             // this.drawer = null;
-        //             // Mark for check
-        //             this._changeDetectorRef.markForCheck();
-        //         }
-        //       }
-        // });
-
+        // Workaround to 'fix' bug when open the panel
         this.drawer.present({animate: false}).then(() => {
             this.drawer.destroy({animate: false}).then(() => {
                 setTimeout(() => {

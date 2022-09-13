@@ -11,7 +11,7 @@
     <!-- Floating Message Small -->
     <!-- <floating-message-small></floating-message-small> -->
     <!-- Wrapper -->
-    <div class="flex flex-col flex-auto w-full min-w-0 bg-card lg:items-center relative h-screen overflow-hidden">
+    <div class="flex flex-col flex-auto w-full min-w-0 bg-card lg:items-center fixed h-full overflow-hidden">
         <!-- Header --> <!-- Add md:relative to disable header floating-->
         <div class="flex flex-col flex-auto w-full h-full items-center overflow-auto">
             <div class="flex flex-col flex-0 justify-center lg:items-center w-full h-auto overflow-hidden z-40 shadow dark:shadow-none bg-white print:hidden"
@@ -92,7 +92,7 @@
                 <footer [footerType]="'upper-footer-02'" class="w-full max-w-300"></footer>
             </div> -->
             
-            <floating-carts class="w-full md:hidden z-20 sticky bottom-4 "></floating-carts>
+            <floating-carts *ngIf="isCartPage === false" class="w-full md:hidden z-20 sticky bottom-4"></floating-carts>
 
             <!-- Footer -->
             <div class="flex w-full bg-primary justify-center">

@@ -43,6 +43,7 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
     isHidden: boolean = false;
     isStorePage: boolean = false;
     isSearchOpened: boolean = false;
+    isCartPage: boolean = false;
 
     /**
      * Constructor
@@ -90,13 +91,17 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
         this._searchService.route = '';
         this._searchService.storeDetails = null;
         
-        if(this._router.url.split('/').length > 1 && this._router.url.split('/')[1] === 'store'){
+        if (this._router.url.split('/').length > 1 && this._router.url.split('/')[1] === 'store'){
             this.isStorePage = true;
         }
         
-        if(this._router.url && this._router.url === '/') {
+        if (this._router.url && this._router.url === '/') {
             this.isSearchOpened = true;
         } 
+
+        if (this._router.url.split('/').length > 1 && this._router.url.split('/')[1] === 'carts'){
+            this.isCartPage = true;
+        }
 
         this._router.events.pipe(
             filter((event) => event instanceof NavigationEnd),
@@ -107,7 +112,7 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
             let route = response.url.split('/');
             
             // If inside store page, set route to 'store'
-            if(response.url === '/') {
+            if (response.url === '/') {
                 this.isSearchOpened = true
             } else {
                 this.isSearchOpened = false
@@ -121,6 +126,12 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
                 this._searchService.route = '';
                 this._searchService.storeDetails = null;
                 this.isStorePage = false;
+            }
+
+            if (route[1] === 'carts') {
+                this.isCartPage = true;
+            } else {
+                this.isCartPage = false;
             }
             
             

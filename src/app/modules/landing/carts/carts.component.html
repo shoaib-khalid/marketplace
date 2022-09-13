@@ -1,4 +1,3 @@
-<!-- Voucher List -->
 <div class="relative flex flex-col items-center bg-card w-full h-full">
     <!-- Container -->
     <div class="flex flex-col md:flex-row w-full h-full">
@@ -675,7 +674,7 @@
             <!-- Cart Summary -->
             <div *ngIf="platform" class="flex flex-col w-full md:w-140 md:ml-6 md:mt-8 mt-4">
                 <!-- Cart Summary -->
-                <div class="flex flex-col border rounded-lg p-2">
+                <div class="flex flex-col border rounded-lg p-2 bg-white">
                     <!-- Header -->
                     <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
                         <mat-icon 
@@ -883,14 +882,14 @@
                         <span class="text-md font-semibold">{{paymentDetails.cartGrandTotal | currency: platform.currency}}</span>
                     </div>
 
-                    <!-- Checkout -->
+                    <!-- Checkout (desktop)-->
                     <button 
                         (click)="goToCheckout()"
                         [disabled]="isLoading || isGettingDeliveryPrices"
-                        class="py-2 px-4 rounded w-full mt-2 text-white"
+                        class="hidden md:block py-2 px-4 rounded w-full mt-2 text-white"
                         [ngClass]="{ 'cursor-wait bg-gray-400' : isLoading, 
-                                     'cursor-pointer bg-primary hover:bg-primary-600' : !isLoading || !isPristine,
-                                     'cursor-not-allowed bg-gray-400' : isPristine}">
+                                    'cursor-pointer bg-primary hover:bg-primary-600' : !isLoading || !isPristine,
+                                    'cursor-not-allowed bg-gray-400' : isPristine}">
                         Checkout Now
                     </button>
                 </div>
@@ -1035,6 +1034,28 @@
                         </ng-container>
                     </div>
                 </ng-container>
+            </div>
+            <!-- Checkout (mobile)-->
+            <div
+                class="my-2 md:hidden flex items-center justify-center shadow-lg rounded-lg z-90 cursor-pointer bg-primary-600 sticky bottom-8"
+                [ngClass]="{ 'cursor-wait bg-gray-400' : isLoading, 
+                            'cursor-pointer bg-primary hover:bg-primary-600' : !isLoading || !isPristine,
+                            'cursor-not-allowed bg-gray-400' : isPristine}"
+                >
+                <div class="w-full rounded-md p-3 flex flex-row items-center justify-between">
+                    <div class="flex flex-row items-center">
+                        <mat-icon class="text-white icon-size-5" svgIcon="feather:shopping-cart"></mat-icon>
+                        <span class="text-white font-semibold pl-2">{{paymentDetails.cartSubTotal | currency: platform.currency}}</span>
+                        <ng-container *ngIf="totalSelectedCartItem !== 0">
+                            <span *ngIf="totalSelectedCartItem < 2" class="pt-1 text-xs pl-1 text-white">({{totalSelectedCartItem}} item selected)</span>
+                            <span *ngIf="totalSelectedCartItem > 1" class="pt-1 text-xs pl-1 text-white">({{totalSelectedCartItem}} items selected)</span>
+                        </ng-container>
+                    </div>
+                    <div (click)="goToCheckout()" class="flex flex-row items-center cursor-pointer">
+                        <span class="text-white font-semibold pl-2">Checkout</span>
+                        <mat-icon class="text-white icon-size-5" svgIcon="heroicons_outline:chevron-right"></mat-icon>
+                    </div>
+                </div>
             </div>
         </ng-container>    
 
