@@ -11,6 +11,7 @@ import { BottomPopUpService } from '../_bottom-popup/bottom-popup.service';
 import { ProductsService } from 'app/core/product/product.service';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+import { _BottomSheetComponent } from '../../../modules/landing/stores/_bottom-sheet-product/bottom-sheet.component';
 
 @Component({
     selector     : 'store-products',
@@ -112,12 +113,18 @@ export class _StoreProductsComponent implements OnInit, OnDestroy
         if (this.currentScreenSize.includes('md'))
             this._router.navigate(['store/' + this.storeSlug + '/' + this.catalogueSlug + '/' + product.seoNameMarketplace]);
         else {
-            this._productsService.selectProduct(product);
+            if (this.isProductOutOfStock(product)) {
+                this._productsService.selectProduct(product);
+            }
+            else return
         }
     }
 
     selectProduct(product: Product){
-        this._productsService.selectProduct(product);
+        if (this.isProductOutOfStock(product)) {
+            this._productsService.selectProduct(product);
+        }
+        else return
     }
 
     displayStoreLogo(storeAssets: StoreAssets[]) {

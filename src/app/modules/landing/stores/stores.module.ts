@@ -26,6 +26,8 @@ import { LandingShopComponent } from './shop/shop.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { FuseScrollbarModule } from '@fuse/directives/scrollbar';
 import { _BottomPopUpModule } from 'app/layout/common/_bottom-popup/bottom-popup.module';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { _BottomSheetModule } from './_bottom-sheet-product/bottom-sheet.module';
 
 @NgModule({
     declarations: [
@@ -55,7 +57,10 @@ import { _BottomPopUpModule } from 'app/layout/common/_bottom-popup/bottom-popup
         NgxGalleryModule,
         MatTabsModule,
         FuseScrollbarModule,
-        _BottomPopUpModule
+        _BottomPopUpModule,
+        MatBottomSheetModule,
+        _BottomSheetModule
+
     ],
     providers: [
         // CurrencyPipe,

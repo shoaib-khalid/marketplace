@@ -13,7 +13,7 @@
                     <span class="ml-2 font-bold">Delivery Address</span>
                 </div>
                 <ng-container *ngIf="customerAddress; else noAddress">
-                    <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full">
+                    <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full text-sm">
                         <!-- Address  -->
                         <div class="flex flex-col font-medium gap-1">
                             <span class="">{{customerAddress.name}}</span>
@@ -68,7 +68,7 @@
                     </div>
                     <ng-container *ngIf="selfPickupInfo; else noSelfPickupInfo">
                         <div class="w-full flex flex-col rounded">
-                            <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full">
+                            <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full text-sm">
                                 <!-- Address  -->
                                 <div class="flex flex-col font-medium gap-1">
                                     <span class="">{{selfPickupInfo.name}}</span>
@@ -139,7 +139,7 @@
                         <span></span>
                     </div>
                     <ng-container *ngFor="let cart of carts; let i = index">
-                        <div class="relative w-full border lg:border-0 lg:border-b lg:last:border-b-0 lg:border-gray-600 rounded-lg lg:rounded-none pb-2 last:pb-0 mb-2 lg:mb-0">
+                        <div class="relative w-full border lg:border-0 lg:border-b lg:last:border-b-0 lg:border-gray-600 rounded-lg lg:rounded-none pb-2 mb-2 lg:mb-0">
                             <!-- Store timing bg-gradient-to-b from-black -->
                             <!-- <div *ngIf="isStoreClose(cart.storeId)" 
                                 class="absolute bg-black bg-opacity-60 z-10 w-full h-full flex flex-col items-center justify-center rounded-lg lg:rounded gap-2">
@@ -672,185 +672,149 @@
             </div>
 
             <!-- Cart Summary -->
-            <div *ngIf="platform" class="flex flex-col w-full md:w-140 md:ml-6 md:mt-8 mt-4">
+            <div *ngIf="platform" class="flex flex-col w-full md:w-140 md:ml-6 md:mt-8 mt-0 sticky md:static bottom-2">
                 <!-- Cart Summary -->
-                <div class="flex flex-col border rounded-lg p-2 bg-white">
+                <div class="flex flex-col border border-slate-400 md:border-slate-200 rounded-lg p-2 bg-white">
                     <!-- Header -->
-                    <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
-                        <mat-icon 
-                            class="icon-size-5 text-primary" 
-                            [svgIcon]="'mat_solid:add_shopping_cart'"></mat-icon>
-                        <span class="ml-2 font-bold">Cart Summary</span>
+                    <div class="flex flex-row border-b justify-between items-center pb-1 md:pb-2 w-full"
+                        (click)="toggleSummary()">
+                        <!-- Icon and Header Title -->
+                        <div class="flex flex-row justify-start items-center">
+                            <mat-icon 
+                                class="icon-size-4 md:icon-size-5 text-primary" 
+                                [svgIcon]="'mat_solid:add_shopping_cart'"></mat-icon>
+                            <span class="ml-2 font-bold text-sm md:text-base">Cart Summary</span>
+                        </div>
+                        <!-- Expand summary icon -->
+                        <div class="flex flex-row justify-start items-center">
+                            <mat-icon 
+                                *ngIf="!visibleCartSummary"
+                                class="icon-size-4 md:icon-size-5 text-primary" 
+                                [svgIcon]="'heroicons_outline:chevron-down'"></mat-icon>
+                            <mat-icon 
+                                *ngIf="visibleCartSummary"
+                                class="icon-size-4 md:icon-size-5 text-primary" 
+                                [svgIcon]="'heroicons_outline:chevron-up'"></mat-icon>
+                        </div>
                     </div>
                     <!-- Summary -->
-                    <!-- Sub Total -->
-                    <div class="flex flex-row justify-between mt-2">
-                        <span class="text-md text-secondary">Sub Total <small *ngIf="totalSelectedCartItem === 1">({{totalSelectedCartItem}} item)</small><small *ngIf="totalSelectedCartItem > 1">({{totalSelectedCartItem}} items)</small></span>
-                        <span class="text-md font-semibold">{{paymentDetails.cartSubTotal | currency: platform.currency}}</span>
-                    </div>
-                    <!-- Order Discount -->
-                    <ng-container *ngIf="paymentDetails.subTotalDiscount !== 0">
-                        <div class="flex flex-row w-full justify-between  mt-2">
-                            <div class="flex flex-col">
-                                <div class="text-md text-secondary">
-                                    <span>Order Discount</span>
-                                    <span *ngIf="paymentDetails.subTotalDiscountDescription">&nbsp;({{paymentDetails.subTotalDiscountDescription}})</span>
-                                </div>
-                                <span class="text-xs text-gray-500" *ngIf="paymentDetails.discountMaxAmount && paymentDetails.discountMaxAmount != 0 && paymentDetails.subTotalDiscount >= paymentDetails.discountMaxAmount && paymentDetails.subTotalDiscount != 0">
-                                    Capped at {{paymentDetails.discountMaxAmount | currency: platform.currency }}
-                                </span>
-                            </div>
-                            <span class="font-semibold">-{{paymentDetails.subTotalDiscount | currency: platform.currency}}</span>
-                        </div>
-                    </ng-container>
-                    <!-- Service Charges -->
-                    <ng-container *ngIf="paymentDetails.storeServiceCharge !== 0">
+                    <div *ngIf="visibleCartSummary">
+                        <!-- Sub Total -->
                         <div class="flex flex-row justify-between mt-2">
-                            <span class="text-md text-secondary">Service Charge</span> 
-                            <span class="text-md font-semibold">{{paymentDetails.storeServiceCharge | currency: platform.currency}}</span>
+                            <span class="text-md text-secondary">Sub Total <small *ngIf="totalSelectedCartItem === 1">({{totalSelectedCartItem}} item)</small><small *ngIf="totalSelectedCartItem > 1">({{totalSelectedCartItem}} items)</small></span>
+                            <span class="text-md font-semibold">{{paymentDetails.cartSubTotal | currency: platform.currency}}</span>
                         </div>
-                    </ng-container>
-                    <!-- Delivery Fee -->
-                    <div class="flex flex-row justify-between mt-2">
-                        <span class="text-md text-secondary">Delivery Fee</span>
-                        <span class="text-md font-semibold">{{paymentDetails.deliveryCharges | currency: platform.currency}}</span>
-                    </div>
-                    <!-- Delivery Discount -->
-                    <!-- <ng-container *ngIf="paymentDetails.deliveryDiscount !== 0">
-                        <div class="flex flex-row w-full justify-between py-1">
-                            <div class="flex flex-col">
-                                <div class="text-md text-secondary mt-2">
-                                    <span>Delivery Discount</span>
-                                    <span *ngIf="paymentDetails.deliveryDiscountDescription">&nbsp;({{paymentDetails.deliveryDiscountDescription}})</span>
+                        <!-- Order Discount -->
+                        <ng-container *ngIf="paymentDetails.subTotalDiscount !== 0">
+                            <div class="flex flex-row w-full justify-between  mt-2">
+                                <div class="flex flex-col">
+                                    <div class="text-md text-secondary">
+                                        <span>Order Discount</span>
+                                        <span *ngIf="paymentDetails.subTotalDiscountDescription">&nbsp;({{paymentDetails.subTotalDiscountDescription}})</span>
+                                    </div>
+                                    <span class="text-xs text-gray-500" *ngIf="paymentDetails.discountMaxAmount && paymentDetails.discountMaxAmount != 0 && paymentDetails.subTotalDiscount >= paymentDetails.discountMaxAmount && paymentDetails.subTotalDiscount != 0">
+                                        Capped at {{paymentDetails.discountMaxAmount | currency: platform.currency }}
+                                    </span>
                                 </div>
-                                <span class="text-xs text-gray-500" *ngIf="paymentDetails.deliveryDiscountMaxAmount != 0 && paymentDetails.deliveryDiscount >= paymentDetails.deliveryDiscountMaxAmount && paymentDetails.deliveryDiscount != 0">
-                                    Capped at {{paymentDetails.deliveryDiscountMaxAmount | currency: platform.currency }}
-                                </span>
+                                <span class="font-semibold">-{{paymentDetails.subTotalDiscount | currency: platform.currency}}</span>
                             </div>
-                            <span class="font-semibold">-{{paymentDetails.deliveryDiscount | currency: platform.currency}}</span>
-                        </div>
-                    </ng-container> -->
-
-                    <ng-container *ngIf="paymentDetails.deliveryDiscount !== 0">
+                        </ng-container>
+                        <!-- Service Charges -->
+                        <ng-container *ngIf="paymentDetails.storeServiceCharge !== 0">
+                            <div class="flex flex-row justify-between mt-2">
+                                <span class="text-md text-secondary">Service Charge</span> 
+                                <span class="text-md font-semibold">{{paymentDetails.storeServiceCharge | currency: platform.currency}}</span>
+                            </div>
+                        </ng-container>
+                        <!-- Delivery Fee -->
                         <div class="flex flex-row justify-between mt-2">
-                            <span class="text-md text-secondary">Delivery Fee Discount</span>
-                            <span class="text-md font-semibold">-{{paymentDetails.deliveryDiscount | currency: platform.currency}}</span>
+                            <span class="text-md text-secondary">Delivery Fee</span>
+                            <span class="text-md font-semibold">{{paymentDetails.deliveryCharges | currency: platform.currency}}</span>
                         </div>
-                    </ng-container>
-
-                    <div *ngIf="paymentDetails.platformVoucherDeliveryDiscount && paymentDetails.platformVoucherDeliveryDiscount !== 0" class="flex flex-row justify-between mt-2">
-                        <span class="text-md text-secondary">Deliverin Shipping Discount</span>
-                        <span class="text-md font-semibold">-{{paymentDetails.platformVoucherDeliveryDiscount | currency: platform.currency}}</span>
-                    </div>
-                    
-                    <div *ngIf="paymentDetails.platformVoucherSubTotalDiscount && paymentDetails.platformVoucherSubTotalDiscount !== 0" class="flex flex-row justify-between mt-2">
-                        <span class="text-md text-secondary">Deliverin Promo Code/Voucher</span>
-                        <span class="text-md font-semibold">-{{paymentDetails.platformVoucherSubTotalDiscount | currency: platform.currency}}</span>
-                    </div>
-
+                        <!-- Delivery Discount -->
+                        <!-- <ng-container *ngIf="paymentDetails.deliveryDiscount !== 0">
+                            <div class="flex flex-row w-full justify-between py-1">
+                                <div class="flex flex-col">
+                                    <div class="text-md text-secondary mt-2">
+                                        <span>Delivery Discount</span>
+                                        <span *ngIf="paymentDetails.deliveryDiscountDescription">&nbsp;({{paymentDetails.deliveryDiscountDescription}})</span>
+                                    </div>
+                                    <span class="text-xs text-gray-500" *ngIf="paymentDetails.deliveryDiscountMaxAmount != 0 && paymentDetails.deliveryDiscount >= paymentDetails.deliveryDiscountMaxAmount && paymentDetails.deliveryDiscount != 0">
+                                        Capped at {{paymentDetails.deliveryDiscountMaxAmount | currency: platform.currency }}
+                                    </span>
+                                </div>
+                                <span class="font-semibold">-{{paymentDetails.deliveryDiscount | currency: platform.currency}}</span>
+                            </div>
+                        </ng-container> -->
+    
+                        <ng-container *ngIf="paymentDetails.deliveryDiscount !== 0">
+                            <div class="flex flex-row justify-between mt-2">
+                                <span class="text-md text-secondary">Delivery Fee Discount</span>
+                                <span class="text-md font-semibold">-{{paymentDetails.deliveryDiscount | currency: platform.currency}}</span>
+                            </div>
+                        </ng-container>
+    
+                        <div *ngIf="paymentDetails.platformVoucherDeliveryDiscount && paymentDetails.platformVoucherDeliveryDiscount !== 0" class="flex flex-row justify-between mt-2">
+                            <span class="text-md text-secondary">Deliverin Shipping Discount</span>
+                            <span class="text-md font-semibold">-{{paymentDetails.platformVoucherDeliveryDiscount | currency: platform.currency}}</span>
+                        </div>
+                        
+                        <div *ngIf="paymentDetails.platformVoucherSubTotalDiscount && paymentDetails.platformVoucherSubTotalDiscount !== 0" class="flex flex-row justify-between mt-2">
+                            <span class="text-md text-secondary">Deliverin Promo Code/Voucher</span>
+                            <span class="text-md font-semibold">-{{paymentDetails.platformVoucherSubTotalDiscount | currency: platform.currency}}</span>
+                        </div>
+    
+                        
+                    </div>    
                     <!-- Separator -->
-                    <div class="border-b w-full my-1"></div>
+                    <!-- <div class="border-b w-full my-1"></div> -->
 
                     <ng-container *ngIf="customerId; else guestVoucher">
-                        <!-- Voucher Dropdown -->
-                        <ng-container *ngIf="customerVouchers && customerVouchers.length > 0">
-                            <mat-form-field class="fuse-mat-no-subscript fuse-mat-dense w-full my-1 text-sm" floatLabel="always">
-                                <mat-select 
-                                    placeholder="Select My Voucher"
-                                    (selectionChange)="selectVoucher(voucherSelector.value);"
-                                    [(ngModel)]="voucherApplied"
-                                    [ngModelOptions]="{standalone: true}"
-                                    #voucherSelector="matSelect">
-                                    <mat-select-trigger>
-                                        <span class="flex items-center">
-                                            <span>{{ voucherSelector.triggerValue }}</span>
-                                        </span>
-                                    </mat-select-trigger>
-                                    <div *ngFor="let voucher of customerVouchers">
-                                        <ng-container *ngIf="(voucher.voucher.voucherType === 'PLATFORM' ) && validateVoucher(voucher)">
-                                            <mat-option [value]="voucher">{{voucher.voucher.name}}</mat-option>
-                                        </ng-container>
-                                    </div>
-                                </mat-select>
-                                <button
-                                    mat-icon-button
-                                    type="button"
-                                    *ngIf="voucherApplied"
-                                    (click)="deselectVoucher(); $event.stopPropagation()"
-                                    matSuffix>
-                                    <mat-icon
-                                        class="text-gray-500 icon-size-4 ml-2"
-                                        [svgIcon]="'heroicons_solid:trash'"></mat-icon>
-                                </button>                                              
-                            </mat-form-field>
-                        </ng-container>
-    
-                        <!-- Voucher Input -->
-                        <ng-container *ngIf="displayRedeem; else displayHavePromo">
-                            <mat-form-field class="w-full mt-1 fuse-mat-no-subscript fuse-mat-dense text-sm" floatLabel="always">
-                                <input
-                                    matInput
-                                    placeholder="Enter Promo Code"
-                                    autocomplete="disabled"
-                                    [(ngModel)]="promoCode"
-                                    [ngModelOptions]="{standalone: true}"
-                                    >
-                                    <button class="bg-primary py-2 px-4 rounded text-white"
-                                    [disabled]="isLoading" 
-                                    [ngClass]="isLoading ? 'cursor-wait bg-gray-200' : 'bg-primary-500 hover:bg-primary-600'"
-                                    (click)="claimPromoCode(); $event.preventDefault()">
-                                        Apply
-                                    </button>
-                            </mat-form-field>
-                        </ng-container>
-
-                        <ng-template #displayHavePromo>
-                            <div class="text-xs mt-1">
-                                <span>Having a Promo Code? Redeem </span>
-                                <span class="underline cursor-pointer text-primary" 
-                                    (click)="displayRedeem = true">
-                                here
-                                </span>
-                            </div>
-                        </ng-template>
-
-                    </ng-container>
-
-                    <ng-template #guestVoucher>
-                        <!-- Voucher Dropdown -->
-                        <ng-container *ngIf="guestVouchers">
-                            <mat-form-field class="fuse-mat-no-subscript fuse-mat-dense w-full mt-1 text-sm" floatLabel="always">
-                                <input
-                                matInput
-                                readonly
-                                [(ngModel)]="guestVouchers.voucher.name"
-                                [ngModelOptions]="{standalone: true}"
-                                >
-                                <button
-                                    mat-icon-button
-                                    type="button"
-                                    *ngIf="voucherApplied"
-                                    (click)="deselectVoucher(); $event.stopPropagation()"
-                                    matSuffix>
-                                    <mat-icon
-                                        class="text-gray-500 icon-size-4 ml-2"
-                                        [svgIcon]="'heroicons_solid:trash'"></mat-icon>
-                                </button>                                              
-                            </mat-form-field>
-                        </ng-container>
-    
-                        <!-- Voucher Input -->
-                        <ng-container *ngIf="guestVouchers === null">
-                            <ng-container *ngIf="true; else displayHavePromo">
-                                <mat-form-field class="w-full mt-1 fuse-mat-no-subscript fuse-mat-dense text-sm" floatLabel="always">
+                        <div class="flex flex-row md:flex-col gap-1 md:gap-0 items-center">
+                            <!-- Voucher Dropdown -->
+                            <ng-container *ngIf="customerVouchers && customerVouchers.length > 0">
+                                <mat-form-field class="fuse-mat-no-subscript fuse-mat-dense w-3/5 md:w-full mt-2 text-sm tracking-tight" floatLabel="always">
+                                    <mat-select 
+                                        placeholder="Select My Voucher"
+                                        (selectionChange)="selectVoucher(voucherSelector.value);"
+                                        [(ngModel)]="voucherApplied"
+                                        [ngModelOptions]="{standalone: true}"
+                                        #voucherSelector="matSelect">
+                                        <mat-select-trigger>
+                                            <span class="flex items-center">
+                                                <span>{{ voucherSelector.triggerValue }}</span>
+                                            </span>
+                                        </mat-select-trigger>
+                                        <div *ngFor="let voucher of customerVouchers">
+                                            <ng-container *ngIf="(voucher.voucher.voucherType === 'PLATFORM' ) && validateVoucher(voucher)">
+                                                <mat-option [value]="voucher">{{voucher.voucher.name}}</mat-option>
+                                            </ng-container>
+                                        </div>
+                                    </mat-select>
+                                    <button
+                                        mat-icon-button
+                                        type="button"
+                                        *ngIf="voucherApplied"
+                                        (click)="deselectVoucher(); $event.stopPropagation()"
+                                        matSuffix>
+                                        <mat-icon
+                                            class="text-gray-500 icon-size-4 ml-0"
+                                            [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                    </button>                                              
+                                </mat-form-field>
+                            </ng-container>
+        
+                            <!-- Voucher Input -->
+                            <ng-container *ngIf="displayRedeem; else displayHavePromo">
+                                <mat-form-field class="w-2/5 md:w-full mt-2 fuse-mat-no-subscript fuse-mat-dense text-sm tracking-tighter" floatLabel="always">
                                     <input
                                         matInput
-                                        placeholder="Enter Promo Code"
+                                        placeholder="Enter Code"
                                         autocomplete="disabled"
                                         [(ngModel)]="promoCode"
                                         [ngModelOptions]="{standalone: true}"
                                         >
-                                        <button class="bg-primary py-2 px-4 rounded text-white"
+                                        <button class="bg-primary py-1 px-2 rounded text-white text-xs md:text-sm tracking-tight"
                                         [disabled]="isLoading" 
                                         [ngClass]="isLoading ? 'cursor-wait bg-gray-200' : 'bg-primary-500 hover:bg-primary-600'"
                                         (click)="claimPromoCode(); $event.preventDefault()">
@@ -860,7 +824,7 @@
                             </ng-container>
     
                             <ng-template #displayHavePromo>
-                                <div class="text-xs mt-1">
+                                <div class="w-2/5 md:w-full text-xs mt-2">
                                     <span>Having a Promo Code? Redeem </span>
                                     <span class="underline cursor-pointer text-primary" 
                                         (click)="displayRedeem = true">
@@ -868,25 +832,81 @@
                                     </span>
                                 </div>
                             </ng-template>
-                        </ng-container>
-    
-                    </ng-template>
+                        </div>
 
+                    </ng-container>
+
+                    <ng-template #guestVoucher>
+                        <!-- Voucher Dropdown -->
+                        <div class="flex flex-row md:flex-col gap-1 md:gap-0 items-center">
+                            <ng-container *ngIf="guestVouchers">
+                                <mat-form-field class="fuse-mat-no-subscript fuse-mat-dense w-full mt-2 text-sm tracking-tight" floatLabel="always">
+                                    <input
+                                    matInput
+                                    readonly
+                                    [(ngModel)]="guestVouchers.voucher.name"
+                                    [ngModelOptions]="{standalone: true}"
+                                    >
+                                    <button
+                                        mat-icon-button
+                                        type="button"
+                                        *ngIf="voucherApplied"
+                                        (click)="deselectVoucher(); $event.stopPropagation()"
+                                        matSuffix>
+                                        <mat-icon
+                                            class="text-gray-500 icon-size-4 ml-0"
+                                            [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                    </button>                                              
+                                </mat-form-field>
+                            </ng-container>
+        
+                            <!-- Voucher Input -->
+                            <ng-container *ngIf="guestVouchers === null">
+                                <ng-container *ngIf="true; else displayHavePromo">
+                                    <mat-form-field class="w-full mt-2 fuse-mat-no-subscript fuse-mat-dense text-sm tracking-tighter" floatLabel="always">
+                                        <input
+                                            matInput
+                                            placeholder="Enter Promo Code"
+                                            autocomplete="disabled"
+                                            [(ngModel)]="promoCode"
+                                            [ngModelOptions]="{standalone: true}"
+                                            >
+                                            <button class="bg-primary py-1 px-2 rounded text-white text-xs md:text-sm tracking-tight"
+                                            [disabled]="isLoading" 
+                                            [ngClass]="isLoading ? 'cursor-wait bg-gray-200' : 'bg-primary-500 hover:bg-primary-600'"
+                                            (click)="claimPromoCode(); $event.preventDefault()">
+                                                Apply
+                                            </button>
+                                    </mat-form-field>
+                                </ng-container>
+        
+                                <ng-template #displayHavePromo>
+                                    <div class="w-2/5 md:w-full text-xs mt-2">
+                                        <span>Having a Promo Code? Redeem </span>
+                                        <span class="underline cursor-pointer text-primary" 
+                                            (click)="displayRedeem = true">
+                                        here
+                                        </span>
+                                    </div>
+                                </ng-template>
+                            </ng-container>
+
+                        </div>
+                    </ng-template>
 
                     <!-- Separator -->
                     <div class="border-b w-full my-2"></div>
-
                     <!-- Grand Total -->
-                    <div class="flex flex-row justify-between mt-2">
+                    <div class="flex flex-row justify-between">
                         <span class="text-md text-secondary">Grand Total</span>
                         <span class="text-md font-semibold">{{paymentDetails.cartGrandTotal | currency: platform.currency}}</span>
                     </div>
 
-                    <!-- Checkout (desktop)-->
+                    <!-- Checkout-->
                     <button 
                         (click)="goToCheckout()"
                         [disabled]="isLoading || isGettingDeliveryPrices"
-                        class="hidden md:block py-2 px-4 rounded w-full mt-2 text-white"
+                        class="py-2 px-4 rounded w-full mt-2 text-white"
                         [ngClass]="{ 'cursor-wait bg-gray-400' : isLoading, 
                                     'cursor-pointer bg-primary hover:bg-primary-600' : !isLoading || !isPristine,
                                     'cursor-not-allowed bg-gray-400' : isPristine}">
@@ -1002,41 +1022,9 @@
                         </ng-template>
                     </div>
                 </ng-container>
-                <!-- Store Address (md) -->
-                <ng-container *ngIf="false">
-                    <div class="flex flex-col justify-center items-center border rounded-lg p-2 mt-4">
-                        <!-- Header -->
-                        <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
-                            <mat-icon 
-                                class="icon-size-5 text-primary" 
-                                [svgIcon]="'mat_outline:storefront'"></mat-icon>
-                            <span *ngIf="storesAddresses.length === 1" class="ml-2 font-bold">Store for Self Collect</span>
-                            <span *ngIf="storesAddresses.length > 1" class="ml-2 font-bold">Stores for Self Collect</span>
-                        </div>
-                        <ng-container *ngFor="let storeAddress of storesAddresses">
-                            <fuse-card class="rounded mt-2 w-full">
-                                <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full">
-                                    <!-- Address  -->
-                                    <div class="flex flex-col font-medium gap-1 p-1">
-                                        <span class="">{{storeAddress.storeName}}</span>
-                                        <span class="">{{storeAddress.phoneNumber}}</span>
-                                        <span class="">{{storeAddress.address}}, {{storeAddress.postCode}}, {{storeAddress.city}}, {{storeAddress.state}}</span>
-                                    </div>
-                                    <!-- Address  -->
-                                    <!-- <div class="flex flex-col font-medium gap-1">
-                                        <mat-icon 
-                                            [matTooltip]="storeAddress.address + ', ' + storeAddress.postCode + ', ' + storeAddress.city + ', ' + storeAddress.state"
-                                            class="icon-size-5 text-primary" 
-                                            [svgIcon]="'mat_solid:location_on'"></mat-icon>
-                                    </div> -->
-                                </div>
-                            </fuse-card>
-                        </ng-container>
-                    </div>
-                </ng-container>
             </div>
             <!-- Checkout (mobile)-->
-            <div
+            <!-- <div
                 class="my-2 md:hidden flex items-center justify-center shadow-lg rounded-lg z-90 cursor-pointer bg-primary-600 sticky bottom-8"
                 [ngClass]="{ 'cursor-wait bg-gray-400' : isLoading, 
                             'cursor-pointer bg-primary hover:bg-primary-600' : !isLoading || !isPristine,
@@ -1056,7 +1044,7 @@
                         <mat-icon class="text-white icon-size-5" svgIcon="heroicons_outline:chevron-right"></mat-icon>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </ng-container>    
 
         <!-- No Carts -->

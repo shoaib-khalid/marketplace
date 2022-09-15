@@ -233,7 +233,7 @@ export class CartListComponent implements OnInit, OnDestroy
         message : string
     }[] = [];
 
-    
+    visibleCartSummary: boolean = false
 
     // -------------------------
     // Voucher
@@ -661,6 +661,14 @@ export class CartListComponent implements OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({matchingAliases}) => {
                 this.currentScreenSize = matchingAliases;
+
+                if ( matchingAliases.includes('md') )
+                {
+                    this.visibleCartSummary = true;
+                }
+                else {
+                    this.visibleCartSummary = false;
+                }
             });
     }
 
@@ -2221,6 +2229,11 @@ export class CartListComponent implements OnInit, OnDestroy
                 }
             );  
         }
+    }
+
+    toggleSummary() {
+        // Toggle the read status
+        this.visibleCartSummary = !this.visibleCartSummary;
     }
 
 }
