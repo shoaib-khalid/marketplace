@@ -55,6 +55,7 @@ export class _SearchComponent implements OnInit, OnDestroy
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     currentLocation: CurrentLocation;
+    isStorePage: boolean = false;
 
     /**
      * Constructor
@@ -96,11 +97,13 @@ export class _SearchComponent implements OnInit, OnDestroy
                         .pipe(takeUntil(this._unsubscribeAll))
                         .subscribe((storeDetails: StoreDetails) => {
                             this.store = storeDetails;
+                            this.isStorePage = true;
                             // Mark for check
                             this._changeDetectorRef.markForCheck();
                         });
                 } else {
                     this.placeholder = 'Search for food or restaurant';
+                    this.isStorePage = false;
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
