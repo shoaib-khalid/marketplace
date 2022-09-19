@@ -798,22 +798,38 @@ export class LocationService
         page            : number, 
         pageSize        : number, 
         sortByCol       : string, 
-        sortingOrder    : 'ASC' | 'DESC' | ''
+        sortingOrder    : 'ASC' | 'DESC' | '',
+        latitude        : number,
+        longitude       : number
     } = {
         page            : 0, 
         pageSize        : 0, 
         sortByCol       : "keyword", 
-        sortingOrder    : 'ASC'
+        sortingOrder    : 'ASC',
+        latitude        : 0,
+        longitude       : 0
     }): Observable<Tag[]> 
     {        
         let locationService = this._apiServer.settings.apiServer.locationService;
         let accessToken = this._authService.publicToken;
 
-        const headers = {
-            headers: new HttpHeaders().set("Authorization", `Bearer ${accessToken}`)
+        const header = {
+            headers: new HttpHeaders().set("Authorization", `Bearer ${accessToken}`),
+            params: params
         };
 
-        return this._httpClient.get<Tag[]>(locationService + '/tags', headers)
+        // Delete empty value
+        Object.keys(header.params).forEach(key => {
+            if (Array.isArray(header.params[key])) {
+                header.params[key] = header.params[key].filter(element => element !== null)
+            }
+            
+            if (!header.params[key] || (Array.isArray(header.params[key]) && header.params[key].length === 0)) {
+                delete header.params[key];
+            }
+        });
+
+        return this._httpClient.get<Tag[]>(locationService + '/tags', header)
             .pipe(
                 catchError(() =>
                     of(false)

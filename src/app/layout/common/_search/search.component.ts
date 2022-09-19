@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { map, Subject, switchMap, takeUntil } from 'rxjs';
+import { combineLatest, map, Subject, switchMap, takeUntil } from 'rxjs';
 import { fuseAnimations } from '@fuse/animations/public-api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SearchService } from './search.service';
@@ -12,6 +12,8 @@ import { PlatformService } from 'app/core/platform/platform.service';
 import { Platform } from 'app/core/platform/platform.types';
 import { LocationService } from 'app/core/location/location.service';
 import { Tag } from 'app/core/location/location.types';
+import { CurrentLocationService } from 'app/core/_current-location/current-location.service';
+import { CurrentLocation } from 'app/core/_current-location/current-location.types';
 
 
 @Component({
@@ -37,7 +39,7 @@ export class _SearchComponent implements OnInit, OnDestroy
     @Input() store: StoreDetails;
 
     platform: Platform;
-    tags: Tag[];
+    tags: Tag[] = [];
     searchControl: FormControl = new FormControl();
     resultSets: any[];
     autoCompleteList: any[]
@@ -52,6 +54,8 @@ export class _SearchComponent implements OnInit, OnDestroy
     currentLong : number = null;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    currentLocation: CurrentLocation;
+    isStorePage: boolean = false;
 
     /**
      * Constructor
@@ -64,7 +68,8 @@ export class _SearchComponent implements OnInit, OnDestroy
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _platformService: PlatformService,
         private _locationService: LocationService,
-        private _activatedRoute: ActivatedRoute
+        private _activatedRoute: ActivatedRoute,
+        private _currentLocationService: CurrentLocationService,
     )
     {
     }
@@ -82,15 +87,6 @@ export class _SearchComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        this._locationService.tags$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((response: Tag[]) => {
-                if (response) {
-                    this.tags = response;
-                }
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            })
 
         this._searchService.route$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -101,11 +97,13 @@ export class _SearchComponent implements OnInit, OnDestroy
                         .pipe(takeUntil(this._unsubscribeAll))
                         .subscribe((storeDetails: StoreDetails) => {
                             this.store = storeDetails;
+                            this.isStorePage = true;
                             // Mark for check
                             this._changeDetectorRef.markForCheck();
                         });
                 } else {
                     this.placeholder = 'Search for food or restaurant';
+                    this.isStorePage = false;
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -135,15 +133,40 @@ export class _SearchComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-        this._platformService.platform$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((platform: Platform) => {
-                if (platform) {
-                    this.platform = platform;
+        combineLatest([
+            this._currentLocationService.currentLocation$,
+            this._platformService.platform$
+        ])
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe(([currentLocation, platform] : [CurrentLocation, Platform])=>{
+            if (currentLocation && platform) {
+                this.platform = platform;
+                this.currentLocation = currentLocation;
+
+                if (currentLocation.isAllowed === true) {
+                    let currentLat = currentLocation.location.lat;
+                    let currentLong = currentLocation.location.lng;
+
+                    this._locationService.getTags({
+                        page            : 0,
+                        pageSize        : 10,
+                        sortByCol       : 'keyword', 
+                        sortingOrder    : 'ASC', 
+                        latitude        : currentLat,
+                        longitude       : currentLong,
+                    }).subscribe((tags: Tag[])=>{
+                        if (tags) {
+                            this.tags = tags;
+                        }
+                        // Mark for check
+                        this._changeDetectorRef.markForCheck();
+                    });
                 }
-                // Mark for change
-                this._changeDetectorRef.markForCheck();
-            });
+            }
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        })
 
         // ----------------------
         // Fuse Media Watcher
