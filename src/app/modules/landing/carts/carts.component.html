@@ -13,9 +13,9 @@
                     <span class="ml-2 font-bold">Delivery Address</span>
                 </div>
                 <ng-container *ngIf="customerAddress; else noAddress">
-                    <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full text-sm">
+                    <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full text-base">
                         <!-- Address  -->
-                        <div class="flex flex-col font-medium gap-1">
+                        <div class="flex flex-col font-normal gap-1">
                             <span class="">{{customerAddress.name}}</span>
                             <span class="">{{customerAddress.phoneNumber}}</span>
                             <span class="">{{customerAddress.address}}, {{customerAddress.postCode}}, {{customerAddress.city}}, {{customerAddress.state}}</span>
@@ -34,7 +34,7 @@
                         <button
                             [routerLink]="['/address']"
                             [queryParams]="{origin: 'carts'}"
-                            class="my-2 w-full font-semibold p-1 rounded-md bg-primary hover:bg-primary-600"                            >
+                            class="py-2 mt-2 w-full p-1 rounded-md bg-primary hover:bg-primary-600"                            >
                             <span class="text-white">Change</span>
                         </button>
                     </div>
@@ -46,12 +46,12 @@
                     <div class="flex w-full justify-center items-center mt-2">
                         <button 
                             (click)="addAddressPopup()"
-                            class="my-2 w-full bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
+                            class="py-2 mt-2 w-full bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
                         >
                             <mat-icon 
                                 class="icon-size-5 text-white" 
                                 [svgIcon]="'heroicons_solid:plus'"></mat-icon>
-                            <span class="ml-1 font-semibold text-white">Add</span>
+                            <span class="ml-1 text-white">Add</span>
                         </button>
                     </div>
                 </ng-template>
@@ -68,9 +68,9 @@
                     </div>
                     <ng-container *ngIf="selfPickupInfo; else noSelfPickupInfo">
                         <div class="w-full flex flex-col rounded">
-                            <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full text-sm">
+                            <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full text-base">
                                 <!-- Address  -->
-                                <div class="flex flex-col font-medium gap-1">
+                                <div class="flex flex-col font-normal gap-1">
                                     <span class="">{{selfPickupInfo.name}}</span>
                                     <span class="">{{selfPickupInfo.phoneNumber}}</span>
                                     <span class="">{{selfPickupInfo.email}}</span>
@@ -80,12 +80,12 @@
                             <div class="flex w-full justify-center items-center">
                                 <button 
                                     (click)="addRequiredInfo(0, true)"
-                                    class="my-2 w-full bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
+                                    class="py-2 mt-2 w-full bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
                                 >
                                     <mat-icon 
                                         class="icon-size-4 text-white" 
                                         [svgIcon]="'heroicons_solid:pencil'"></mat-icon>
-                                    <span class="ml-1 font-semibold text-white">Edit</span>
+                                    <span class="ml-1 text-white">Edit</span>
                                 </button>
                             </div>
                         </div>
@@ -97,12 +97,12 @@
                         <div class="flex w-full justify-center items-center mt-2">
                             <button 
                             (click)="addRequiredInfo()"
-                                class="my-2 w-full bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
+                                class="py-2 mt-2 w-full bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
                             >
                                 <mat-icon 
                                     class="icon-size-5 text-white" 
                                     [svgIcon]="'heroicons_solid:plus'"></mat-icon>
-                                <span class="ml-1 font-semibold text-white">Add</span>
+                                <span class="ml-1 text-white">Add</span>
                             </button>
                         </div>
                     </ng-template>
@@ -672,7 +672,7 @@
             </div>
 
             <!-- Cart Summary -->
-            <div *ngIf="platform" class="flex flex-col w-full md:w-140 md:ml-6 md:mt-8 mt-0 sticky md:static bottom-2">
+            <div *ngIf="platform" class="flex flex-col w-full md:w-140 md:ml-6 md:mt-8 mt-0 sticky md:static bottom-0">
                 <!-- Cart Summary -->
                 <div class="flex flex-col border border-slate-400 md:border-slate-200 rounded-lg p-2 bg-white">
                     <!-- Header -->
@@ -906,7 +906,7 @@
                     <button 
                         (click)="goToCheckout()"
                         [disabled]="isLoading || isGettingDeliveryPrices"
-                        class="py-2 px-4 rounded w-full mt-2 text-white"
+                        class="py-2 px-4 rounded-md w-full mt-2 mb-2 md:mb-0 text-white"
                         [ngClass]="{ 'cursor-wait bg-gray-400' : isLoading, 
                                     'cursor-pointer bg-primary hover:bg-primary-600' : !isLoading || !isPristine,
                                     'cursor-not-allowed bg-gray-400' : isPristine}">
@@ -927,7 +927,7 @@
                             <!-- <ng-container *ngIf="customerAddress.isDefault"> -->
                                 <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full">
                                     <!-- Address  -->
-                                    <div class="flex flex-col font-medium gap-1">
+                                    <div class="flex flex-col font-normal gap-1">
                                         <span class="">{{customerAddress.name}}</span>
                                         <span class="">{{customerAddress.phoneNumber}}</span>
                                         <span class="">{{customerAddress.address}}, {{customerAddress.postCode}}, {{customerAddress.city}}, {{customerAddress.state}}</span>
@@ -946,7 +946,7 @@
                                     <button
                                         [routerLink]="'/address'"
                                         [queryParams]="{origin: 'carts'}"
-                                        class="my-2 w-1/2 font-semibold p-1 rounded-md bg-primary hover:bg-primary-600"                            >
+                                        class="py-2 mt-2 w-1/2 p-1 rounded-md bg-primary hover:bg-primary-600"                            >
                                         <span class="text-white">Change</span>
                                     </button>
                                 </div>
@@ -960,12 +960,12 @@
                         <div class="flex w-full justify-center items-center mt-2">
                             <button 
                                 (click)="addAddressPopup()"
-                                class="my-2 w-1/2 bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
+                                class="py-2 mt-2 w-1/2 bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
                             >
                                 <mat-icon 
                                     class="icon-size-5 text-white" 
                                     [svgIcon]="'heroicons_solid:plus'"></mat-icon>
-                                <span class="ml-1 font-semibold text-white">Add</span>
+                                <span class="ml-1 text-white">Add</span>
                             </button>
                         </div>
                     </ng-template>
@@ -984,7 +984,7 @@
                             <div class="w-full flex flex-col rounded">
                                 <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full">
                                     <!-- Address  -->
-                                    <div class="flex flex-col font-medium gap-1">
+                                    <div class="flex flex-col font-normal gap-1">
                                         <span class="">{{selfPickupInfo.name}}</span>
                                         <span class="">{{selfPickupInfo.phoneNumber}}</span>
                                         <span class="">{{selfPickupInfo.email}}</span>
@@ -994,12 +994,12 @@
                                 <div class="flex w-full justify-center items-center">
                                     <button 
                                         (click)="addRequiredInfo(0, true)"
-                                        class="my-2 w-1/2 bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
+                                        class="py-2 mt-2 w-1/2 bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
                                     >
                                         <mat-icon 
                                             class="icon-size-4 text-white" 
                                             [svgIcon]="'heroicons_solid:pencil'"></mat-icon>
-                                        <span class="ml-1 font-semibold text-white">Edit</span>
+                                        <span class="ml-1 text-white">Edit</span>
                                     </button>
                                 </div>
                             </div>
@@ -1011,12 +1011,12 @@
                             <div class="flex w-full justify-center items-center mt-2">
                                 <button 
                                 (click)="addRequiredInfo()"
-                                    class="my-2 w-1/2 bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
+                                    class="py-2 mt-2 w-1/2 bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
                                 >
                                     <mat-icon 
                                         class="icon-size-5 text-white" 
                                         [svgIcon]="'heroicons_solid:plus'"></mat-icon>
-                                    <span class="ml-1 font-semibold text-white">Add</span>
+                                    <span class="ml-1 text-white">Add</span>
                                 </button>
                             </div>
                         </ng-template>
