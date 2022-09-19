@@ -162,20 +162,22 @@ export class LandingSearchComponent implements OnInit
                         
                         if (!this.currentLocation || this.searchValue) {
                             
-                            // Get products
-                            this._locationService.getProductsDetails({ 
-                                name            : this.searchValue, 
-                                page            : this.oldProductsDetailsPaginationIndex,
-                                pageSize        : this.productsDetailsPageSize, 
-                                sortByCol       : 'created', 
-                                sortingOrder    : 'DESC', 
-                                regionCountryId : this.platform.country, 
-                                latitude        : this.currentLat, 
-                                longitude       : this.currentLong, 
-                                storeTagKeyword : this.tagValue,
-                                status          : ['ACTIVE', 'OUTOFSTOCK']
-                            })
-                            .subscribe(()=>{});
+                            if (!this.tagValue) {
+                                // Get products
+                                this._locationService.getProductsDetails({ 
+                                    name            : this.searchValue, 
+                                    page            : this.oldProductsDetailsPaginationIndex,
+                                    pageSize        : this.productsDetailsPageSize, 
+                                    sortByCol       : 'created', 
+                                    sortingOrder    : 'DESC', 
+                                    regionCountryId : this.platform.country, 
+                                    latitude        : this.currentLat, 
+                                    longitude       : this.currentLong, 
+                                    // storeTagKeyword : this.tagValue,
+                                    status          : ['ACTIVE', 'OUTOFSTOCK']
+                                })
+                                .subscribe(()=>{});
+                            }
                         }
 
                         this._locationService.getStoresDetails({ 
