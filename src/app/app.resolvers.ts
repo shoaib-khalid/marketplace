@@ -101,7 +101,7 @@ export class PlatformSetupResolver implements Resolve<any>
             this._cartsService.cartResolver(true), // cartResolver(true) means we resolving the cart notification header
             this._analyticService.resolveAnalytic(),
             this._currentLocationService.get(),
-            this._locationService.getTags()
+            // this._locationService.getTags()
             // this._httpstatService.get(500)
         ])
     }

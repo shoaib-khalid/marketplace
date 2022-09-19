@@ -47,12 +47,12 @@ export class CurrentLocationService
                         currentLat = crd.latitude;
                         currentLong = crd.longitude;
 
-                        this._logging.debug("User have allowed location", { lat: currentLat, lng: currentLong });
+                        this._logging.debug("User has allowed location", { lat: currentLat, lng: currentLong });
 
                         this._currentLocation.next({ isAllowed: true, location: { lat: currentLat, lng: currentLong }});
                     },
                     (error) => {
-                        this._logging.debug("User have NOT allowed location")
+                        this._logging.debug("User has NOT allowed location")
                         this._currentLocation.next({ isAllowed: false });
                     }
                 );
