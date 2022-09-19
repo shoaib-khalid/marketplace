@@ -43,7 +43,7 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
     isHidden: boolean = false;
     isStorePage: boolean = false;
     isSearchOpened: boolean = false;
-    isCartPage: boolean = false;
+    floatingCartHidden: boolean = false;
 
     /**
      * Constructor
@@ -60,7 +60,6 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
         private _platformsService: PlatformService,
         private _displayErrorService: DisplayErrorService,
         private _userService: UserService,
-        private _platformLocation: PlatformLocation,
         private _searchService: SearchService
     )
     {
@@ -99,8 +98,8 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
             this.isSearchOpened = true;
         } 
 
-        if (this._router.url.split('/').length > 1 && this._router.url.split('/')[1] === 'carts'){
-            this.isCartPage = true;
+        if ((this._router.url.split('/').length > 1 && this._router.url.split('/')[1] === 'carts') || (this._router.url === '/')){
+            this.floatingCartHidden = true;
         }
 
         this._router.events.pipe(
@@ -113,9 +112,9 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
             
             // If inside store page, set route to 'store'
             if (response.url === '/') {
-                this.isSearchOpened = true
+                this.isSearchOpened = true;
             } else {
-                this.isSearchOpened = false
+                this.isSearchOpened = false;
             }
 
             if (route[1] === 'store') {
@@ -128,13 +127,14 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
                 this.isStorePage = false;
             }
 
-            if (route[1] === 'carts') {
-                this.isCartPage = true;
+            if (route[1] === 'carts' || response.url === '/') {
+                this.floatingCartHidden = true;
             } else {
-                this.isCartPage = false;
+                this.floatingCartHidden = false;
             }
             
-            
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
         });
 
         // Subscribe to navigation data

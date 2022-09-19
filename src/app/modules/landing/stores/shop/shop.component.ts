@@ -257,6 +257,9 @@ export class LandingShopComponent implements OnInit
     // -----------------------------------------------------------------------------------------------------
 
     ngOnInit(): void {  
+        
+        // Set route to 'store' on init
+        this._searchService.route = 'store'
 
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
