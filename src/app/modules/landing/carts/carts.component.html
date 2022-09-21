@@ -219,7 +219,7 @@
                                 <!-- Cart Items -->
                                 <ng-container *ngIf="cart.cartItems && cart.cartItems.length; else noCartItem">
                                     <ng-container *ngFor="let cartItem of cart.cartItems; let j = index">
-                                        <div class="w-full sticky mt-4" [ngClass]="currentScreenSize.includes('lg') ?  'cart-grid grid' : 'flex flex-row justify-between'">
+                                        <div class="w-full mt-4" [ngClass]="currentScreenSize.includes('lg') ?  'cart-grid grid' : 'flex flex-row justify-between'">
                                             <!-- Checkbox each item -->
                                             <div class="flex flex-none items-center lg:justify-center mt-2 w-auto lg:w-full px-1 lg:px-0">
                                                 <input
@@ -230,22 +230,26 @@
                                                 <img class="w-14 max-w-14 max-h-14 min-h-14 sm:w-18 sm:max-w-18 sm:h-18 sm:max-h-18 shadow rounded" [src]="cartItem.productAsset ? cartItem.productAsset.url : cartItem.productInventory.product.thumbnailUrl ? cartItem.productInventory.product.thumbnailUrl : displayStoreLogo(cart.store)">
                                                 <div class="flex flex-col ml-2 items-start justify-start sm:justify-center gap-1">
                                                     <span (click)="redirect('product', cart.store, cartItem.productInventory.product.seoNameMarketplace)" class="text-md sm:text-md font-semibold line-clamp-2 hover:cursor-pointer">{{cartItem.productName}}</span>
-                                                    <div class="flex flex-row items-center">
-                                                        <!-- Display variants -->
-                                                        <ng-container *ngIf="cartItem.productInventory.productInventoryItems.length > 0">
-                                                            <ng-container *ngFor="let variant of cartItem.productInventory.productInventoryItems">
-                                                                <span class="leading-tight text-xs lg:text-sm text-secondary flex flex-wrap">{{variant.productVariantAvailable.productVariant.name}}: {{variant.productVariantAvailable.value}}</span>
-                                                                <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span>
+                                                        <div class="">
+                                                            <!-- Display variants -->
+                                                            <ng-container *ngIf="cartItem.productInventory.productInventoryItems.length > 0">
+                                                                <div class="flex flex-wrap items-center gap-1">
+                                                                    <ng-container *ngFor="let variant of cartItem.productInventory.productInventoryItems; let isLast=last">
+                                                                        <span class="truncate tracking-tight max-w-32 leading-tight text-xs lg:text-sm text-secondary">{{variant.productVariantAvailable.productVariant.name}}: {{variant.productVariantAvailable.value}}{{isLast ? '' : ', '}}</span>
+                                                                        <!-- <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span> -->
+                                                                    </ng-container>
+                                                                </div>
                                                             </ng-container>
-                                                        </ng-container>
-                                                        <!-- Display Combo -->
-                                                        <ng-container *ngIf="cartItem.cartSubItem.length > 0">
-                                                            <ng-container  *ngFor="let combo of cartItem.cartSubItem">
-                                                                <span class="leading-tight text-xs lg:text-sm text-secondary flex flex-wrap">{{combo.productName}}</span>
-                                                                <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span>
+                                                            <!-- Display Combo -->
+                                                            <ng-container *ngIf="cartItem.cartSubItem.length > 0">
+                                                                <div class="flex flex-wrap items-center gap-1">
+                                                                    <ng-container *ngFor="let combo of cartItem.cartSubItem; let isLast=last">
+                                                                        <span class="truncate tracking-tight max-w-32 leading-tight text-xs lg:text-sm text-secondary">{{combo.productName}}{{isLast ? '' : ', '}}</span>
+                                                                        <!-- <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span> -->
+                                                                    </ng-container>
+                                                                </div>
                                                             </ng-container>
-                                                        </ng-container>
-                                                    </div>
+                                                        </div>
                                                     <!-- Display Special Instruction -->
                                                     <div *ngIf="cartItem.specialInstruction" class="flex flex-row items-center">
                                                         <span class="leading-tight text-xs md:text-sm text-secondary flex flex-wrap">Instruction: {{cartItem.specialInstruction}}</span>
@@ -663,7 +667,7 @@
                 <!-- Pagination -->
                 <pagination 
                     *ngIf="pagination.length > pagination.size"
-                    class="mt-4"
+                    class="my-2"
                     [itemLength]="pagination.length" 
                     [initialPage]="pagination.page + 1"
                     [pageSize]="pagination.size"
@@ -814,7 +818,7 @@
                                         [(ngModel)]="promoCode"
                                         [ngModelOptions]="{standalone: true}"
                                         >
-                                        <button class="bg-primary py-1 px-2 rounded text-white text-xs md:text-sm tracking-tight"
+                                        <button class="bg-primary py-1.5 px-2 rounded text-white text-xs md:text-sm tracking-tight"
                                         [disabled]="isLoading" 
                                         [ngClass]="isLoading ? 'cursor-wait bg-gray-200' : 'bg-primary-500 hover:bg-primary-600'"
                                         (click)="claimPromoCode(); $event.preventDefault()">
@@ -871,7 +875,7 @@
                                             [(ngModel)]="promoCode"
                                             [ngModelOptions]="{standalone: true}"
                                             >
-                                            <button class="bg-primary py-1 px-2 rounded text-white text-xs md:text-sm tracking-tight"
+                                            <button class="bg-primary py-1.5 px-2 rounded text-white text-xs md:text-sm tracking-tight"
                                             [disabled]="isLoading" 
                                             [ngClass]="isLoading ? 'cursor-wait bg-gray-200' : 'bg-primary-500 hover:bg-primary-600'"
                                             (click)="claimPromoCode(); $event.preventDefault()">

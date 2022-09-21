@@ -98,7 +98,7 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
             this.isSearchOpened = true;
         } 
 
-        if ((this._router.url.split('/').length > 1 && this._router.url.split('/')[1] === 'carts') || (this._router.url === '/')){
+        if (( this._router.url.split('/').length > 1 && (this._router.url.split('/')[1] === 'carts' || this._router.url.split('/')[1] === 'checkout') ) || (this._router.url === '/')){
             this.floatingCartHidden = true;
         }
 
@@ -127,7 +127,7 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
                 this.isStorePage = false;
             }
 
-            if (route[1] === 'carts' || response.url === '/') {
+            if ((route[1] === 'carts' || route[1] === 'checkout') || response.url === '/') {
                 this.floatingCartHidden = true;
             } else {
                 this.floatingCartHidden = false;

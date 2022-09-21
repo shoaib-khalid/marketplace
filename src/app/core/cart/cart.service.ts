@@ -460,7 +460,7 @@ export class CartService
             switchMap(cartsWithDetails => this._httpClient.put<any>(orderService + '/carts/' + cartId + '/items/' + itemId, cartItem, header)
             .pipe(
                 map((response) => {
-                    this._logging.debug("Response from StoresService (postCartItem)",response);
+                    this._logging.debug("Response from StoresService (updateCartItem)",response);
 
                     let cartIndex = cartsWithDetails.findIndex(item => item.id === response["data"].cartId);
                     let cartItemIndex = cartIndex > -1 ? cartsWithDetails[cartIndex].cartItems.findIndex(item => item.id === response["data"].id) : -1;

@@ -6,7 +6,7 @@
             <span *ngIf="showViewAll" (click)="viewAll()" class="font-semibold cursor-pointer text-primary hover:text-primary-600">View All</span>
         </div>
         <!-- Locations -->
-        <div class="flex flex-nowrap items-center justify-start overflow-x-auto scrollbar-hide w-full mt-2 sm:mt-4">
+        <div class="flex flex-nowrap items-center justify-start overflow-x-auto w-full mt-2 sm:mt-4">
             <div class="grid grid-flow-col grid-rows-1 gap-1 sm:gap-4">
                 <ng-container *ngFor="let location of locations">
                     <fuse-card class="flex flex-col h-30 w-40 filter-article cursor-pointer shadow rounded-lg mb-2 ml-2" (click)="chooseLocation(location.cityId, category)">

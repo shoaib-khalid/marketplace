@@ -212,7 +212,7 @@ export class BuyerCheckoutComponent implements OnInit
     customerActivity: CustomerActivity;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    visibleCartSummary: boolean = false
     /**
      * Constructor
      */
@@ -403,6 +403,14 @@ export class BuyerCheckoutComponent implements OnInit
             .subscribe(({matchingAliases}) => {
 
                 this.currentScreenSize = matchingAliases;
+
+                if ( matchingAliases.includes('md') )
+                {
+                    this.visibleCartSummary = true;
+                }
+                else {
+                    this.visibleCartSummary = false;
+                }
             });
 
         // Subscribe to user changes
@@ -908,5 +916,10 @@ export class BuyerCheckoutComponent implements OnInit
         if (countObject[refId] > 1) return true;
         else return false; 
         
+    }
+
+    toggleSummary() {
+        // Toggle the read status
+        this.visibleCartSummary = !this.visibleCartSummary;
     }
 }

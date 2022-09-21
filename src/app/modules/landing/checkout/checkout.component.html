@@ -13,7 +13,7 @@
                     <span class="ml-2 font-bold">Delivery Address</span>
                 </div>
                 <ng-container *ngIf="customerAddress; else noAddress">
-                    <div class="flex flex-col m-2 font-medium gap-1">
+                    <div class="flex flex-col m-2 font-normal gap-1">
                         <span class="">{{customerAddress.name}}</span>
                         <span class="">{{customerAddress.phoneNumber}}</span>
                         <span class="">{{customerAddress.address}}, {{customerAddress.postCode}}, {{customerAddress.city}}, {{customerAddress.state}}</span>
@@ -57,7 +57,7 @@
                     <div class="w-full flex flex-col rounded">
                         <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full">
                             <!-- Address  -->
-                            <div class="flex flex-col font-medium gap-1">
+                            <div class="flex flex-col font-normal gap-1">
                                 <span class="">{{selfPickupInfo.name}}</span>
                                 <span class="">{{selfPickupInfo.phoneNumber}}</span>
                                 <span class="">{{selfPickupInfo.email}}</span>
@@ -115,7 +115,7 @@
                             <!-- Cart Items -->
                             <ng-container *ngIf="cart.cartItems && cart.cartItems.length; else noCartItem">
                                 <ng-container *ngFor="let cartItem of cart.cartItems; let j = index">
-                                    <div class="w-full sticky mt-4" [ngClass]="currentScreenSize.includes('lg') ?  'checkout-grid grid' : 'flex flex-row justify-between'">
+                                    <div class="w-full mt-4" [ngClass]="currentScreenSize.includes('lg') ?  'checkout-grid grid' : 'flex flex-row justify-between'">
                                         <!-- Checkbox each item -->
                                         <!-- <div class="flex flex-none items-center lg:justify-center mt-2 w-auto lg:w-full px-1 lg:px-0">
                                             <input [(ngModel)]="selectedCart.carts[i + pagination.startIndex].cartItem[j + pagination.startIndex].selected" type="checkbox">
@@ -126,20 +126,24 @@
                                             <img class="w-14 max-w-14 max-h-14 min-h-14 sm:w-18 sm:max-w-18 sm:h-18 sm:max-h-18 shadow rounded" [src]="cartItem.productAsset ? cartItem.productAsset.url : cartItem.productInventory.product.thumbnailUrl ? cartItem.productInventory.product.thumbnailUrl : displayStoreLogo(cart.store)">
                                             <div class="flex flex-col ml-2 items-start justify-start sm:justify-center gap-1">
                                                 <span (click)="redirect('product', cart.store, cartItem.productInventory.product.seoNameMarketplace)" class="text-md sm:text-md font-semibold line-clamp-2 hover:cursor-pointer">{{cartItem.productName}}</span>
-                                                <div class="flex flex-row items-center">
+                                                <div class="">
                                                     <!-- Display variants -->
                                                     <ng-container *ngIf="cartItem.productInventory.productInventoryItems.length > 0">
-                                                        <ng-container *ngFor="let variant of cartItem.productInventory.productInventoryItems">
-                                                            <span class="leading-tight text-xs lg:text-sm text-secondary flex flex-wrap">{{variant.productVariantAvailable.productVariant.name}}: {{variant.productVariantAvailable.value}}</span>
-                                                            <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span>
-                                                        </ng-container>
+                                                        <div class="flex flex-wrap items-center gap-1">
+                                                            <ng-container *ngFor="let variant of cartItem.productInventory.productInventoryItems; let isLast=last">
+                                                                <span class="truncate tracking-tight max-w-32 leading-tight text-xs lg:text-sm text-secondary">{{variant.productVariantAvailable.productVariant.name}}: {{variant.productVariantAvailable.value}}{{isLast ? '' : ', '}}</span>
+                                                                <!-- <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span> -->
+                                                            </ng-container>
+                                                        </div>
                                                     </ng-container>
                                                     <!-- Display Combo -->
                                                     <ng-container *ngIf="cartItem.cartSubItem.length > 0">
-                                                        <ng-container  *ngFor="let combo of cartItem.cartSubItem">
-                                                            <span class="leading-tight text-xs lg:text-sm text-secondary flex flex-wrap">{{combo.productName}}</span>
-                                                            <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span>
-                                                        </ng-container>
+                                                        <div class="flex flex-wrap items-center gap-1">
+                                                            <ng-container *ngFor="let combo of cartItem.cartSubItem; let isLast=last">
+                                                                <span class="truncate tracking-tight max-w-32 leading-tight text-xs lg:text-sm text-secondary">{{combo.productName}}{{isLast ? '' : ', '}}</span>
+                                                                <!-- <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span> -->
+                                                            </ng-container>
+                                                        </div>
                                                     </ng-container>
                                                 </div>
                                                 <!-- Display Special Instruction -->
@@ -269,7 +273,7 @@
                 <!-- Pagination -->
                 <pagination 
                     *ngIf="pagination.length > pagination.size"
-                    class="mt-4"
+                    class="my-2"
                     [itemLength]="pagination.length" 
                     [initialPage]="pagination.page + 1"
                     [pageSize]="pagination.size"
@@ -278,84 +282,102 @@
             </div>
 
             <!-- Cart Summary -->
-            <div class="flex flex-col w-full md:w-140 md:ml-6 md:mt-8 mt-4">
+            <div class="flex flex-col w-full md:w-140 md:ml-6 md:mt-8 mt-4 sticky md:static bottom-0">
                 <!-- Cart Summary -->
-                <div class="flex flex-col border rounded-lg p-2">
+                <div class="flex flex-col border border-slate-400 md:border-slate-200 rounded-lg p-2 bg-white">
                     <!-- Header -->
-                    <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
-                        <mat-icon 
-                            class="icon-size-5 text-primary" 
-                            [svgIcon]="'mat_solid:add_shopping_cart'"></mat-icon>
-                        <span class="ml-2 font-bold">Cart Summary</span>
+                    <div class="flex flex-row border-b justify-between items-center pb-1 md:pb-2 w-full"
+                        (click)="toggleSummary()">
+                        <!-- Icon and Header Title -->
+                        <div class="flex flex-row justify-start items-center">
+                            <mat-icon 
+                                class="icon-size-4 md:icon-size-5 text-primary" 
+                                [svgIcon]="'mat_solid:add_shopping_cart'"></mat-icon>
+                            <span class="ml-2 font-bold text-sm md:text-base">Cart Summary</span>
+                        </div>
+                        <!-- Expand summary icon -->
+                        <div class="flex flex-row justify-start items-center">
+                            <mat-icon 
+                                *ngIf="!visibleCartSummary"
+                                class="icon-size-4 md:icon-size-5 text-primary" 
+                                [svgIcon]="'heroicons_outline:chevron-down'"></mat-icon>
+                            <mat-icon 
+                                *ngIf="visibleCartSummary"
+                                class="icon-size-4 md:icon-size-5 text-primary" 
+                                [svgIcon]="'heroicons_outline:chevron-up'"></mat-icon>
+                        </div>
                     </div>
                     <!-- Summary -->
-                    <!-- Sub Total -->
-                    <div class="flex flex-row justify-between mt-2">
-                        <span class="text-md text-secondary">Sub Total <small *ngIf="totalSelectedCartItem > 0">({{totalSelectedCartItem}} items)</small></span>
-                        <span class="text-md font-semibold">{{paymentDetails.cartSubTotal | currency: platform.currency}}</span>
-                    </div>
-                    <!-- Order Discount -->
-                    <ng-container *ngIf="paymentDetails.subTotalDiscount !== 0">
-                        <div class="flex flex-row w-full justify-between  mt-2">
-                            <div class="flex flex-col">
-                                <div class="text-md text-secondary">
-                                    <span>Order Discount</span>
-                                    <span *ngIf="paymentDetails.subTotalDiscountDescription">&nbsp;({{paymentDetails.subTotalDiscountDescription}})</span>
-                                </div>
-                                <span class="text-xs text-gray-500" *ngIf="paymentDetails.discountMaxAmount && paymentDetails.discountMaxAmount != 0 && paymentDetails.subTotalDiscount >= paymentDetails.discountMaxAmount && paymentDetails.subTotalDiscount != 0">
-                                    Capped at {{paymentDetails.discountMaxAmount | currency: platform.currency }}
-                                </span>
-                            </div>
-                            <span class="font-semibold">-{{paymentDetails.subTotalDiscount | currency: platform.currency}}</span>
-                        </div>
-                    </ng-container>
-                    <!-- Service Charges -->
-                    <ng-container *ngIf="paymentDetails.storeServiceCharge !== 0">
+                    <div *ngIf="visibleCartSummary">
+                        <!-- Sub Total -->
                         <div class="flex flex-row justify-between mt-2">
-                            <span class="text-md text-secondary">Service Charge</span> 
-                            <span class="text-md font-semibold">{{paymentDetails.storeServiceCharge | currency: platform.currency}}</span>
+                            <span class="text-md text-secondary">Sub Total <small *ngIf="totalSelectedCartItem > 0">({{totalSelectedCartItem}} items)</small></span>
+                            <span class="text-md font-semibold">{{paymentDetails.cartSubTotal | currency: platform.currency}}</span>
                         </div>
-                    </ng-container>
-                    <!-- Delivery Fee -->
-                    <div class="flex flex-row justify-between mt-2">
-                        <span class="text-md text-secondary">Delivery Fee</span>
-                        <span class="text-md font-semibold">{{paymentDetails.deliveryCharges | currency: platform.currency}}</span>
-                    </div>
-                    <!-- Delivery Discount -->
-                    <!-- <ng-container *ngIf="paymentDetails.deliveryDiscount !== 0">
-                        <div class="flex flex-row w-full justify-between py-1">
-                            <div class="flex flex-col">
-                                <div class="text-md text-secondary mt-2">
-                                    <span>Delivery Discount</span>
-                                    <span *ngIf="paymentDetails.deliveryDiscountDescription">&nbsp;({{paymentDetails.deliveryDiscountDescription}})</span>
+                        <!-- Order Discount -->
+                        <ng-container *ngIf="paymentDetails.subTotalDiscount !== 0">
+                            <div class="flex flex-row w-full justify-between  mt-2">
+                                <div class="flex flex-col">
+                                    <div class="text-md text-secondary">
+                                        <span>Order Discount</span>
+                                        <span *ngIf="paymentDetails.subTotalDiscountDescription">&nbsp;({{paymentDetails.subTotalDiscountDescription}})</span>
+                                    </div>
+                                    <span class="text-xs text-gray-500" *ngIf="paymentDetails.discountMaxAmount && paymentDetails.discountMaxAmount != 0 && paymentDetails.subTotalDiscount >= paymentDetails.discountMaxAmount && paymentDetails.subTotalDiscount != 0">
+                                        Capped at {{paymentDetails.discountMaxAmount | currency: platform.currency }}
+                                    </span>
                                 </div>
-                                <span class="text-xs text-gray-500" *ngIf="paymentDetails.deliveryDiscountMaxAmount != 0 && paymentDetails.deliveryDiscount >= paymentDetails.deliveryDiscountMaxAmount && paymentDetails.deliveryDiscount != 0">
-                                    Capped at {{paymentDetails.deliveryDiscountMaxAmount | currency: platform.currency }}
-                                </span>
+                                <span class="font-semibold">-{{paymentDetails.subTotalDiscount | currency: platform.currency}}</span>
                             </div>
-                            <span class="font-semibold">-{{paymentDetails.deliveryDiscount | currency: platform.currency}}</span>
-                        </div>
-                    </ng-container> -->
-
-                    <ng-container *ngIf="paymentDetails.deliveryDiscount != 0">
+                        </ng-container>
+                        <!-- Service Charges -->
+                        <ng-container *ngIf="paymentDetails.storeServiceCharge !== 0">
+                            <div class="flex flex-row justify-between mt-2">
+                                <span class="text-md text-secondary">Service Charge</span> 
+                                <span class="text-md font-semibold">{{paymentDetails.storeServiceCharge | currency: platform.currency}}</span>
+                            </div>
+                        </ng-container>
+                        <!-- Delivery Fee -->
                         <div class="flex flex-row justify-between mt-2">
-                            <span class="text-md text-secondary">Delivery Fee Discount</span>
-                            <span class="text-md font-semibold">-{{paymentDetails.deliveryDiscount | currency: platform.currency}}</span>
+                            <span class="text-md text-secondary">Delivery Fee</span>
+                            <span class="text-md font-semibold">{{paymentDetails.deliveryCharges | currency: platform.currency}}</span>
                         </div>
-                    </ng-container>
+                        <!-- Delivery Discount -->
+                        <!-- <ng-container *ngIf="paymentDetails.deliveryDiscount !== 0">
+                            <div class="flex flex-row w-full justify-between py-1">
+                                <div class="flex flex-col">
+                                    <div class="text-md text-secondary mt-2">
+                                        <span>Delivery Discount</span>
+                                        <span *ngIf="paymentDetails.deliveryDiscountDescription">&nbsp;({{paymentDetails.deliveryDiscountDescription}})</span>
+                                    </div>
+                                    <span class="text-xs text-gray-500" *ngIf="paymentDetails.deliveryDiscountMaxAmount != 0 && paymentDetails.deliveryDiscount >= paymentDetails.deliveryDiscountMaxAmount && paymentDetails.deliveryDiscount != 0">
+                                        Capped at {{paymentDetails.deliveryDiscountMaxAmount | currency: platform.currency }}
+                                    </span>
+                                </div>
+                                <span class="font-semibold">-{{paymentDetails.deliveryDiscount | currency: platform.currency}}</span>
+                            </div>
+                        </ng-container> -->
+    
+                        <ng-container *ngIf="paymentDetails.deliveryDiscount != 0">
+                            <div class="flex flex-row justify-between mt-2">
+                                <span class="text-md text-secondary">Delivery Fee Discount</span>
+                                <span class="text-md font-semibold">-{{paymentDetails.deliveryDiscount | currency: platform.currency}}</span>
+                            </div>
+                        </ng-container>
+    
+                        <div *ngIf="paymentDetails.platformVoucherDeliveryDiscount && paymentDetails.platformVoucherDeliveryDiscount !== 0" class="flex flex-row justify-between mt-2">
+                            <span class="text-md text-secondary">Deliverin Shipping Discount</span>
+                            <span class="text-md font-semibold">-{{paymentDetails.platformVoucherDeliveryDiscount | currency: platform.currency}}</span>
+                        </div>
+                        
+                        <div *ngIf="paymentDetails.platformVoucherSubTotalDiscount && paymentDetails.platformVoucherSubTotalDiscount !== 0" class="flex flex-row justify-between mt-2">
+                            <span class="text-md text-secondary">Deliverin Promo Code/Voucher</span>
+                            <span class="text-md font-semibold">-{{paymentDetails.platformVoucherSubTotalDiscount | currency: platform.currency}}</span>
+                        </div>
 
-                    <div *ngIf="paymentDetails.platformVoucherDeliveryDiscount && paymentDetails.platformVoucherDeliveryDiscount !== 0" class="flex flex-row justify-between mt-2">
-                        <span class="text-md text-secondary">Deliverin Shipping Discount</span>
-                        <span class="text-md font-semibold">-{{paymentDetails.platformVoucherDeliveryDiscount | currency: platform.currency}}</span>
-                    </div>
-                    
-                    <div *ngIf="paymentDetails.platformVoucherSubTotalDiscount && paymentDetails.platformVoucherSubTotalDiscount !== 0" class="flex flex-row justify-between mt-2">
-                        <span class="text-md text-secondary">Deliverin Promo Code/Voucher</span>
-                        <span class="text-md font-semibold">-{{paymentDetails.platformVoucherSubTotalDiscount | currency: platform.currency}}</span>
                     </div>
 
                     <!-- Separator -->
-                    <div class="border-b w-full my-2"></div>
+                    <!-- <div class="border-b w-full my-2"></div> -->
 
                     <!-- Grand Total -->
                     <div class="flex flex-row justify-between mt-2">
@@ -366,7 +388,7 @@
                     <!-- Checkout -->
                     <button 
                         [disabled]="false"
-                        class="bg-primary text-white py-2 px-4 rounded w-full mt-2"
+                        class="py-2 px-4 rounded-md w-full mt-2 mb-2 md:mb-0 text-white"
                         [ngClass]="{ 'cursor-wait bg-gray-400' : isLoading, 
                                      'cursor-pointer bg-primary' : !isLoading}"
                         (click)="onlinePay()">
@@ -385,7 +407,7 @@
                     <ng-container *ngIf="customerAddress; else noAddress">
                         <!-- <ng-container *ngFor="let address of customerAddresses"> -->
                             <!-- <ng-container *ngIf="customerAddress.isDefault"> -->
-                                <div class="flex flex-col m-2 font-medium gap-1">
+                                <div class="flex flex-col m-2 font-normal gap-1">
                                     <span class="">{{customerAddress.name}}</span>
                                     <span class="">{{customerAddress.phoneNumber}}</span>
                                     <span class="">{{customerAddress.address}}, {{customerAddress.postCode}}, {{customerAddress.city}}, {{customerAddress.state}}</span>
@@ -431,7 +453,7 @@
                         <div class="w-full flex flex-col rounded">
                             <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full">
                                 <!-- Address  -->
-                                <div class="flex flex-col font-medium gap-1">
+                                <div class="flex flex-col font-normal gap-1">
                                     <span class="">{{selfPickupInfo.name}}</span>
                                     <span class="">{{selfPickupInfo.phoneNumber}}</span>
                                     <span class="">{{selfPickupInfo.email}}</span>

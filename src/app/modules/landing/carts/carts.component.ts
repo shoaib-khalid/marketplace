@@ -834,7 +834,8 @@ export class CartListComponent implements OnInit, OnDestroy
             id: cartItem.id,
             itemCode: cartItem.itemCode,
             productId: cartItem.productId,
-            quantity: quantity
+            quantity: quantity,
+            cartSubItem: cartItem.cartSubItem
         }
 
         if (!((cartItem.quantity === quantity) && (quantity === this.minQuantity || quantity === this.maxQuantity))) {
@@ -1023,7 +1024,7 @@ export class CartListComponent implements OnInit, OnDestroy
             .subscribe((deliveryProviderResponse: DeliveryProviders[])=>{     
                            
                 deliveryProviderResponse.forEach(item => {
-                    let cartIndex = this.selectedCart.carts.findIndex(element => element.id == item.cartId);
+                    let cartIndex = this.selectedCart.carts.findIndex(element => element.id === item.cartId);
                     if (cartIndex > -1) {
                         // let minDeliveryCharges1 = Math.min(...item.quotation.filter(x => x.isError === false).map(element => element.price));
                         
@@ -1063,11 +1064,13 @@ export class CartListComponent implements OnInit, OnDestroy
                             this.selectedCart.carts[cartIndex].deliveryProviderId = null;
                             this.selectedCart.carts[cartIndex].deliveryErrorMessage = item.quotation[0].message;
 
-                            // Disable the cart
-                            this.selectedCart.carts[cartIndex].disabled = true;
-                            this.selectedCart.carts[cartIndex].cartItem.forEach(item => {
-                                item.disabled = true;
-                            })
+                            // Disable the cart if the carts delivery type is delivery
+                            if (this.selectedCart.carts[cartIndex].isSelfPickup === false) {
+                                this.selectedCart.carts[cartIndex].disabled = true;
+                                this.selectedCart.carts[cartIndex].cartItem.forEach(item => {
+                                    item.disabled = true;
+                                })
+                            }
                         }
                         // Get all quotations
                         this.selectedCart.carts[cartIndex].deliveryQuotations = item.quotation;
