@@ -41,7 +41,7 @@
     <ng-container *ngIf="!isStorePage && (tags && tags.length > 0)">
         <div class="flex flex-row w-full mt-0.5">
             <ng-container *ngFor="let tag of tags">
-                <span class="text-sm mr-2 text-gray-500 hover:text-primary cursor-pointer" (click)="goToTags(tag.keyword)">#{{tag.keyword}}</span>
+                <span class="text-base mr-2 text-gray-500 hover:text-primary cursor-pointer" (click)="goToTags(tag.keyword)">#{{tag.keyword}}</span>
             </ng-container>
         </div>
     </ng-container>
