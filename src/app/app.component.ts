@@ -4,14 +4,11 @@ import { ActivatedRoute, NavigationEnd, Router, RoutesRecognized } from '@angula
 import { Platform, PlatformTag } from 'app/core/platform/platform.types';
 import { Subject, takeUntil } from 'rxjs';
 import { PlatformService } from 'app/core/platform/platform.service';
-import { IpAddressService } from './core/ip-address/ip-address.service';
 import { AnalyticService } from './core/analytic/analytic.service';
-import { JwtService } from './core/jwt/jwt.service';
-import { AuthService } from './core/auth/auth.service';
 import { AppConfig } from './config/service.config';
 import { SwUpdate } from '@angular/service-worker';
 import { UserService } from './core/user/user.service';
-import { UserSession } from './core/user/user.types';
+import { User, UserSession } from './core/user/user.types';
 import { CustomerActivity } from './core/analytic/analytic.types';
 import { CurrentLocationService } from './core/_current-location/current-location.service';
 import { CurrentLocation } from './core/_current-location/current-location.types';
@@ -27,9 +24,10 @@ declare let gtag: Function;
 })
 export class AppComponent
 {
-    platform: Platform;
-    store: Store;
-    ipAddress  : string;
+    platform    : Platform;
+    store       : Store;
+    ipAddress   : string;
+    user        : User;
     userSession : UserSession;
     customerActivity: CustomerActivity = {};
 
@@ -159,13 +157,23 @@ export class AppComponent
                 if (userSession) {
                     this.userSession = userSession                    
 
-                    // Set customer activiry
-                    this.customerActivity.customerId  = this.userSession.id;
+                    // Set customer activity
                     this.customerActivity.browserType = this.userSession.browser;
                     this.customerActivity.deviceModel = this.userSession.device;
                     this.customerActivity.ip          = this.userSession.ip;
                     this.customerActivity.os          = this.userSession.os;
                     this.customerActivity.sessionId   = this.userSession.id;
+                }
+                // Mark for Check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._userService.user$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((user: User)=>{
+                if (user) {
+                    this.user = user;
+                    this.customerActivity.customerId = user.id;
                 }
                 // Mark for Check
                 this._changeDetectorRef.markForCheck();
@@ -182,7 +190,7 @@ export class AppComponent
                 this._changeDetectorRef.markForCheck();
             });
         
-        this._router.events.forEach((event) => {   
+        this._router.events.forEach((event) => {
             if(event instanceof RoutesRecognized) {
                 // set store id
                 if (this.store && this.store.id !== "") this.customerActivity.storeId = this.store.id;
@@ -190,7 +198,11 @@ export class AppComponent
                 this.customerActivity.pageVisited = 'https://' + this._apiServer.settings.marketplaceDomain + event["urlAfterRedirects"];
                 
                 this._analyticService.customerActivity = this.customerActivity;
-                this._analyticService.postActivity(this.customerActivity).subscribe();           
+
+                if ((this.customerActivity.channel && this.customerActivity.channel !== "") && 
+                    (this.customerActivity.sessionId && this.customerActivity.sessionId !== "")) {
+                    this._analyticService.postActivity(this.customerActivity).subscribe();           
+                }
             }        
         });
 
@@ -209,7 +221,7 @@ export class AppComponent
                 channel = this.customerActivity.channel;
             }
             
-            this.customerActivity.channel = channel
+            this.customerActivity.channel = channel;
         });
     }
 }
