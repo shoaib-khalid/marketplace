@@ -163,7 +163,7 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
 
         // Initialize data
 
-        if (this.combos.length > 0) {
+        if (this.combos && this.combos.length > 0) {
             this.combos.forEach(element => {
                 this.selectedCombo[element.id] = [];
             });

@@ -19,7 +19,6 @@ import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from 'ngx-gal
 import { debounceTime, map, Observable, Subject, switchMap, takeUntil, take } from 'rxjs';
 import { ShopService } from './shop.service';
 import { AppConfig } from 'app/config/service.config';
-import { CupertinoPane } from 'cupertino-pane';
 import { Cart, CartItem, CustomerCart } from 'app/core/cart/cart.types';
 import { CartService } from 'app/core/cart/cart.service';
 import { AuthService } from 'app/core/auth/auth.service';
@@ -848,6 +847,9 @@ export class LandingShopComponent implements OnInit
 
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
+                }
+                else {
+                    this.combos = [];
                 }
 
             });
