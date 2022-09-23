@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncap
 import { DisplayErrorService } from 'app/core/display-error/display-error.service';
 import { Subject, takeUntil } from 'rxjs';
 import { AppConfig } from 'app/config/service.config';
+import { Router } from '@angular/router';
 
 @Component({
     selector       : 'display-error',
@@ -26,7 +27,8 @@ export class DisplayErrorComponent
     constructor(
         private _displayErrorService: DisplayErrorService,
         private _apiServer: AppConfig,
-        private _changeDetectorRef: ChangeDetectorRef
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _router: Router
     )
     {
         // Subscribe to show error message
@@ -52,12 +54,18 @@ export class DisplayErrorComponent
                 // Reload the app
                 location.reload();
                 return;
-            } else {
-                window.history.back();
+            } else {                
+                this._router.navigate(['/']).then(()=>[
+                    // Reload the app
+                    location.reload()
+                ]);
                 return;
             }
         } else{
-            window.history.back();
+            this._router.navigate(['/']).then(()=>[
+                // Reload the app
+                location.reload()
+            ]);
             return;
         }
     }

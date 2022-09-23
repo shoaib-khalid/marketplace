@@ -338,6 +338,11 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
     }
 
     selectFirstResult() {
+
+        if (!this.searchControl.value || this.searchControl.value  === '') {
+            return;
+        }
+
         // show loading
         this._fuseLoadingService.show();
 
