@@ -365,6 +365,11 @@ export class LandingShopComponent implements OnInit
                     };
                     // Setter for store details for _search component
                     this._searchService.storeDetails = this.storeDetails;
+
+                    // check store timing                
+                    this.storesOpening = [];
+                            
+                    this.checkStoreTiming(store);
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
