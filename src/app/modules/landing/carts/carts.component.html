@@ -4,58 +4,60 @@
         <!-- Carts -->
         <ng-container *ngIf="carts && (carts.length > 0); else noCarts">
             <!-- Delivery Address (xs) -->
-            <div class="block md:hidden w-full flex flex-col justify-center items-start border rounded-lg p-2 mb-2">
-                <!-- Header -->
-                <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
-                    <mat-icon 
-                        class="icon-size-5 text-primary" 
-                        [svgIcon]="'mat_solid:location_on'"></mat-icon>
-                    <span class="ml-2 font-bold">Delivery Address</span>
-                </div>
-                <ng-container *ngIf="customerAddress; else noAddress">
-                    <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full text-base">
-                        <!-- Address  -->
-                        <div class="flex flex-col font-normal gap-1">
-                            <span class="">{{customerAddress.name}}</span>
-                            <span class="">{{customerAddress.phoneNumber}}</span>
-                            <span class="">{{customerAddress.address}}, {{customerAddress.postCode}}, {{customerAddress.city}}, {{customerAddress.state}}</span>
+            <ng-container *ngIf="hasDelivery">
+                <div class="block md:hidden w-full flex flex-col justify-center items-start border rounded-lg p-2 mb-2">
+                    <!-- Header -->
+                    <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
+                        <mat-icon 
+                            class="icon-size-5 text-primary" 
+                            [svgIcon]="'mat_solid:location_on'"></mat-icon>
+                        <span class="ml-2 font-bold">Delivery Address</span>
+                    </div>
+                    <ng-container *ngIf="customerAddress; else noAddress">
+                        <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full text-base">
+                            <!-- Address  -->
+                            <div class="flex flex-col font-normal gap-1">
+                                <span class="">{{customerAddress.name}}</span>
+                                <span class="">{{customerAddress.phoneNumber}}</span>
+                                <span class="">{{customerAddress.address}}, {{customerAddress.postCode}}, {{customerAddress.city}}, {{customerAddress.state}}</span>
+                            </div>
+                            <!-- Remove Address -->
+                            <div *ngIf="!customerId">
+                                <span class="flex justify-center items-center text-center px-1 cursor-pointer">
+                                    <mat-icon 
+                                        (click)="deleteGuestAddress()"
+                                        class="icon-size-4" 
+                                        [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                </span>
+                            </div>
                         </div>
-                        <!-- Remove Address -->
-                        <div *ngIf="!customerId">
-                            <span class="flex justify-center items-center text-center px-1 cursor-pointer">
+                        <div class="flex w-full justify-center items-center">
+                            <button
+                                [routerLink]="['/address']"
+                                [queryParams]="{origin: 'carts'}"
+                                class="py-2 mt-2 w-full p-1 rounded-md bg-primary hover:bg-primary-600"                            >
+                                <span class="text-white">Change</span>
+                            </button>
+                        </div>
+                    </ng-container>
+                    <ng-template #noAddress>
+                        <!-- Enter Address -->
+                        <span class="flex mt-2 text-center">Add your delivery address</span>
+                        <!-- Button -->
+                        <div class="flex w-full justify-center items-center mt-2">
+                            <button 
+                                (click)="addAddressPopup()"
+                                class="py-2 mt-2 w-full bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
+                            >
                                 <mat-icon 
-                                    (click)="deleteGuestAddress()"
-                                    class="icon-size-4" 
-                                    [svgIcon]="'heroicons_solid:trash'"></mat-icon>
-                            </span>
+                                    class="icon-size-5 text-white" 
+                                    [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                                <span class="ml-1 text-white">Add</span>
+                            </button>
                         </div>
-                    </div>
-                    <div class="flex w-full justify-center items-center">
-                        <button
-                            [routerLink]="['/address']"
-                            [queryParams]="{origin: 'carts'}"
-                            class="py-2 mt-2 w-full p-1 rounded-md bg-primary hover:bg-primary-600"                            >
-                            <span class="text-white">Change</span>
-                        </button>
-                    </div>
-                </ng-container>
-                <ng-template #noAddress>
-                    <!-- Enter Address -->
-                    <span class="flex mt-2 text-center">Add your delivery address</span>
-                    <!-- Button -->
-                    <div class="flex w-full justify-center items-center mt-2">
-                        <button 
-                            (click)="addAddressPopup()"
-                            class="py-2 mt-2 w-full bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
-                        >
-                            <mat-icon 
-                                class="icon-size-5 text-white" 
-                                [svgIcon]="'heroicons_solid:plus'"></mat-icon>
-                            <span class="ml-1 text-white">Add</span>
-                        </button>
-                    </div>
-                </ng-template>
-            </div>
+                    </ng-template>
+                </div>
+            </ng-container>
             <!-- Store pickup info (MOBILE)  -->
             <ng-container *ngIf="hasSelfPickup">
                 <div class="block md:hidden w-full flex flex-col justify-center items-start border rounded-lg p-2 mb-2">
@@ -918,62 +920,64 @@
                     </button>
                 </div>
                 <!-- Delivery Address (md) -->
-                <div class="hidden md:block flex flex-col justify-center items-center border rounded-lg p-2 mt-4">
-                    <!-- Header -->
-                    <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
-                        <mat-icon 
-                            class="icon-size-5 text-primary" 
-                            [svgIcon]="'mat_solid:location_on'"></mat-icon>
-                        <span class="ml-2 font-bold">Delivery Address</span>
-                    </div>
-                    <ng-container *ngIf="customerAddress; else noAddress">
-                        <!-- <ng-container *ngFor="let address of customerAddresses"> -->
-                            <!-- <ng-container *ngIf="customerAddress.isDefault"> -->
-                                <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full">
-                                    <!-- Address  -->
-                                    <div class="flex flex-col font-normal gap-1">
-                                        <span class="">{{customerAddress.name}}</span>
-                                        <span class="">{{customerAddress.phoneNumber}}</span>
-                                        <span class="">{{customerAddress.address}}, {{customerAddress.postCode}}, {{customerAddress.city}}, {{customerAddress.state}}</span>
-                                    </div>
-                                    <!-- Remove Address -->
-                                    <div *ngIf="!customerId">
-                                        <span class="hidden sm:flex justify-center items-center text-center px-1 cursor-pointer">
-                                            <mat-icon 
-                                                (click)="deleteGuestAddress()"
-                                                class="icon-size-4" 
-                                                [svgIcon]="'heroicons_solid:trash'"></mat-icon>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="flex w-full justify-center items-center">
-                                    <button
-                                        [routerLink]="'/address'"
-                                        [queryParams]="{origin: 'carts'}"
-                                        class="py-2 mt-2 w-1/2 p-1 rounded-md bg-primary hover:bg-primary-600"                            >
-                                        <span class="text-white">Change</span>
-                                    </button>
-                                </div>
-                            <!-- </ng-container> -->
-                        <!-- </ng-container> -->
-                    </ng-container>
-                    <ng-template #noAddress>
-                        <!-- Enter Address -->
-                        <span class="flex mt-2 text-center">Add your delivery address</span>
-                        <!-- Button -->
-                        <div class="flex w-full justify-center items-center mt-2">
-                            <button 
-                                (click)="addAddressPopup()"
-                                class="py-2 mt-2 w-1/2 bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
-                            >
-                                <mat-icon 
-                                    class="icon-size-5 text-white" 
-                                    [svgIcon]="'heroicons_solid:plus'"></mat-icon>
-                                <span class="ml-1 text-white">Add</span>
-                            </button>
+                <ng-container *ngIf="hasDelivery">
+                    <div class="hidden md:block flex flex-col justify-center items-center border rounded-lg p-2 mt-4">
+                        <!-- Header -->
+                        <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
+                            <mat-icon 
+                                class="icon-size-5 text-primary" 
+                                [svgIcon]="'mat_solid:location_on'"></mat-icon>
+                            <span class="ml-2 font-bold">Delivery Address</span>
                         </div>
-                    </ng-template>
-                </div>
+                        <ng-container *ngIf="customerAddress; else noAddress">
+                            <!-- <ng-container *ngFor="let address of customerAddresses"> -->
+                                <!-- <ng-container *ngIf="customerAddress.isDefault"> -->
+                                    <div class="flex flex-row p-2 font-medium gap-1 items-center justify-between w-full">
+                                        <!-- Address  -->
+                                        <div class="flex flex-col font-normal gap-1">
+                                            <span class="">{{customerAddress.name}}</span>
+                                            <span class="">{{customerAddress.phoneNumber}}</span>
+                                            <span class="">{{customerAddress.address}}, {{customerAddress.postCode}}, {{customerAddress.city}}, {{customerAddress.state}}</span>
+                                        </div>
+                                        <!-- Remove Address -->
+                                        <div *ngIf="!customerId">
+                                            <span class="hidden sm:flex justify-center items-center text-center px-1 cursor-pointer">
+                                                <mat-icon 
+                                                    (click)="deleteGuestAddress()"
+                                                    class="icon-size-4" 
+                                                    [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="flex w-full justify-center items-center">
+                                        <button
+                                            [routerLink]="'/address'"
+                                            [queryParams]="{origin: 'carts'}"
+                                            class="py-2 mt-2 w-1/2 p-1 rounded-md bg-primary hover:bg-primary-600"                            >
+                                            <span class="text-white">Change</span>
+                                        </button>
+                                    </div>
+                                <!-- </ng-container> -->
+                            <!-- </ng-container> -->
+                        </ng-container>
+                        <ng-template #noAddress>
+                            <!-- Enter Address -->
+                            <span class="flex mt-2 text-center">Add your delivery address</span>
+                            <!-- Button -->
+                            <div class="flex w-full justify-center items-center mt-2">
+                                <button 
+                                    (click)="addAddressPopup()"
+                                    class="py-2 mt-2 w-1/2 bg-primary-500 hover:bg-primary-600 rounded-md flex flex-row items-center justify-center p-1"
+                                >
+                                    <mat-icon 
+                                        class="icon-size-5 text-white" 
+                                        [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                                    <span class="ml-1 text-white">Add</span>
+                                </button>
+                            </div>
+                        </ng-template>
+                    </div>
+                </ng-container>
                 <!-- Store pickup info (md)  -->
                 <ng-container *ngIf="hasSelfPickup">
                     <div class="hidden md:block flex flex-col justify-center items-center border rounded-lg p-2 mt-4">

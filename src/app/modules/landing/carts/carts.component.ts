@@ -270,6 +270,7 @@ export class CartListComponent implements OnInit, OnDestroy
         state: string,
     }[] = [];
     hasSelfPickup: boolean;
+    hasDelivery: boolean;
     isGettingDeliveryPrices: boolean = false;
 
     /**
@@ -1440,6 +1441,9 @@ export class CartListComponent implements OnInit, OnDestroy
 
         // Check if has self pickup 
         this.hasSelfPickup = this.selectedCart.carts.some(item => item.showRequiredInfo && item.isSelfPickup);
+
+        // Check if has delivery
+        this.hasDelivery = this.selectedCart.carts.some(item => item.showRequiredInfo && !item.isSelfPickup);
 
     }
 
