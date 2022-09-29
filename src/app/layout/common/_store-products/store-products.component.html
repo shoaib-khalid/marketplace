@@ -7,7 +7,7 @@
                 <ng-container *ngFor="let product of products">
                     <!-- Product -->
                     <div class="flex flex-col h-80 md:h-120 w-full lg:max-w-65 shadow border group duration-100 ring-0 hover:ring-2 ring-primary-600 rounded-lg overflow-hidden cursor-pointer"
-                        [ngClass]="isProductOutOfStock(product) ? 'bg-card hover:border-primary' : 'bg-gray-200 hover:border-gray-600'"
+                        [ngClass]="isProductHasStock(product) ? 'bg-card hover:border-primary' : 'bg-gray-200 hover:border-gray-600'"
                         (click)="redirectToProduct(product)">
                         <!-- Product Header -->
                         <div class="relative flex flex-col p-2 h-40 md:h-60 bg-white bg-no-repeat bg-cover bg-center" 
@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
                             </ng-container>
-                            <ng-container *ngIf="isProductOutOfStock(product) === false">
+                            <ng-container *ngIf="isProductHasStock(product) === false">
                                 <div class="absolute w-full h-full bg-black opacity-70 top-0 bottom-0 left-0 right-0 flex items-center justify-center">
                                     <p class="font-semibold text-white text-2xl">Out of Stock</p>
                                 </div>
@@ -58,10 +58,10 @@
                             <div class="flex flex-row items-center justify-between">
                                 <div *ngIf="product.productInventories.length > 0 && product.productInventories[0].itemDiscount;else noItemDiscountGrid">
                                     <p class="line-through text-xs md:text-sm">{{product.productInventories[0].price | currency: platform.currency}}</p>
-                                    <p class="font-semibold text-black text-lg md:text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{product.productInventories[0].itemDiscount.discountedPrice | currency: platform.currency}}</p>
+                                    <p class="font-semibold text-black text-lg md:text-2xl duration-100" [ngClass]="isProductHasStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{product.productInventories[0].itemDiscount.discountedPrice | currency: platform.currency}}</p>
                                 </div>
                                 <ng-template #noItemDiscountGrid>
-                                    <p class="font-semibold text-black text-lg md:text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{ (product.productInventories.length > 0 ? product.productInventories[0].price : 0) | currency: platform.currency}}</p>
+                                    <p class="font-semibold text-black text-lg md:text-2xl duration-100" [ngClass]="isProductHasStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{ (product.productInventories.length > 0 ? product.productInventories[0].price : 0) | currency: platform.currency}}</p>
                                 </ng-template>
                                 <button
                                     *ngIf="!currentScreenSize.includes('md')"
@@ -83,7 +83,7 @@
                 <ng-container *ngFor="let product of products">
                     <div class="flex flex-col h-28 sm:h-56 mb-4">
                         <div class="flex flex-row h-full w-full bg-card shadow border group duration-100 ring-0 hover:ring-2 ring-primary-600 rounded-lg justify-between items-center cursor-pointer"
-                            [ngClass]="isProductOutOfStock(product) ? 'bg-card hover:border-primary' : 'bg-gray-200 hover:border-gray-600'"
+                            [ngClass]="isProductHasStock(product) ? 'bg-card hover:border-primary' : 'bg-gray-200 hover:border-gray-600'"
                             (click)="redirectToProduct(product)"
                         >
                             <!-- Image Thumbnail -->
@@ -109,7 +109,7 @@
                                     </div>
                                 </ng-container>
 
-                                <ng-container *ngIf="isProductOutOfStock(product) === false">
+                                <ng-container *ngIf="isProductHasStock(product) === false">
                                     <div class="absolute rounded-l-lg w-full h-full bg-black opacity-70 top-0 bottom-0 left-0 right-0 flex items-center justify-center">
                                         <p class="font-semibold text-white text-base md:text-2xl">Out of Stock</p>
                                     </div>
@@ -128,10 +128,10 @@
                                     <div class="flex flex-row justify-between items-center">
                                         <div class="flex flex-row items-center gap-1" *ngIf="product.productInventories.length > 0 && product.productInventories[0].itemDiscount; else noItemDiscountList">
                                             <p class="text-xs sm:text-base" style="text-decoration: line-through;">{{product.productInventories[0].price | currency: platform.currency}}</p>
-                                            <p class="font-semibold text-md sm:text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{product.productInventories[0].itemDiscount.discountedPrice | currency: platform.currency}}</p>
+                                            <p class="font-semibold text-md sm:text-2xl duration-100" [ngClass]="isProductHasStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{product.productInventories[0].itemDiscount.discountedPrice | currency: platform.currency}}</p>
                                         </div>
                                         <ng-template #noItemDiscountList>
-                                            <p class="font-semibold text-md sm:text-2xl duration-100" [ngClass]="isProductOutOfStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{ (product.productInventories.length > 0 ? product.productInventories[0].price : 0) | currency: platform.currency}}</p>
+                                            <p class="font-semibold text-md sm:text-2xl duration-100" [ngClass]="isProductHasStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{ (product.productInventories.length > 0 ? product.productInventories[0].price : 0) | currency: platform.currency}}</p>
                                         </ng-template>
                                         <button
                                             *ngIf="!currentScreenSize.includes('md')"
