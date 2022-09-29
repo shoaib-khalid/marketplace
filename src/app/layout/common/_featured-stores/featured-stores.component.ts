@@ -240,18 +240,22 @@ export class _FeaturedStoresComponent implements OnInit, OnDestroy
                             // ---------------------
                             // check for break hour
                             // ---------------------
-                            // if ((item.breakStartTime && item.breakStartTime !== null) && (item.breakEndTime && item.breakEndTime !== null)) {
-                            //     let breakStartTime = new Date();
-                            //     breakStartTime.setHours(Number(item.breakStartTime.split(":")[0]), Number(item.breakStartTime.split(":")[1]), 0);
+                            if ((item.breakStartTime && item.breakStartTime !== null) && (item.breakEndTime && item.breakEndTime !== null)) {
+                                let breakStartTime = new Date();
+                                breakStartTime.setHours(Number(item.breakStartTime.split(":")[0]), Number(item.breakStartTime.split(":")[1]), 0);
     
-                            //     let breakEndTime = new Date();
-                            //     breakEndTime.setHours(Number(item.breakEndTime.split(":")[0]), Number(item.breakEndTime.split(":")[1]), 0);
+                                let breakEndTime = new Date();
+                                breakEndTime.setHours(Number(item.breakEndTime.split(":")[0]), Number(item.breakEndTime.split(":")[1]), 0);
 
-                            //     if(todayDate >= breakStartTime && todayDate < breakEndTime ) {
-                            //         // console.info("We are on BREAK! We will open at " + item.breakEndTime);
-                            //         this.notificationMessage = "Sorry for the inconvenience, We are on break! We will open at " + item.breakEndTime;
-                            //     }
-                            // }
+                                if(todayDate >= breakStartTime && todayDate < breakEndTime ) {
+                                    // console.info("We are on BREAK! We will open at " + item.breakEndTime);
+                                    notificationMessage = "We will open at " + item.breakEndTime;
+
+                                    storesOpening[storeOpeningIndex].messageTitle = 'Sorry! We\'re';
+                                    storesOpening[storeOpeningIndex].isOpen = false;
+                                    storesOpening[storeOpeningIndex].message = notificationMessage;
+                                }
+                            }
                         } else if (todayDate < openTime) {
                             // this mean it's open today but it's before store opening hour (store not open yet)
                             notificationMessage = "Please come back at " + item.openTime;
