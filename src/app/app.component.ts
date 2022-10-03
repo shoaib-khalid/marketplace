@@ -189,22 +189,6 @@ export class AppComponent
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-        
-        this._router.events.forEach((event) => {
-            if(event instanceof RoutesRecognized) {
-                // set store id
-                if (this.store && this.store.id !== "") this.customerActivity.storeId = this.store.id;
-                // set page visited
-                this.customerActivity.pageVisited = 'https://' + this._apiServer.settings.marketplaceDomain + event["urlAfterRedirects"];
-                
-                this._analyticService.customerActivity = this.customerActivity;
-
-                if ((this.customerActivity.channel && this.customerActivity.channel !== "") && 
-                    (this.customerActivity.sessionId && this.customerActivity.sessionId !== "")) {
-                    this._analyticService.postActivity(this.customerActivity).subscribe();           
-                }
-            }        
-        });
 
         // Get searches from url parameter 
         this._activatedRoute.queryParams.subscribe(params => {
@@ -222,6 +206,19 @@ export class AppComponent
             }
             
             this.customerActivity.channel = channel;
+        });
+        
+        // check router 
+        this._router.events.forEach((event) => {
+            if(event instanceof RoutesRecognized) {
+                // set store id
+                if (this.store && this.store.id !== "") this.customerActivity.storeId = this.store.id;
+                // set page visited
+                this.customerActivity.pageVisited = 'https://' + this._apiServer.settings.marketplaceDomain + event["urlAfterRedirects"];
+                
+                this._analyticService.customerActivity = this.customerActivity;
+                this._analyticService.postActivity(this.customerActivity).subscribe();              
+            }
         });
     }
 }
