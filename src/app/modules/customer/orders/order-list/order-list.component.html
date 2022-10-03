@@ -84,7 +84,26 @@
                                                                 class="font-semibold text-sm group-hover:text-primary line-clamp-3">
                                                                 {{orderItemDetail.productName}}
                                                             </h3>
-                                                            <h3 class="text-gray-400 text-sm group-hover:text-primary">{{orderItemDetail.productVariant}}</h3>
+                                                            <div class="">
+                                                                <!-- Display variants -->
+                                                                <h3 class="text-gray-400 text-sm group-hover:text-primary">{{orderItemDetail.productVariant}}</h3>
+                                                                <!-- <ng-container *ngIf="orderItem.productInventory.productInventoryItems.length > 0">
+                                                                    <div class="flex flex-wrap items-center gap-1">
+                                                                        <ng-container *ngFor="let variant of cartItem.productInventory.productInventoryItems; let isLast=last">
+                                                                            <span class="truncate tracking-tight max-w-32 leading-tight text-xs lg:text-sm text-secondary">{{variant.productVariantAvailable.productVariant.name}}: {{variant.productVariantAvailable.value}}{{isLast ? '' : ', '}}</span>
+                                                                        </ng-container>
+                                                                    </div>
+                                                                </ng-container> -->
+                                                                <!-- Display Combo -->
+                                                                <ng-container *ngIf="orderItemDetail.orderSubItem.length > 0">
+                                                                    <div class="flex flex-wrap items-center gap-1">
+                                                                        <ng-container *ngFor="let combo of orderItemDetail.orderSubItem; let isLast=last">
+                                                                            <span class="truncate tracking-tight max-w-32 leading-tight text-xs lg:text-sm text-secondary">{{combo.productName}}{{isLast ? '' : ', '}}</span>
+                                                                            <!-- <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span> -->
+                                                                        </ng-container>
+                                                                    </div>
+                                                                </ng-container>
+                                                            </div>
                                                         </div>
                                                         <div class="w-1/2 md:w-2/3 flex flex-row justify-between">
                                                             <span class="text-gray-400 items-center text-sm group-hover:text-primary">x{{orderItemDetail.quantity}}</span>
@@ -333,7 +352,26 @@
                                                                         class="font-semibold text-sm group-hover:text-primary line-clamp-3">
                                                                         {{orderItemDetail.productName}}
                                                                     </h3>
-                                                                    <h3 class="text-gray-400 text-sm group-hover:text-primary">{{orderItemDetail.productVariant}}</h3>
+                                                                    <div class="">
+                                                                        <!-- Display variants -->
+                                                                        <h3 class="text-gray-400 text-sm group-hover:text-primary">{{orderItemDetail.productVariant}}</h3>
+                                                                        <!-- <ng-container *ngIf="orderItem.productInventory.productInventoryItems.length > 0">
+                                                                            <div class="flex flex-wrap items-center gap-1">
+                                                                                <ng-container *ngFor="let variant of cartItem.productInventory.productInventoryItems; let isLast=last">
+                                                                                    <span class="truncate tracking-tight max-w-32 leading-tight text-xs lg:text-sm text-secondary">{{variant.productVariantAvailable.productVariant.name}}: {{variant.productVariantAvailable.value}}{{isLast ? '' : ', '}}</span>
+                                                                                </ng-container>
+                                                                            </div>
+                                                                        </ng-container> -->
+                                                                        <!-- Display Combo -->
+                                                                        <ng-container *ngIf="orderItemDetail.orderSubItem.length > 0">
+                                                                            <div class="flex flex-wrap items-center gap-1">
+                                                                                <ng-container *ngFor="let combo of orderItemDetail.orderSubItem; let isLast=last">
+                                                                                    <span class="truncate tracking-tight max-w-32 leading-tight text-xs lg:text-sm text-secondary">{{combo.productName}}{{isLast ? '' : ', '}}</span>
+                                                                                    <!-- <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span> -->
+                                                                                </ng-container>
+                                                                            </div>
+                                                                        </ng-container>
+                                                                    </div>
                                                                 </div>
                                                                 <div class="w-1/2 md:w-2/3 flex flex-row justify-between">
                                                                     <span class="text-gray-400 items-center text-sm group-hover:text-primary">x{{orderItemDetail.quantity}}</span>

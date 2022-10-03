@@ -172,7 +172,26 @@
                                     </div>
                                     <div class="w-full">
                                         <h3 class="line-clamp-3 font-semibold text-md sm:text-base">{{orderItem.productName}}</h3>
-                                        <h3 class="font-medium text-md sm:text-base text-gray-400">{{orderItem.productVariant}}</h3>
+                                        <div class="">
+                                            <!-- Display variants -->
+                                            <h3 class="font-medium text-xs sm:text-base text-gray-400">{{orderItem.productVariant}}</h3>
+                                            <!-- <ng-container *ngIf="orderItem.productInventory.productInventoryItems.length > 0">
+                                                <div class="flex flex-wrap items-center gap-1">
+                                                    <ng-container *ngFor="let variant of cartItem.productInventory.productInventoryItems; let isLast=last">
+                                                        <span class="truncate tracking-tight max-w-32 leading-tight text-xs lg:text-sm text-secondary">{{variant.productVariantAvailable.productVariant.name}}: {{variant.productVariantAvailable.value}}{{isLast ? '' : ', '}}</span>
+                                                    </ng-container>
+                                                </div>
+                                            </ng-container> -->
+                                            <!-- Display Combo -->
+                                            <ng-container *ngIf="orderItem.orderSubItem.length > 0">
+                                                <div class="flex flex-wrap items-center gap-1">
+                                                    <ng-container *ngFor="let combo of orderItem.orderSubItem; let isLast=last">
+                                                        <span class="tracking-tight max-w-32 leading-tight text-xs lg:text-sm text-secondary">{{combo.productName}}{{isLast ? '' : ', '}}</span>
+                                                        <!-- <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span> -->
+                                                    </ng-container>
+                                                </div>
+                                            </ng-container>
+                                        </div>
                                     </div>
                                     <div class="items-center justify-end sm:justify-center">
                                         <h3 class="text-gray-400">x{{orderItem.quantity}}</h3>
