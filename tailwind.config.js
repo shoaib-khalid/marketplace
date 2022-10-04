@@ -11,7 +11,8 @@ const generatePalette = require(path.resolve(__dirname, ('src/@fuse/tailwind/uti
  */
 const customPalettes = {
     brand: generatePalette('#2196F3'),
-    turquoise: generatePalette('#30D5C8')
+    turquoise: generatePalette('#30D5C8'),
+    denim: generatePalette('#1670c9')
 };
 
 /**
@@ -63,6 +64,12 @@ const themes = {
         primary: {
             ...customPalettes.turquoise,
             DEFAULT: customPalettes.turquoise[500]
+        }
+    },
+    'denim' : {
+        primary: {
+            ...customPalettes.denim,
+            DEFAULT: customPalettes.denim[500]
         }
     }
 };
