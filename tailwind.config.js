@@ -10,9 +10,9 @@ const generatePalette = require(path.resolve(__dirname, ('src/@fuse/tailwind/uti
  * Tailwind-like color palettes automatically
  */
 const customPalettes = {
-    brand: generatePalette('#2196F3'),
-    turquoise: generatePalette('#30D5C8'),
-    denim: generatePalette('#1670c9')
+    brand       : generatePalette('#2196F3'),
+    turquoise   : generatePalette('#30D5C8'),
+    denim       : generatePalette('#1A73BA')
 };
 
 /**
