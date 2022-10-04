@@ -25,7 +25,7 @@
             <ng-container *ngIf="customersAddresses" >
                 <div class="flex flex-col">
                     <ng-container *ngFor="let customersAddress of customersAddresses;let i = index;">
-                        <div [ngClass]="selectedAddress && selectedAddress.id === customersAddress.id ? 'bg-primary-50' : ''" class="flex flex-row justify-between border-b rounded-sm p-2 bg-card min-h-[87px]">
+                        <div [ngClass]="selectedAddress && selectedAddress.id === customersAddress.id ? 'bg-primary-50' : ''" class="flex flex-row justify-between gap-1 border-b rounded-sm p-2 bg-card min-h-[87px]">
                             <ng-container *ngIf="selectedAddress && selectedAddress.id !== customersAddress.id">
                                 <input
                                 [id]="'select-address-button-' + customersAddress.id"

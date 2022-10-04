@@ -308,8 +308,8 @@ export class EditCartAddressDialog implements OnInit {
                         })
                     );
 
-                    this.addressForm.get('latitude').patchValue(this.location.lat.toString());
-                    this.addressForm.get('longitude').patchValue(this.location.lng.toString());
+                    this.addressForm.get('latitude').patchValue(this.location.lat.toFixed(6));
+                    this.addressForm.get('longitude').patchValue(this.location.lng.toFixed(6));
 
                     const bounds1 = new google.maps.LatLngBounds();
         
@@ -353,8 +353,8 @@ export class EditCartAddressDialog implements OnInit {
                 })
                 );
 
-                this.addressForm.get('latitude').patchValue(this.location.lat.toString());
-                this.addressForm.get('longitude').patchValue(this.location.lng.toString());
+                this.addressForm.get('latitude').patchValue(this.location.lat.toFixed(6));
+                this.addressForm.get('longitude').patchValue(this.location.lng.toFixed(6));
             
             });
 
