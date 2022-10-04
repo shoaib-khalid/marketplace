@@ -812,7 +812,8 @@
         
                             <!-- Voucher Input -->
                             <ng-container *ngIf="displayRedeem; else displayHavePromo">
-                                <mat-form-field class="w-2/5 md:w-full mt-2 fuse-mat-no-subscript fuse-mat-dense text-sm tracking-tighter" floatLabel="always">
+                                <mat-form-field class="mt-2 fuse-mat-no-subscript fuse-mat-dense text-sm tracking-tighter" floatLabel="always"
+                                [ngClass]="customerVouchers && customerVouchers.length > 0 ? 'w-2/5 md:w-full' : 'w-full'">
                                     <input
                                         matInput
                                         placeholder="Enter Code"
@@ -830,7 +831,8 @@
                             </ng-container>
     
                             <ng-template #displayHavePromo>
-                                <div class="w-2/5 md:w-full text-xs mt-2">
+                                <div class="text-xs mt-2"
+                                [ngClass]="customerVouchers && customerVouchers.length > 0 ? 'w-2/5 md:w-full' : 'w-full'">
                                     <span>Having a Promo Code? Redeem </span>
                                     <span class="underline cursor-pointer text-primary" 
                                         (click)="displayRedeem = true">
