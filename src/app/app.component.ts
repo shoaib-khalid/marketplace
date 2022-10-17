@@ -14,6 +14,8 @@ import { CurrentLocationService } from './core/_current-location/current-locatio
 import { CurrentLocation } from './core/_current-location/current-location.types';
 import { StoresService } from './core/store/store.service';
 import { Store } from './core/store/store.types';
+import { CartService } from './core/cart/cart.service';
+import { CartItem } from './core/cart/cart.types';
 
 declare let gtag: Function;
 
@@ -54,6 +56,7 @@ export class AppComponent
         private _currentLocationService: CurrentLocationService,
         private _apiServer: AppConfig,
         private _userService: UserService,
+        private _cartsService: CartService,
         private _swUpdate: SwUpdate
     )
     {        
@@ -212,10 +215,17 @@ export class AppComponent
         this._router.events.forEach((event) => {
             if(event instanceof RoutesRecognized) {
                 // set store id
-                if (this.store && this.store.id !== "") this.customerActivity.storeId = this.store.id;
+                if (this.store && this.store.id !== "") {
+                    this.customerActivity.storeId = this.store.id;
+                }
+
                 // set page visited
                 this.customerActivity.pageVisited = 'https://' + this._apiServer.settings.marketplaceDomain + event["urlAfterRedirects"];
                 
+                // set carts
+                let cartIds: { id: string, storeId: string, cartItems: CartItem[]}[] = this._cartsService.cartIds$ ? JSON.parse(this._cartsService.cartIds$) : [];
+                this.customerActivity.cart = (cartIds && cartIds.length) ? cartIds.map(item => item.id) : [];
+
                 this._analyticService.customerActivity = this.customerActivity;
                 this._analyticService.postActivity(this.customerActivity).subscribe();              
             }

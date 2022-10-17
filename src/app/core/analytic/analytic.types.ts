@@ -20,4 +20,5 @@ export interface CustomerActivity
     // city        : string;
     // state       : string;
     // country     : string;
+    cart?       : string[];
 }
