@@ -32,6 +32,7 @@ export class AppComponent
     user        : User;
     userSession : UserSession;
     customerActivity: CustomerActivity = {};
+    cartIds     : string[];
 
     favIcon16: HTMLLinkElement = document.querySelector('#appIcon16');
     favIcon32: HTMLLinkElement = document.querySelector('#appIcon32');
@@ -182,6 +183,17 @@ export class AppComponent
                 this._changeDetectorRef.markForCheck();
             });
 
+        // get cart ids to be send to customer activity
+        this._cartsService.cartsHeaderWithDetails$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((response)=>{
+                if (response) {
+                    this.cartIds = response.map(item => item.id);
+                }
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
         this._currentLocationService.currentLocation$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((response: CurrentLocation)=>{
@@ -223,8 +235,7 @@ export class AppComponent
                 this.customerActivity.pageVisited = 'https://' + this._apiServer.settings.marketplaceDomain + event["urlAfterRedirects"];
                 
                 // set carts
-                let cartIds: { id: string, storeId: string, cartItems: CartItem[]}[] = this._cartsService.cartIds$ ? JSON.parse(this._cartsService.cartIds$) : [];
-                this.customerActivity.cart = (cartIds && cartIds.length) ? cartIds.map(item => item.id) : [];
+                this.customerActivity.cart = this.cartIds;
 
                 this._analyticService.customerActivity = this.customerActivity;
                 this._analyticService.postActivity(this.customerActivity).subscribe();              
