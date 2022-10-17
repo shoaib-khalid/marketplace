@@ -236,7 +236,7 @@
                                         </ng-container>
                                     </div>
                                     <div class="flex flex-col sm:flex-row sm:items-center sm:min-w-auto gap-0 sm:gap-x-1">
-                                        <span class="text-sm sm:text-md mr-1 sm:mr-0">Total Items ({{cart.cartItems ? cart.cartItems.length : 0}}):</span>
+                                        <span class="text-sm sm:text-md mr-1 sm:mr-0">Total Quantity ({{cart.cartItems ? cart.cartItems.length : 0}}):</span>
                                         <span class="font-semibold text-sm sm:text-sm">{{ getCartItemsTotal(cart.cartItems) | currency: cart.store.regionCountry.currencySymbol }}</span>
                                     </div>
                                 </div>
@@ -311,7 +311,7 @@
                     <div *ngIf="visibleCartSummary">
                         <!-- Sub Total -->
                         <div class="flex flex-row justify-between mt-2">
-                            <span class="text-md text-secondary">Sub Total <small *ngIf="totalSelectedCartItem > 0">({{totalSelectedCartItem}} items)</small></span>
+                            <span class="text-md text-secondary">Sub Total <small *ngIf="totalSelectedCartItem > 0">(Qty: {{totalSelectedCartItem}})</small></span>
                             <span class="text-md font-semibold">{{paymentDetails.cartSubTotal | currency: platform.currency}}</span>
                         </div>
                         <!-- Order Discount -->

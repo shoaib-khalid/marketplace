@@ -20,7 +20,16 @@ import { AuthService } from 'app/core/auth/auth.service';
     templateUrl    : './cart.component.html',
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs       : 'cart'
+    exportAs       : 'cart',
+    styles         : [
+        `
+            /* Change mat badge styles */
+            body.light .mat-badge-accent .mat-badge-content {
+                background: var(--fuse-primary);
+                color: white;
+            }
+        `
+    ]
 })
 export class CartComponent implements OnInit, OnDestroy
 {
@@ -89,27 +98,33 @@ export class CartComponent implements OnInit, OnDestroy
                 if (cartsWithDetails) {
 
                     this.carts = cartsWithDetails;
-                    // this.totalCartItems = carts.totalItem;
 
-                    this.totalCartList = cartsWithDetails.length;
+                    // Total of all carts
+                    // this.totalCartList = cartsWithDetails.length;
+
+                    // Total of all carts' items
+                    // this.totalCartList = cartsWithDetails.map(item => item.cartItems).flat().length;
+
+                    // Total quantity of all carts
+                    this.totalCartList = cartsWithDetails.map(item => item.cartItems.map(element => element.quantity).reduce((partialSum, a) => partialSum + a, 0)).reduce((a, b) => a + b, 0);
     
                     // remove duplicate stores
-                    let resArr = [];
-                    this.carts.filter(function(item){
-                        let i = resArr.findIndex(x => (x.storeId == item.storeId));
+                    // let resArr = [];
+                    // this.carts.filter(function(item){
+                    //     let i = resArr.findIndex(x => (x.storeId == item.storeId));
     
-                        if (i <= -1){
-                            resArr.push(item);
-                        }
-                        return null;
-                    });
+                    //     if (i <= -1){
+                    //         resArr.push(item);
+                    //     }
+                    //     return null;
+                    // });
                     
-                    // to show only 3
-                    if (resArr.length >= 3) {
-                        // this.totalCartList = resArr.length;
-                        const slicedArray = resArr.slice(0, 3);
-                        this.carts = slicedArray;
-                    }
+                    // // to show only 3
+                    // if (resArr.length >= 3) {
+                    //     // this.totalCartList = resArr.length;
+                    //     const slicedArray = resArr.slice(0, 3);
+                    //     this.carts = slicedArray;
+                    // }
     
                 }
                 else {

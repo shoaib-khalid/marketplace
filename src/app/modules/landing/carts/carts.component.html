@@ -400,7 +400,7 @@
                                             </mat-radio-group>
                                             <!-- Total Items  -->
                                             <div *ngIf="selectedCart.carts[i + pagination.startIndex].isSelfPickup === true" class="flex flex-col sm:flex-row items-center sm:min-w-auto gap-1 sm:gap-x-2">
-                                                <span class="text-sm">Total Items ({{cart.cartItems ? cart.cartItems.length : 0}}):</span>
+                                                <span class="text-sm">Total Quantity ({{cart.cartItems ? cart.cartItems.length : 0}}):</span>
                                                 <span class="font-semibold text-sm">{{ getCartItemsTotal(cart.cartItems) | currency: cart.store.regionCountry.currencySymbol }}</span>
                                             </div>
                                         </div>
@@ -707,7 +707,9 @@
                     <div *ngIf="visibleCartSummary">
                         <!-- Sub Total -->
                         <div class="flex flex-row justify-between mt-2">
-                            <span class="text-md text-secondary">Sub Total <small *ngIf="totalSelectedCartItem === 1">({{totalSelectedCartItem}} item)</small><small *ngIf="totalSelectedCartItem > 1">({{totalSelectedCartItem}} items)</small></span>
+                            <span class="text-md text-secondary">Sub Total <small>(Qty: {{totalSelectedCartItem}})</small>
+                                <!-- <small *ngIf="totalSelectedCartItem > 1">({{totalSelectedCartItem}} items)</small> -->
+                            </span>
                             <span class="text-md font-semibold">{{paymentDetails.cartSubTotal | currency: platform.currency}}</span>
                         </div>
                         <!-- Order Discount -->

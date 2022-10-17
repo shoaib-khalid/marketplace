@@ -449,13 +449,7 @@ export class OrderListComponent implements OnInit
             (previousValue, currentValue) => previousValue + currentValue.quantity,
             0,
         );
-
-        if (sum > 1) {
-            return sum + " items"
-        }
-        else 
-            return sum + " item"
-        
+        return "Qty: " + sum        
     }
 
     goToExternalUrl(url: string, isOpenNewTab: boolean = false) {
