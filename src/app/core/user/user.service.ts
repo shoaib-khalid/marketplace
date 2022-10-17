@@ -600,7 +600,7 @@ export class UserService
                 this._logging.debug("Response from addressService (generateSession)", response);
 
                 // Resolved
-                this._userSession.next(body);
+                this._userSession.next(response["data"]);
 
                 // Return the deleted status
                 return response["data"];
