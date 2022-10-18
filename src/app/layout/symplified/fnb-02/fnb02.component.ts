@@ -15,6 +15,7 @@ import { User } from 'app/core/user/user.types';
 import { AppConfig } from 'app/config/service.config';
 import { DisplayErrorService } from 'app/core/display-error/display-error.service';
 import { SearchService } from 'app/layout/common/_search/search.service';
+import { OriginService } from 'app/core/_origin/origin.service';
 
 @Component({
     selector     : 'fnb02-layout',
@@ -36,14 +37,15 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
     
     isScreenSmall: boolean;
     navigation: Navigation;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
     
     floatingMessageData = {};
-
-    isHidden: boolean = false;
-    isStorePage: boolean = false;
-    isSearchOpened: boolean = false;
-    floatingCartHidden: boolean = false;
+    
+    isStorePage: boolean = false; // check if current route at store page
+    isSearchOpened: boolean = false; // check if search is opened/displayed when on mobile
+    floatingCartHidden: boolean = false; // should display floating cart or hide it
+    isPayhub2u:boolean = false; // check if this web is open via payhub2u iframe
+    
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
      * Constructor
@@ -54,6 +56,7 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _apiServer: AppConfig,
         private _router: Router,
+        private _originService: OriginService,
         private _navigationService: NavigationService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fuseNavigationService: FuseNavigationService,
@@ -170,6 +173,16 @@ export class Fnb2LayoutComponent implements OnInit, OnDestroy
             .subscribe((user: User) => {
                 if(user) {
                     this.user = user;
+                }
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._originService.origin$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((response) => {
+                if (response && response === "payhub2u") {
+                    this.isPayhub2u = true;
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

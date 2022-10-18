@@ -26,6 +26,7 @@ import { AppConfig } from 'app/config/service.config';
 import { StoresService } from 'app/core/store/store.service';
 import { CustomerActivity } from 'app/core/analytic/analytic.types';
 import { Title } from '@angular/platform-browser';
+import { OriginService } from 'app/core/_origin/origin.service';
 
 @Component({
     selector     : 'buyer-checkout',
@@ -211,8 +212,10 @@ export class BuyerCheckoutComponent implements OnInit
     
     customerActivity: CustomerActivity;
 
+    visibleCartSummary: boolean = false;
+    webOrigin: string; // from which the website is loaded/originated from
+
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-    visibleCartSummary: boolean = false
     /**
      * Constructor
      */
@@ -234,6 +237,7 @@ export class BuyerCheckoutComponent implements OnInit
         private _analyticService: AnalyticService,
         private _apiServer: AppConfig,
         private _platformLocation: PlatformLocation,
+        private _originService: OriginService,
         private _storesService: StoresService,
         private _titleService: Title
 
@@ -382,6 +386,33 @@ export class BuyerCheckoutComponent implements OnInit
                 this._changeDetectorRef.markForCheck()
             });
 
+        // Subscribe to user changes
+        this._userService.user$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((user: User) => {
+                this.user = user;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+    
+        this._analyticService.customerActivity$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((customerActivity: CustomerActivity) => {
+                this.customerActivity = customerActivity;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._originService.origin$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((response)=>{
+                if(response) {
+                    this.webOrigin = response;
+                }
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
         // once selectCart() is triggered, it will set isLoading to true
         // this function will wait for both cartsWithDetails$ & cartSummary$ result first
         // then is isLoading to false
@@ -411,23 +442,6 @@ export class BuyerCheckoutComponent implements OnInit
                 else {
                     this.visibleCartSummary = false;
                 }
-            });
-
-        // Subscribe to user changes
-        this._userService.user$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((user: User) => {
-                this.user = user;
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        this._analyticService.customerActivity$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((customerActivity: CustomerActivity) => {
-                this.customerActivity = customerActivity;
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
             });
     }
 
@@ -537,13 +551,14 @@ export class BuyerCheckoutComponent implements OnInit
                 let dateTimeNow = this._datePipe.transform(dateTime, "yyyy-MM-dd hh:mm:ss"); //2022-05-18 09:51:36
 
                 const paymentBody = {
-                    // callbackUrl: "https://bon-appetit.symplified.ai/thankyou",
-                    customerId: this.user ? this.user.id : null,
-                    customerName: this.user ? this.user.name : customerInfo.name,
-                    productCode: "parcel", // 
-                    // storeName: this.store.name,
-                    systemTransactionId: transactionId,
-                    transactionId: this.order.id,
+                    // callbackUrl      : "https://bon-appetit.symplified.ai/thankyou",
+                    customerId          : this.user ? this.user.id : null,
+                    customerName        : this.user ? this.user.name : customerInfo.name,
+                    productCode         : "parcel", // 
+                    // storeName        : this.store.name,
+                    systemTransactionId : transactionId,
+                    transactionId       : this.order.id,
+                    channel             : this.webOrigin.toUpperCase()
                 }
 
                 // return
@@ -608,6 +623,8 @@ export class BuyerCheckoutComponent implements OnInit
                                         "TRAN_TYPE"     : "ECOMM_PURCHASE", 
                                         "STORE_ID"      : "", 
                                     } , 'post', false);
+                            } else if (this.payment.providerId == "4") {
+                                
                             } else {
                                 this.displayError("Provider id not configured");
                                 console.error("Provider id not configured");

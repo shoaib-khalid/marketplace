@@ -15,6 +15,7 @@ import { HttpStatService } from './mock-api/httpstat/httpstat.service';
 import { AnalyticService } from './core/analytic/analytic.service';
 import { CurrentLocationService } from './core/_current-location/current-location.service';
 import { LocationService } from './core/location/location.service';
+import { OriginService } from './core/_origin/origin.service';
 
 @Injectable({
     providedIn: 'root'
@@ -74,6 +75,7 @@ export class PlatformSetupResolver implements Resolve<any>
         private _cartsService: CartService,
         private _analyticService: AnalyticService,
         private _currentLocationService: CurrentLocationService,
+        private _originService: OriginService,
         private _locationService: LocationService,
         private _httpstatService: HttpStatService
     )
@@ -101,6 +103,7 @@ export class PlatformSetupResolver implements Resolve<any>
             this._cartsService.cartResolver(true), // cartResolver(true) means we resolving the cart notification header
             this._analyticService.resolveAnalytic(),
             this._currentLocationService.get(),
+            this._originService.checkOrigin(state)
             // this._locationService.getTags()
             // this._httpstatService.get(500)
         ])
