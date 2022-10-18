@@ -41,17 +41,24 @@
                             <!-- <span class="text-gray-300 hidden sm:block"> &nbsp; | &nbsp; </span> -->
                             <!-- cart -->
                             <cart></cart>
-                            <span class="text-gray-300 items-center w-full hidden md:block">|</span>
+                            <span class="text-gray-300 items-center w-full hidden md:block last:hidden">|</span>
+
+                            <ng-container *ngIf="!isPayhub2u">
+                                <div class="flex w-full items-center">
+                                    <user></user>
+                                </div>
+                            </ng-container>
+
                             <!-- Components -->
-                            <div class="flex w-full items-center">
+                            <!-- <div class="flex w-full items-center"> -->
                                 <!-- <search [appearance]="'bar'"></search> -->
-                                <user></user>
+                                <!-- <user></user> -->
                                 <!-- <ng-container *ngIf="!isScreenSmall">
                                     <div class="ml-4 text-medium font-medium leading-5 truncate">
                                         {{displayUsername}}
                                     </div>
                                 </ng-container> -->
-                            </div>
+                            <!-- </div> -->
                         </div>
                     </div>
                     <!-- <span class="block md:hidden">{{headerTitle}}</span> -->
