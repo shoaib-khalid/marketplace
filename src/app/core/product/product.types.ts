@@ -25,7 +25,8 @@ export interface Product
     productDeliveryDetail?: string;
     customNote?: string;
     isNoteOptional?: boolean;
-    seoNameMarketplace: string
+    seoNameMarketplace: string;
+    hasAddOn: boolean;
 }
 
 /**
@@ -176,5 +177,29 @@ export interface ProductPackageOptionDetail
     product?: Product;
     productPackageOptionId?: string;
     
+}
+
+export interface AddOnProduct
+{
+    id?     : string;
+    title   : string;
+    productAddOnItemDetail? : AddOnItemProduct[];
+    maxAllowed  : number;
+    minAllowed  : number;
+    sequenceNumber : number;
+    groupId?     : string;
+}
+
+export interface AddOnItemProduct
+{
+    addonTemplateItemId : string;
+    dineInPrice         : number;
+    id                  : string;
+    price               : number;
+    productId           : string;
+    sequenceNumber      : number;
+    status              : string;
+    name                : string;
+    productAddonGroupId : string;
 }
  

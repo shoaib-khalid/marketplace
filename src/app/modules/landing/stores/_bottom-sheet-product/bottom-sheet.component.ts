@@ -6,7 +6,7 @@ import { Platform } from 'app/core/platform/platform.types';
 import { DOCUMENT } from '@angular/common';
 import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from 'ngx-gallery-9';
-import { Product, ProductAssets, ProductInventory, ProductInventoryItem } from 'app/core/product/product.types';
+import { AddOnProduct, Product, ProductAssets, ProductInventory, ProductInventoryItem } from 'app/core/product/product.types';
 import { FormBuilder } from '@angular/forms';
 import { ProductsService } from 'app/core/product/product.service';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
@@ -47,6 +47,7 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
     selectedProduct: Product = null
     combos: any = [];
     selectedCombo: any = [];
+    selectedAddOn: any = [];
     selectedVariants: any = [];
     selectedVariant: any = [];
     selectedVariantNew: any = [];
@@ -75,6 +76,7 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
         specialInstructionValue     : ['']
     });
     store: Store
+    addOns: AddOnProduct[] = [];
 
     /**
      * Constructor
@@ -100,6 +102,8 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
     {
         this.selectedProduct = data.product;
         this.combos = data.combos;
+        this.addOns = data.addOns;
+        
         // set galleryOptions
         this.galleryOptions = [
             {
@@ -292,6 +296,11 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
             
         }
     
+        if(this.addOns.length > 0) {
+            this.addOns.forEach(addon => {
+                this.selectedAddOn[addon.id] = [];
+            });
+        }
     
     }
 
@@ -416,6 +425,49 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
                         });
                         throw BreakException;
                     }                 
+                });
+            } catch (error) {
+                // console.error(error);
+                return;
+            }
+        }
+
+        // Precheck for addOn
+        if (this.selectedProduct.hasAddOn) {
+            let BreakException = {};
+            try {
+                this.addOns.forEach(item => {
+                    let message: string;
+                    if (item.minAllowed > 0 && item.minAllowed >  this.selectedAddOn[item.id].length) {
+                        message = "You need to select " + item.minAllowed + " item of <b>" + item.title + "</b>";
+                    } else if (this.selectedAddOn[item.id].length > item.maxAllowed) {
+                        message = "You need to select " + item.maxAllowed + " item of <b>" + item.title + " only</b>";
+                    } 
+
+                    if (message) {
+                        const confirmation = this._fuseConfirmationService.open({
+                            "title": "Incomplete Product Combo selection",
+                            "message": message,
+                            "icon": {
+                                "show": true,
+                                "name": "heroicons_outline:exclamation",
+                                "color": "warn"
+                            },
+                            "actions": {
+                                "confirm": {
+                                "show": true,
+                                "label": "Ok",
+                                "color": "warn"
+                                },
+                                "cancel": {
+                                "show": false,
+                                "label": "Cancel"
+                                }
+                            },
+                            "dismissible": true
+                        });
+                        throw BreakException;
+                    }
                 });
             } catch (error) {
                 // console.error(error);
@@ -622,6 +674,31 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
             });            
         }
 
+        // additinal step for product addOn
+        if(this.selectedProduct.hasAddOn){
+            cartItemBody["cartItemAddOn"] = [];
+            // loop all combos from backend
+            this.addOns.forEach(item => {
+                // compare it with current selected combo by user
+                if (this.selectedAddOn[item.id]) {
+                    // loop the selected current combo
+                    this.selectedAddOn[item.id].forEach(element => {
+                        
+                        // get productPakageOptionDetail from this.combo[].productPackageOptionDetail where it's subitem.productId == element (id in this.currentcombo array)
+                        let productPakageOptionDetail = item.productAddOnItemDetail.find(subitem => subitem.id === element);
+                        if (productPakageOptionDetail){
+                            // push to cart
+                            cartItemBody["cartItemAddOn"].push(
+                                {
+                                    productAddOnId: element,
+                                }
+                            );
+                        }
+                    });
+                }
+            });            
+        }
+
         return new Promise(resolve => { this._cartService.postCartItem(cartId, cartItemBody)
             .subscribe((response)=>{
                 this._bottomSheet.dismiss();
@@ -701,6 +778,33 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
 
         // set currentCombo
         this.selectedCombo[comboId].push(productId);
+        
+    }
+
+    //----------------
+    //  AddOn Section
+    //----------------
+    onChangeAddOn(addOnId, productId , event){
+
+        let productID = event.target.value;
+
+        // remove only unchecked item in array
+        if (event.target.checked === false) {
+            let index = this.selectedAddOn[addOnId].indexOf(productID);
+            if (index !== -1) {
+                this.selectedAddOn[addOnId].splice(index, 1);
+                return;
+            }
+        }
+
+        let currentAddOnSetting = this.addOns.find(item => item.id === addOnId);
+        
+        if (this.selectedAddOn[addOnId].length >= currentAddOnSetting.maxAllowed){            
+            this.selectedAddOn[addOnId].shift();
+        }
+
+        // set currentAddOn
+        this.selectedAddOn[addOnId].push(productId);
         
     }
 

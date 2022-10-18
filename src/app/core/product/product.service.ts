@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { Product, ProductVariant, ProductInventory, ProductCategory, ProductPagination, ProductVariantAvailable, ProductPackageOption, ProductAssets } from 'app/core/product/product.types';
+import { Product, ProductVariant, ProductInventory, ProductCategory, ProductPagination, ProductVariantAvailable, ProductPackageOption, ProductAssets, AddOnProduct } from 'app/core/product/product.types';
 import { AppConfig } from 'app/config/service.config';
 import { JwtService } from 'app/core/jwt/jwt.service';
 import { LogService } from '../logging/log.service';
@@ -34,6 +34,7 @@ export class ProductsService
     private _sortProductByLabel: BehaviorSubject<string | null> = new BehaviorSubject(null);
 
     private _selectedProduct: BehaviorSubject<Product | null> = new BehaviorSubject(null);
+    private _addOnsProduct: BehaviorSubject<AddOnProduct[] | null> = new BehaviorSubject(null);
 
     /**
      * Constructor
@@ -137,6 +138,12 @@ export class ProductsService
 
     /** Getter for selected product */
     get selectedProduct$(): Observable<Product> { return this._selectedProduct.asObservable(); }
+
+    /** Getter for addOnsProduct */
+    get addOnsProduct$(): Observable<AddOnProduct[]> { return this._addOnsProduct.asObservable(); }
+
+    /** Setter for addOnsProduct */
+    set addOnsProduct(value: any){ this._addOnsProduct.next(value); }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -1418,5 +1425,43 @@ export class ProductsService
     {
         if (product) this._logging.debug("Response from ProductsService (selectProduct)", product);
         this._selectedProduct.next(product)
+    }
+
+    //------------
+    // ADD ON
+    //------------
+
+    getAddOnItemsOnProduct( params: { productId : string } = { productId : null} )
+    : Observable<AddOnProduct[]>
+    {
+        let productService = this._apiServer.settings.apiServer.productService;
+        // let accessToken = this._jwt.getJwtPayload(this._authService.jwtAccessToken).act;
+        let accessToken = "accessToken";
+
+        const header = {
+            headers: new HttpHeaders().set("Authorization", `Bearer ${accessToken}`),
+            params : params
+        };
+
+        // Delete empty value
+        Object.keys(header.params).forEach(key => {
+            if (Array.isArray(header.params[key])) {
+                header.params[key] = header.params[key].filter(element => element !== null)
+            }
+            
+            if (!header.params[key] || (Array.isArray(header.params[key]) && header.params[key].length === 0)) {
+                delete header.params[key];
+            }
+        });
+        
+        return this._httpClient.get<any>(productService + '/product-addon', header)
+            .pipe(
+                map((response) => {
+                    this._logging.debug("Response from ProductService (getAddOnItemsOnProduct)", response);
+
+                    this._addOnsProduct.next(response["data"]);
+                    return response["data"];
+                })
+            );
     }
 }

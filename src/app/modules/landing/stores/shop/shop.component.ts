@@ -10,7 +10,7 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { PlatformService } from 'app/core/platform/platform.service';
 import { Platform } from 'app/core/platform/platform.types';
 import { ProductsService } from 'app/core/product/product.service';
-import { Product, ProductAssets, ProductInventory, ProductInventoryItem, ProductPagination } from 'app/core/product/product.types';
+import { AddOnProduct, Product, ProductAssets, ProductInventory, ProductInventoryItem, ProductPagination } from 'app/core/product/product.types';
 import { StoresService } from 'app/core/store/store.service';
 import { Store, StoreAssets, StoreCategory } from 'app/core/store/store.types';
 import { BottomPopUpService } from 'app/layout/common/_bottom-popup/bottom-popup.service';
@@ -215,7 +215,9 @@ export class LandingShopComponent implements OnInit
     }[] = [];
 
     combos: any = [];
+    addOns: AddOnProduct[] = [];
     selectedProduct: Product = null
+    
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -863,6 +865,18 @@ export class LandingShopComponent implements OnInit
 
             });
         }
+        else if (product.hasAddOn === true) {
+
+            this._productsService.getAddOnItemsOnProduct({productId: product.id})
+                .subscribe((addOnsResp: AddOnProduct[]) => {
+                    if (addOnsResp.length > 0) {
+                        this.addOns = addOnsResp;
+                        this.openDrawer();
+                    }
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                })
+        }
         // Normal/variant product
         else {
             this.openDrawer();
@@ -874,10 +888,13 @@ export class LandingShopComponent implements OnInit
 
     openDrawer(){
         setTimeout(() => {
-            let bottomSheet = this._bottomSheet.open(_BottomSheetComponent, { data: {
-                product: this.selectedProduct,
-                combos : this.combos }
-            })
+            let bottomSheet = this._bottomSheet.open(_BottomSheetComponent, { 
+                data: {
+                    product: this.selectedProduct,
+                    combos : this.combos,
+                    addOns : this.addOns 
+                }
+            });
             bottomSheet.afterDismissed()
             .subscribe(() => 
                 {

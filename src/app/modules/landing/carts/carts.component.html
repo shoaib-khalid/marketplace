@@ -251,6 +251,17 @@
                                                                     </ng-container>
                                                                 </div>
                                                             </ng-container>
+                                                            <!-- Display AddOn -->
+                                                            <ng-container *ngIf="cartItem.cartItemAddOn.length > 0">
+                                                                <div class="flex flex-wrap items-center gap-1">
+                                                                    <ng-container *ngFor="let addon of cartItem.cartItemAddOn; let isLast=last">
+                                                                        <ng-container *ngIf="addon.productAddOn && addon.productAddOn.addOnTemplateItem">
+                                                                            <span class="truncate tracking-tight max-w-32 leading-tight text-xs lg:text-sm text-secondary">{{addon.productAddOn.addOnTemplateItem.name}}{{isLast ? '' : ', '}}</span>
+                                                                        </ng-container>
+                                                                        <!-- <span class="block last:hidden leading-tight text-xs lg:text-sm text-secondary">,&nbsp;</span> -->
+                                                                    </ng-container>
+                                                                </div>
+                                                            </ng-container>
                                                         </div>
                                                     <!-- Display Special Instruction -->
                                                     <div *ngIf="cartItem.specialInstruction" class="flex flex-row items-center">

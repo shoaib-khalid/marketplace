@@ -558,7 +558,7 @@ export class BuyerCheckoutComponent implements OnInit
                     // storeName        : this.store.name,
                     systemTransactionId : transactionId,
                     transactionId       : this.order.id,
-                    channel             : this.webOrigin.toUpperCase()
+                    channel             : this.webOrigin ? this.webOrigin.toUpperCase() : null
                 }
 
                 // return

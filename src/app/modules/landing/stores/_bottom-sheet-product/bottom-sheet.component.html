@@ -44,8 +44,60 @@
                         </ng-template>
                     </div>
                 </div>
+                <ng-container *ngIf="selectedProduct.isPackage">
+                    <!-- Combo -->
+                    <ng-container *ngFor="let combo of combos; let i = index;">
+                        <div 
+                            [id]="combo.title" 
+                            class="py-1 flex flex-col gap-1">
+                            <label class="font-semibold text-sm" for="{{combo.title}}">{{combo.title | uppercase}}: (Select {{ combo.totalAllow }} of {{ combo.productPackageOptionDetail.length }})</label>
+                            <ul class="grid grid-cols-2 gap-1">
+                                <li *ngFor="let option of combo.productPackageOptionDetail; let i = index;" class="flex items-center">
+                                    <input type="checkbox" 
+                                        [id]="'combo-checkbox-' + combo.id + '-' + option.productId"
+                                        [value]="option.productId" 
+                                        [name]="'combo-checkbox-' + combo.id + '-' + option.productId"
+                                        [checked]="selectedCombo[combo.id].indexOf(option.productId) > -1"
+                                        (change)="onChangeCombo(combo.id, option.productId, $event)"
+                                    >
+                                    <label class="pl-2 leading-tight text-sm" [for]="'combo-checkbox-' + combo.id + '-' + option.productId">{{option.product.name}}</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </ng-container>
+                </ng-container>
+                <!-- AddOn -->
+                <ng-container *ngIf="selectedProduct.hasAddOn">
+                    <ng-container *ngFor="let addOn of addOns; let i = index;">
+                        <div 
+                            [id]="addOn.title" 
+                            class="py-1 flex flex-col gap-1">
+                            <label class="font-semibold text-sm" for="{{addOn.title}}">
+                                <span *ngIf="addOn.minAllowed !== 0">
+                                    {{addOn.title | uppercase}}: (Select {{ addOn.minAllowed }} of {{ addOn.productAddOnItemDetail.length }})
+                                </span> 
+                                <span *ngIf="addOn.minAllowed === 0">{{addOn.title | uppercase}}: (Optional)</span>
+                                <span *ngIf="addOn.maxAllowed !== addOn.minAllowed" class="ml-0.5">Max {{addOn.maxAllowed}}</span>
+                            </label>
+                            <ul class="grid grid-cols-2 gap-1">
+                                <li *ngFor="let option of addOn.productAddOnItemDetail; let i = index;" class="flex items-center">
+                                    <input type="checkbox" 
+                                        [id]="'addon-checkbox-' + addOn.id + '-' + option.id"
+                                        [value]="option.id" 
+                                        [name]="'addon-checkbox-' + addOn.id + '-' + option.id"
+                                        [checked]="selectedAddOn[addOn.id].indexOf(option.id) > -1"
+                                        (change)="onChangeAddOn(addOn.id, option.id, $event)"
+                                    >
+                                    <label class="pl-2 leading-tight text-sm" [for]="'addOn-checkbox-' + addOn.id + '-' + option.id">
+                                        {{option.name}}
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </ng-container>
+                </ng-container>
                 <!-- Variants / Combo -->
-                <ng-container *ngIf="!selectedProduct.isPackage; else comboProduct">
+                <ng-container *ngIf="!selectedProduct.isPackage && !selectedProduct.hasAddOn">
                     <!-- Variants -->
                     <ng-container *ngFor="let variant of selectedProduct.productVariants; let i = index;">
                         <div 
@@ -68,28 +120,6 @@
                         </div>
                     </ng-container>
                 </ng-container>
-                <ng-template #comboProduct>
-                    <!-- Combo -->
-                    <ng-container *ngFor="let combo of combos; let i = index;">
-                        <div 
-                            [id]="combo.title" 
-                            class="py-1 flex flex-col gap-1">
-                            <label class="font-semibold text-sm" for="{{combo.title}}">{{combo.title | uppercase}}: (Select {{ combo.totalAllow }} of {{ combo.productPackageOptionDetail.length }})</label>
-                            <ul class="grid grid-cols-2 gap-1">
-                                <li *ngFor="let option of combo.productPackageOptionDetail; let i = index;" class="flex items-center">
-                                    <input type="checkbox" 
-                                        [id]="'combo-checkbox-' + combo.id + '-' + option.productId"
-                                        [value]="option.productId" 
-                                        [name]="'combo-checkbox-' + combo.id + '-' + option.productId"
-                                        [checked]="selectedCombo[combo.id].indexOf(option.productId) > -1"
-                                        (change)="onChangeCombo(combo.id, option.productId, $event)"
-                                    >
-                                    <label class="pl-2 leading-tight text-sm" [for]="'combo-checkbox-' + combo.id + '-' + option.productId">{{option.product.name}}</label>
-                                </li>
-                            </ul>
-                        </div>
-                    </ng-container>
-                </ng-template>
                 <!-- Special Instruction -->
                 <form [formGroup]="specialInstructionForm">
                     <div class="w-full mt-2">
