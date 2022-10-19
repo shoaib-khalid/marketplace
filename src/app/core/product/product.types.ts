@@ -176,7 +176,8 @@ export interface ProductPackageOptionDetail
     productId?: string;
     product?: Product;
     productPackageOptionId?: string;
-    
+    productInventory: ProductInventory[];
+    sequenceNumber: number;
 }
 
 export interface AddOnProduct

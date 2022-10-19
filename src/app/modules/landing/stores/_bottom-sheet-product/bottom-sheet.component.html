@@ -44,8 +44,8 @@
                         </ng-template>
                     </div>
                 </div>
+                <!-- Combo -->
                 <ng-container *ngIf="selectedProduct.isPackage">
-                    <!-- Combo -->
                     <ng-container *ngFor="let combo of combos; let i = index;">
                         <div 
                             [id]="combo.title" 
@@ -96,9 +96,8 @@
                         </div>
                     </ng-container>
                 </ng-container>
-                <!-- Variants / Combo -->
+                <!-- Variants -->
                 <ng-container *ngIf="!selectedProduct.isPackage && !selectedProduct.hasAddOn">
-                    <!-- Variants -->
                     <ng-container *ngFor="let variant of selectedProduct.productVariants; let i = index;">
                         <div 
                             [id]="variant.name" 
