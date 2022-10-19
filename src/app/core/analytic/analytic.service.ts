@@ -73,7 +73,7 @@ export class AnalyticService
                             updated : new Date().toISOString() + ""
                         }
 
-                        if (this._userService.userSessionId$ && this._userService.userSessionId$ !== "") {
+                        if (!this._userService.userSessionId$ || this._userService.userSessionId$ === "") {
                             this._userService.generateSession(body).subscribe((generateSessionResponse)=>{
                                 this._userService.userSessionId = generateSessionResponse.id;
                             });
