@@ -630,7 +630,7 @@ export class BuyerCheckoutComponent implements OnInit
                             } else if (this.payment.providerId == "4") {
                                 
                                 let axtPaymentBody = {
-                                    "user_id"        : this.user.id,
+                                    "user_id"        : this.payment.clientId,
                                     "transaction_id" : this.payment.sysTransactionId, 
                                     "name"           : this.order.shipmentName,
                                     "email"          : this.order.shipmentEmail,
