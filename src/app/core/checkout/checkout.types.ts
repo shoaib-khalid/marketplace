@@ -210,3 +210,24 @@ export interface GroupOrder
     subTotal: number;
     total: number;
 }
+
+export interface AXTResponseBody
+{
+    error           : boolean;
+    message         : string;
+    url             : string;
+    secondary_url   : string;
+}
+
+export interface AXTRequestBody
+{
+    user_id        : string;
+    transaction_id : string;
+    name           : string;
+    email          : string;
+    mobile         : string;
+    description    : string;
+    redirect_url   : string;
+    callback_url   : string;
+    callback_token : string;
+}

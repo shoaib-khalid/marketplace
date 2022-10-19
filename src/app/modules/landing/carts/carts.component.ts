@@ -730,7 +730,9 @@ export class CartListComponent implements OnInit, OnDestroy
                 this.isLoading = true;
                 this._cartService.getCartsWithDetails({ page: this.pageOfItems['currentPage'] - 1, pageSize: this.pageOfItems['pageSize'], customerId: this.customerId, includeEmptyCart: false})
                     .subscribe((response)=>{
-                            
+                        // set loading to false
+                        this.isLoading = false;
+                    }, error => {
                         // set loading to false
                         this.isLoading = false;
                     });
@@ -949,6 +951,8 @@ export class CartListComponent implements OnInit, OnDestroy
 
         this.initializeCheckoutList();
 
+        //  Set loading to false
+        this.isLoading = false;
     }
 
     deleteCartItem(cartId: string, cartItem: CartWithDetails){

@@ -8,7 +8,7 @@ import { Store, StoreSnooze, StoreTiming } from 'app/core/store/store.types';
 import { of, Subject, merge, timer, interval as observableInterval, combineLatest } from 'rxjs';
 import { map, switchMap, takeUntil, debounceTime, filter, distinctUntilChanged, startWith, isEmpty, retry } from 'rxjs/operators';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Address, CartDiscount, CheckoutItems, DeliveryProvider, GroupOrder } from 'app/core/checkout/checkout.types';
+import { Address, AXTResponseBody, CartDiscount, CheckoutItems, DeliveryProvider, GroupOrder } from 'app/core/checkout/checkout.types';
 import { ModalConfirmationDeleteItemComponent } from './modal-confirmation-delete-item/modal-confirmation-delete-item.component';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { AuthService } from 'app/core/auth/auth.service';
@@ -568,19 +568,23 @@ export class BuyerCheckoutComponent implements OnInit
 
                         this.payment = response;
 
+                        console.log("this.payment" + JSON.stringify(this.payment));
+                        
+                        
+
                         if (this.payment.isSuccess === true) {
                             if (this.payment.providerId == "1") {
                                 window.location.href = this.payment.paymentLink;
                             } else if (this.payment.providerId == "2") {                                                               
                                 this.postForm( "post-to-senangpay", this.payment.paymentLink, 
                                 {
-                                    "detail" : this.payment.sysTransactionId, 
-                                    "amount": this.paymentDetails.cartGrandTotal.toFixed(2), 
-                                    "order_id": this.order.id, 
-                                    "name": this.order.shipmentName, 
-                                    "email": this.order.shipmentEmail, 
-                                    "phone": this.order.shipmentPhoneNumber, 
-                                    "hash": this.payment.hash 
+                                    "detail"    : this.payment.sysTransactionId, 
+                                    "amount"    : this.paymentDetails.cartGrandTotal.toFixed(2), 
+                                    "order_id"  : this.order.id, 
+                                    "name"      : this.order.shipmentName, 
+                                    "email"     : this.order.shipmentEmail, 
+                                    "phone"     : this.order.shipmentPhoneNumber, 
+                                    "hash"      : this.payment.hash 
                                 },'post', true );
                             } else if (this.payment.providerId == "3") {      
                                 let fullUrl = (this._platformLocation as any).location.origin;
@@ -625,6 +629,25 @@ export class BuyerCheckoutComponent implements OnInit
                                     } , 'post', false);
                             } else if (this.payment.providerId == "4") {
                                 
+                                let axtPaymentBody = {
+                                    "user_id"        : this.user.id,
+                                    "transaction_id" : this.payment.sysTransactionId, 
+                                    "name"           : this.order.shipmentName,
+                                    "email"          : this.order.shipmentEmail,
+                                    "mobile"         : this.order.shipmentPhoneNumber,
+                                    "description"    : "Payment for " + this.order.shipmentName + " of deliverin",
+                                    "redirect_url"   : "https://www.payhub2u.my/pay-bills/bill-list",
+                                    "callback_url"   : this.payment.orderCreated.callbackUrl,
+                                    "callback_token" : this.payment.orderCreated.callbackToken
+                                };
+                                
+                                this._checkoutService.postATXPayment(this.payment.paymentLink, axtPaymentBody, { accessKey: this.payment.token })
+                                    .subscribe((response: AXTResponseBody)=>{
+                                        if (response && response.message === 'success') {
+                                            let redirectUrl = response.secondary_url.replace('{amount}', this.order.total.toString());                                         
+                                            this._document.location.href = redirectUrl;
+                                        }
+                                    });
                             } else {
                                 this.displayError("Provider id not configured");
                                 console.error("Provider id not configured");
@@ -684,7 +707,9 @@ export class BuyerCheckoutComponent implements OnInit
                 this.isLoading = true;
                 this._checkoutService.getCartsWithDetails({ cartIdList: this.checkoutItems.map(item => item.cartId) , page: this.pageOfItems['currentPage'] - 1, pageSize: this.pageOfItems['pageSize'], customerId: this.customerId, includeEmptyCart: false}, this.checkoutItems)
                     .subscribe((response)=>{
-                            
+                        // set loading to false
+                        this.isLoading = false;
+                    }, error =>{
                         // set loading to false
                         this.isLoading = false;
                     });
@@ -785,13 +810,11 @@ export class BuyerCheckoutComponent implements OnInit
             // If the confirm button pressed...
             if ( result === 'confirmed' )
             {
-
                 this._cartService.deleteCart(cartId)
                     .subscribe(response => {
-
                         this._cartService.getCartsByCustomerId(this.customerId)
                             .subscribe()
-                    })
+                    });
             }
         });    
         
