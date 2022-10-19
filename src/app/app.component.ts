@@ -216,6 +216,10 @@ export class AppComponent
                 channel = "Facebook";
             }
 
+            if (params['origin'] === "payhub2u") {
+                channel = "Payhub2U";
+            }
+
             if (channel === null) {
                 channel = this.customerActivity.channel;
             }

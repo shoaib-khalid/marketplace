@@ -39,21 +39,12 @@ export class AnalyticService
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Getter for customer activity
-     */
-    get customerActivity$(): Observable<CustomerActivity>
-    {
-        return this._customerActivity.asObservable();
-    }
+    /** Getter for customer activity */
+    get customerActivity$(): Observable<CustomerActivity> { return this._customerActivity.asObservable(); }
 
-    /**
-     * Setter for customer activity
-     */
-    set customerActivity(value: CustomerActivity)
-    {
-        this._customerActivity.next(value);
-    }
+    /** Setter for customer activity */
+    set customerActivity(value: CustomerActivity) { this._customerActivity.next(value); }
+
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -81,9 +72,12 @@ export class AnalyticService
                             created : new Date().toISOString() + "",
                             updated : new Date().toISOString() + ""
                         }
-                        this._userService.generateSession(body).subscribe((generateSessionResponse)=>{
-                            this._userService.userSessionId = generateSessionResponse.id;
-                        });
+
+                        if (this._userService.userSessionId$ && this._userService.userSessionId$ !== "") {
+                            this._userService.generateSession(body).subscribe((generateSessionResponse)=>{
+                                this._userService.userSessionId = generateSessionResponse.id;
+                            });
+                        }
                     });
             })
         );
