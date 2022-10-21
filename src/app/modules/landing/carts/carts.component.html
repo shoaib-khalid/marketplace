@@ -300,8 +300,15 @@
                                             </div>
                                             <!-- Unit Price -->
                                             <div class="hidden sm:flex flex-col justify-center items-center text-center px-1">
-                                                <span class="text-xs md:text-sm line-through">{{cartItem.normalPrice | currency: cart.store.regionCountry.currencySymbol}}</span>
-                                                <span class="font-semibold text-sm md:text-md">{{cartItem.productPrice | currency: cart.store.regionCountry.currencySymbol}}</span>
+                                                <ng-container *ngIf="cartItem.cartItemAddOn.length > 0; else noAddonPriceDesktop">
+                                                    <span class="font-semibold text-sm md:text-md">
+                                                    {{cartItem.totalPrice / cartItem.quantity | currency: cart.store.regionCountry.currencySymbol}}</span>
+
+                                                </ng-container>
+                                                <ng-template #noAddonPriceDesktop>
+                                                    <span class="font-semibold text-sm md:text-md">
+                                                        {{cartItem.productPrice | currency: cart.store.regionCountry.currencySymbol}}</span>
+                                                </ng-template>
                                             </div>
                                             <!-- Quantity -->
                                             <div class="hidden md:flex flex-col justify-center items-center mx-2">
@@ -331,7 +338,8 @@
                                                 </ng-container>
                                             </div>
                                             <!-- Total Price -->
-                                            <span class="hidden sm:flex justify-center items-center font-semibold text-center text-sm md:text-md min-w-20 max-w-auto truncate">{{cartItem.price | currency: cart.store.regionCountry.currencySymbol}}</span>
+                                            <span class="hidden sm:flex justify-center items-center font-semibold text-center text-sm md:text-md min-w-20 max-w-auto truncate">{{ cartItem.cartItemAddOn.length > 0 ? (cartItem.totalPrice | currency: cart.store.regionCountry.currencySymbol) : 
+                                                (cartItem.price | currency: cart.store.regionCountry.currencySymbol)}}</span>
                                             <!-- Remove Item -->
                                             <span class="hidden sm:flex justify-center items-center text-center px-1 cursor-pointer">
                                                 <mat-icon 
@@ -353,11 +361,21 @@
                                                 <div class="flex flex-col w-26 justify-end items-end">
                                                     <!-- Unit Price -->
                                                     <div class="flex flex-col justify-center items-end text-center px-1">
-                                                        <span class="text-xs md:text-sm line-through">{{cartItem.normalPrice | currency: cart.store.regionCountry.currencySymbol}}</span>
-                                                        <span class="text-sm md:text-xs">{{cartItem.quantity}} x {{cartItem.productPrice | currency: cart.store.regionCountry.currencySymbol}}</span>
+                                                        <ng-container *ngIf="cartItem.cartItemAddOn.length > 0; else noAddonPrice">
+                                                            <span class="text-sm md:text-xs">
+                                                            {{cartItem.quantity}} x {{cartItem.totalPrice / cartItem.quantity | currency: cart.store.regionCountry.currencySymbol}}</span>
+
+                                                        </ng-container>
+                                                        <ng-template #noAddonPrice>
+                                                            <span class="text-sm md:text-xs">
+                                                                {{cartItem.quantity}} x {{cartItem.productPrice | currency: cart.store.regionCountry.currencySymbol}}</span>
+    
+                                                        </ng-template>
                                                     </div>
                                                     <!-- Total Price -->
-                                                    <span class="flex justify-center items-center font-semibold text-center text-sm md:text-md px-1">{{cartItem.price | currency: cart.store.regionCountry.currencySymbol}}</span>
+                                                    <span class="flex justify-center items-center font-semibold text-center text-sm md:text-md px-1">
+                                                        {{ cartItem.cartItemAddOn.length > 0 ? (cartItem.totalPrice | currency: cart.store.regionCountry.currencySymbol) : 
+                                                        (cartItem.price | currency: cart.store.regionCountry.currencySymbol)}}</span>
                                                 </div>
                                             </div>
                                         </div>

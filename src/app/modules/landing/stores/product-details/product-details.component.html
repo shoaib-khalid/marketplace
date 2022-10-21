@@ -171,12 +171,18 @@
                                             [id]="'addon-checkbox-' + addOn.id + '-' + option.id"
                                             [value]="option.id" 
                                             [name]="'addon-checkbox-' + addOn.id + '-' + option.id"
-                                            [checked]="selectedAddOn[addOn.id].indexOf(option.id) > -1"
-                                            (change)="onChangeAddOn(addOn.id, option.id, $event)"
+                                            [checked]="validateCheckbox(option.id, addOn.id)"
+                                            (change)="onChangeAddOn(addOn, option, $event)"
                                         >
-                                        <label class="pl-2 leading-tight text-sm" [for]="'addOn-checkbox-' + addOn.id + '-' + option.id">
-                                            {{option.name}}
-                                        </label>
+                                        <div class="flex justify-between w-full">
+                                            <label class="ml-4 leading-tight text-sm" [for]="'addOn-checkbox-' + addOn.id + '-' + option.id">
+                                                {{option.name}}
+                                            </label>
+                                            <label class="mr-6 leading-tight text-sm text-secondary" [for]="'addOn-checkbox-' + addOn.id + '-' + option.id">
+                                                {{ option.price === 0 ? 'Free' : 
+                                                    option.price < 0 ? '' + (option.price  | currency: store.regionCountry.currencySymbol) : '+' + (option.price  | currency: store.regionCountry.currencySymbol)}}
+                                            </label>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>

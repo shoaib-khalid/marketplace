@@ -73,6 +73,8 @@ export interface CartItem
         url: string;
     }
     SKU?: string;
+    cartItemAddOn?: [];
+    totalPrice? : number;
 }
 
 export interface ProductInventory

@@ -6,7 +6,7 @@ import { Platform } from 'app/core/platform/platform.types';
 import { DOCUMENT } from '@angular/common';
 import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from 'ngx-gallery-9';
-import { AddOnProduct, Product, ProductAssets, ProductInventory, ProductInventoryItem } from 'app/core/product/product.types';
+import { AddOnItemProduct, AddOnProduct, Product, ProductAssets, ProductInventory, ProductInventoryItem } from 'app/core/product/product.types';
 import { FormBuilder } from '@angular/forms';
 import { ProductsService } from 'app/core/product/product.service';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
@@ -25,7 +25,7 @@ import { AppConfig } from 'app/config/service.config';
     styles       : [
         `
         .mat-bottom-sheet-container {
-            padding: 16px 16px;
+            padding: 16px 16px 0px 16px;
             min-width: 100vw;
             box-sizing: border-box;
             display: block;
@@ -77,6 +77,7 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
     });
     store: Store
     addOns: AddOnProduct[] = [];
+    productBasePrice = 0;
 
     /**
      * Constructor
@@ -200,6 +201,9 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
                 //get the cheapest price
                 this.selectedProductInventory = this.selectedProduct.productInventories.reduce((r, e) => r.price < e.price ? r : e);
             }
+
+            // set the base price
+            this.productBasePrice = this.selectedProductInventory.price;
     
             // set initial selectedProductInventoryItems to the cheapest item
             this.selectedProductInventoryItems = this.selectedProductInventory.productInventoryItems;
@@ -300,8 +304,7 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
             this.addOns.forEach(addon => {
                 this.selectedAddOn[addon.id] = [];
             });
-        }
-    
+        }        
     }
 
     /**
@@ -685,12 +688,12 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
                     this.selectedAddOn[item.id].forEach(element => {
                         
                         // get productPakageOptionDetail from this.combo[].productPackageOptionDetail where it's subitem.productId == element (id in this.currentcombo array)
-                        let productPakageOptionDetail = item.productAddOnItemDetail.find(subitem => subitem.id === element);
+                        let productPakageOptionDetail = item.productAddOnItemDetail.find(subitem => subitem.id === element.id);
                         if (productPakageOptionDetail){
                             // push to cart
                             cartItemBody["cartItemAddOn"].push(
                                 {
-                                    productAddOnId: element,
+                                    productAddOnId: element.id,
                                 }
                             );
                         }
@@ -784,28 +787,52 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
     //----------------
     //  AddOn Section
     //----------------
-    onChangeAddOn(addOnId, productId , event){
-
-        let productID = event.target.value;
+    onChangeAddOn(addOn: AddOnProduct, option: AddOnItemProduct, event){
+        let optionID = event.target.value;
 
         // remove only unchecked item in array
         if (event.target.checked === false) {
-            let index = this.selectedAddOn[addOnId].indexOf(productID);
-            if (index !== -1) {
-                this.selectedAddOn[addOnId].splice(index, 1);
-                return;
+            let index = this.selectedAddOn[addOn.id].findIndex(x => x.id === optionID);
+            if (index > -1) {
+                this.selectedAddOn[addOn.id].splice(index, 1);
             }
         }
+        else {
 
-        let currentAddOnSetting = this.addOns.find(item => item.id === addOnId);
-        
-        if (this.selectedAddOn[addOnId].length >= currentAddOnSetting.maxAllowed){            
-            this.selectedAddOn[addOnId].shift();
+            let currentAddOnSetting = this.addOns.find(item => item.id === addOn.id);
+            
+            if (this.selectedAddOn[addOn.id].length >= currentAddOnSetting.maxAllowed){   
+                this.selectedAddOn[addOn.id].shift();
+            }
+    
+            // set currentAddOn
+            this.selectedAddOn[addOn.id].push({id: option.id, price: option.price});
         }
 
-        // set currentAddOn
-        this.selectedAddOn[addOnId].push(productId);
-        
+        // get and array of prices
+        let priceArr = this.addOns.reduce((previousValue, currentValue) => {
+
+            if (this.selectedAddOn[currentValue.id]) {
+                previousValue.push(this.selectedAddOn[currentValue.id].map(x => x.price));
+            }
+            return previousValue;
+        }, []).flat();
+
+        // sum up the prices
+        let sum = priceArr.reduce((partialSum, a) => partialSum + a, 0)
+
+        // add the sum to product's base price
+        this.displayedProduct.price = this.productBasePrice + sum;
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
+    validateCheckbox(id: string, addonId: string) {
+
+        const found = this.selectedAddOn[addonId].some(el => el.id === id);
+        if (found) return true
+        else return false        
     }
 
     //-------------

@@ -853,7 +853,7 @@ export class CartListComponent implements OnInit, OnDestroy
     getCartItemsTotal(cartItems: CartItem[]) : number {
         let cartItemsTotal: number;
         if (cartItems.length && cartItems.length > 0) {
-            return cartItems.reduce((partialSum, item) => partialSum + item.price, 0);
+            return cartItems.reduce((partialSum, item) => partialSum + item.totalPrice, 0);
         } else {
             return cartItemsTotal;
         }
@@ -2249,6 +2249,19 @@ export class CartListComponent implements OnInit, OnDestroy
     toggleSummary() {
         // Toggle the read status
         this.visibleCartSummary = !this.visibleCartSummary;
+    }
+
+    calculateAddonPrice(cartItem: CartItem) {
+        
+        if (cartItem.cartItemAddOn.length > 0) {
+            let sumAddOnItems = cartItem.cartItemAddOn.map((item: any )=> item.productAddOn.dineInPrice).reduce((partialSum, a) => partialSum + a, 0);
+            let sumAddOnItemsMulti = cartItem.cartItemAddOn.map((item: any )=> item.price).reduce((partialSum, a) => partialSum + a, 0);
+
+            return {
+                subtotal: sumAddOnItems + cartItem.productPrice,
+                total:  sumAddOnItemsMulti + cartItem.price
+            }
+        }
     }
 
 }
