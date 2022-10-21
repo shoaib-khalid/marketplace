@@ -627,7 +627,6 @@ export class BuyerCheckoutComponent implements OnInit
                                         "STORE_ID"      : "", 
                                     } , 'post', false);
                             } else if (this.payment.providerId == "4") {
-                                
                                 let axtPaymentBody = {
                                     "user_id"        : this.payment.clientId,
                                     "transaction_id" : this.payment.sysTransactionId, 
@@ -644,7 +643,15 @@ export class BuyerCheckoutComponent implements OnInit
                                     .subscribe((response: AXTResponseBody)=>{
                                         if (response && response.message === 'success') {
                                             let redirectUrl = response.secondary_url.replace('{amount}', this.paymentDetails.cartGrandTotal.toString());                                         
-                                            this._document.location.href = redirectUrl;
+                                            const openATXWindow = window.open(`${redirectUrl}`,'_blank',"width=600,height=600,modal=yes,alwaysRaised=yes")
+                                            var timer = setInterval(()=> { 
+                                                if(openATXWindow.closed) {
+                                                    clearInterval(timer);
+                                                    this._router.navigate(['/thankyou'])
+                                                }
+                                              }, 500);
+
+                                            
                                         }
                                     });
                             } else {
