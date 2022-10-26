@@ -95,8 +95,7 @@
                                             {{option.name}}
                                         </label>
                                         <label class="mr-6 leading-tight text-sm text-secondary" [for]="'addOn-checkbox-' + addOn.id + '-' + option.id">
-                                            {{ option.price === 0 ? 'Free' : 
-                                                option.price < 0 ? '' + (option.price  | currency: store.regionCountry.currencySymbol) : '+' + (option.price  | currency: store.regionCountry.currencySymbol)}}
+                                            {{ option.price < 0 ? '' + (option.price  | currency: store.regionCountry.currencySymbol) : '+' + (option.price  | currency: store.regionCountry.currencySymbol)}}
                                         </label>
                                     </div>
                                 </li>
