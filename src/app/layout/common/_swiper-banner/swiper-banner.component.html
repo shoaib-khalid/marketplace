@@ -1,5 +1,5 @@
-<ng-container>
-    <div class="flex flex-row">
+<ng-container *ngIf="(galleryImages && galleryImages.length) && (mobileGalleryImages && mobileGalleryImages.length)">
+    <div class="flex flex-row relative items-center w-full bg-no-repeat bg-cover bg-center overflow-hidden rounded-xl">
         <div 
             class="absolute left-0 md:bottom-[40%] bottom-[30%] z-20 flex items-center h-20 w-8 md:w-12 bg-black bg-opacity-10 hover:bg-opacity-20 duration-150 justify-center cursor-pointer"
             (click)="swipePrev()"

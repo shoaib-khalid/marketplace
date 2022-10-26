@@ -235,13 +235,15 @@ export class _SwiperBannerComponent
     }
 
     onSlideChange(swiper: any) {
-        if (this.currentScreenSize.includes('sm')) {
-            const delayInMs = this.galleryImages[swiper[0].realIndex].delayDisplay * 1000;
-            swiper[0].params.autoplay.delay = delayInMs;
-        }
-        else {
-            const delayInMs = this.mobileGalleryImages[swiper[0].realIndex].delayDisplay * 1000;
-            swiper[0].params.autoplay.delay = delayInMs;
+        if ((this.galleryImages && this.galleryImages.length) || (this.mobileGalleryImages && this.mobileGalleryImages.length)) {
+            if (this.currentScreenSize.includes('sm')) {
+                const delayInMs = this.galleryImages[swiper[0].realIndex].delayDisplay * 1000;
+                swiper[0].params.autoplay.delay = delayInMs;
+            }
+            else {
+                const delayInMs = this.mobileGalleryImages[swiper[0].realIndex].delayDisplay * 1000;
+                swiper[0].params.autoplay.delay = delayInMs;
+            }
         }
     }
 
