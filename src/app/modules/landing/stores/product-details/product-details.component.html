@@ -46,11 +46,11 @@
                             <span class="hidden sm:block text-xs sm:text-sm md:text-base">Contact Us:</span>
                             <a [href]="'tel:' + store.phoneNumber" class="text-xs sm:text-sm md:text-base font-medium underline">{{store.phoneNumber}}</a>
                         </div>
-                        <div class="flex flex-row gap-x-1">
+                        <!-- <div class="flex flex-row gap-x-1">
                             <mat-icon class="block sm:hidden icon-size-3 text-primary" [svgIcon]="'mat_solid:shopping_bag'"></mat-icon>
                             <span class="hidden sm:block text-xs sm:text-sm md:text-base">Products:</span>
                             <span class="text-xs sm:text-sm md:text-base font-medium">{{pagination?.length}}</span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <!-- View Home -->
@@ -112,11 +112,11 @@
                     </div> -->
                     <!-- Price -->
                     <div class="mt-2">
-                        <ng-container *ngIf="displayedProduct.discountAmount>0;else noItemDiscount" >
-                            <p class="font-semibold items-center">Price: &nbsp; 
-                                <span style="text-decoration: line-through;" class="px-2">{{displayedProduct.price | currency: store.regionCountry.currencySymbol}}</span> 
-                                <span class="text-xl font-semibold text-primary px-2 ">{{displayedProduct.discountedPrice | currency: store.regionCountry.currencySymbol}}</span> 
-                                <span class="mb-2 py-1 px-3 rounded text-sm font-semibold mx-2 items-center" [ngClass]="'text-primary-100 bg-red-600'">{{displayedProduct.discountAmount}}% Off</span> 
+                        <ng-container *ngIf="displayedProduct.discountAmount > 0 ;else noItemDiscount" >
+                            <p class="font-semibold flex items-center gap-2">Price: &nbsp; 
+                                <span style="text-decoration: line-through;" class="">{{displayedProduct.normalPrice | currency: store.regionCountry.currencySymbol}}</span> 
+                                <span class="text-xl font-semibold text-primary">{{displayedProduct.price | currency: store.regionCountry.currencySymbol}}</span> 
+                                <span class="py-1 px-3 rounded text-sm font-semibold items-center" [ngClass]="'text-primary-100 bg-red-600'">{{displayedProduct.discountAmount}}% Off</span> 
                             </p>
                         </ng-container>
                         <ng-template #noItemDiscount>
@@ -268,7 +268,7 @@
 
                     <div class="flex flex-row w-full justify-between mb-2">
                         <p class="font-semibold">Total:</p> 
-                        <ng-container *ngIf="displayedProduct.discountAmount>0;else noItemDiscountSubTotal">
+                        <ng-container *ngIf="false; else noItemDiscountSubTotal">
                             <span class="text-xl font-semibold px-2 ">{{(displayedProduct.discountedPrice * quantity) | currency: store.regionCountry.currencySymbol}}</span>
                         </ng-container>
                         <ng-template #noItemDiscountSubTotal>

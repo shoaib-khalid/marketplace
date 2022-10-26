@@ -33,8 +33,14 @@
                                 <div class="text-xs items-center text-primary-100 flex justify-start items-center">
                                     <span class="py-0.5 px-1 w-auto flex bg-red-600 rounded">{{displayedProduct.discountAmount}}% Off</span>
                                 </div> 
-                                <span class="mt-[0.15rem] text-xs line-through">{{displayedProduct.price | currency: store.regionCountry.currencySymbol}}</span> 
-                                <span class="-mt-[0.15rem] text-base font-semibold text-primary ">{{displayedProduct.discountedPrice | currency: store.regionCountry.currencySymbol}}</span> 
+                                <span class="mt-[0.15rem] text-xs line-through">{{displayedProduct.normalPrice | currency: store.regionCountry.currencySymbol}}</span> 
+                                <div class="flex flex-row gap-1">
+                                    <span class="-mt-[0.15rem] text-base font-semibold text-primary ">{{displayedProduct.basePrice | currency: store.regionCountry.currencySymbol}}</span> 
+                                    <span *ngIf="selectedProduct.hasAddOn && sumAddonPrice !== 0"
+                                        class="-mt-[0.15rem] text-sm font-medium text-secondary">
+                                        ({{sumAddonPrice > 0 ? '+' + (sumAddonPrice | number : '1.2-2') : (sumAddonPrice | number : '1.2-2')}})
+                                    </span>
+                                </div>
                             </div>
                         </ng-container>
                         <ng-template #noItemDiscount>

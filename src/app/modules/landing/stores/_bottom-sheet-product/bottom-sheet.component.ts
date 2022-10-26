@@ -25,7 +25,7 @@ import { AppConfig } from 'app/config/service.config';
     styles       : [
         `
         .mat-bottom-sheet-container {
-            padding: 16px 16px 0px 16px;
+            padding: 10px 16px 0px 16px;
             min-width: 100vw;
             box-sizing: border-box;
             display: block;
@@ -65,7 +65,9 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
         sku: null,
         discountAmount:0,
         discountedPrice:0,
-        SubTotal:0
+        SubTotal:0,
+        normalPrice: 0,
+        basePrice: 0
     }
     openPreview: boolean = false;
     quantity: number = 1;
@@ -77,7 +79,7 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
     });
     store: Store
     addOns: AddOnProduct[] = [];
-    productBasePrice = 0;
+    sumAddonPrice: number = 0;
 
     /**
      * Constructor
@@ -201,26 +203,30 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
                 //get the cheapest price
                 this.selectedProductInventory = this.selectedProduct.productInventories.reduce((r, e) => r.price < e.price ? r : e);
             }
-
-            // set the base price
-            this.productBasePrice = this.selectedProductInventory.price;
     
             // set initial selectedProductInventoryItems to the cheapest item
             this.selectedProductInventoryItems = this.selectedProductInventory.productInventoryItems;
             
-            if (this.selectedProductInventoryItems) {
-                this.displayedProduct.price = this.selectedProductInventory.price;
+            if (this.selectedProductInventory.itemDiscount) {
+                this.displayedProduct.price = this.selectedProductInventory.itemDiscount.discountedPrice;
                 this.displayedProduct.itemCode = this.selectedProductInventory.itemCode;
                 this.displayedProduct.sku = this.selectedProductInventory.sku;
-                this.displayedProduct.discountAmount = this.selectedProductInventory.itemDiscount ? this.selectedProductInventory.itemDiscount.discountAmount : null;
-                this.displayedProduct.discountedPrice = this.selectedProductInventory.itemDiscount ? this.selectedProductInventory.itemDiscount.discountedPrice : null;
-            } 
+                this.displayedProduct.discountAmount = this.selectedProductInventory.itemDiscount.discountAmount;
+                this.displayedProduct.discountedPrice = this.selectedProductInventory.itemDiscount.discountedPrice;
+                this.displayedProduct.normalPrice = this.selectedProductInventory.itemDiscount.normalPrice;
+                // set the base price
+                this.displayedProduct.basePrice = this.selectedProductInventory.itemDiscount.discountedPrice;
+
+            }
             else {
                 this.displayedProduct.price = this.selectedProductInventory.price;
                 this.displayedProduct.itemCode = this.selectedProductInventory.itemCode;
                 this.displayedProduct.sku = this.selectedProductInventory.sku;
-                this.displayedProduct.discountAmount = this.selectedProductInventory.itemDiscount ? this.selectedProductInventory.itemDiscount.discountAmount : null;
-                this.displayedProduct.discountedPrice = this.selectedProductInventory.itemDiscount ? this.selectedProductInventory.itemDiscount.discountedPrice : null;
+                this.displayedProduct.discountAmount = null;
+                this.displayedProduct.discountedPrice = null;
+                this.displayedProduct.normalPrice = this.selectedProductInventory.price;
+                // set the base price
+                this.displayedProduct.basePrice = this.selectedProductInventory.price;
             }
     
             // set currentVariant
@@ -819,10 +825,10 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
         }, []).flat();
 
         // sum up the prices
-        let sum = priceArr.reduce((partialSum, a) => partialSum + a, 0)
+        this.sumAddonPrice = priceArr.reduce((partialSum, a) => partialSum + a, 0)
 
         // add the sum to product's base price
-        this.displayedProduct.price = this.productBasePrice + sum;
+        this.displayedProduct.price = this.displayedProduct.basePrice + this.sumAddonPrice;
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
