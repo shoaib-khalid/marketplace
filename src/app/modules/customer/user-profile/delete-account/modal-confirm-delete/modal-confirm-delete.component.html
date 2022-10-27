@@ -1,0 +1,79 @@
+<div class="flex flex-col max-h-[90vh] max-w-120 sm:min-w-160 overflow-y-auto">
+    <div class="flex flex-col flex-auto overflow-y-auto w-full">
+        <!-- Header new adrdress -->
+        <div class="flex items-center justify-center flex-auto pb-2 w-full">
+            <span class="text-center text-2xl font-bold text-primary">Enter your password</span> <br>
+        </div>
+        <form 
+            class="w-full"
+            [formGroup]="addressForm">
+
+            <div class="flex flex-col w-full">
+                <!-- Name -->
+                <div class="w-full flex flex-col sm:flex-row sm:mb-0 pt-2">
+                    <mat-form-field class="fuse-mat-emphasized-affix w-full" floatLabel="always">
+                        <mat-label>Password</mat-label>
+                        <input
+                            [formControlName]="'name'"
+                            placeholder="Enter your password"
+                            matInput>
+                            <mat-error *ngIf="addressForm.get('name').hasError('required')">
+                                Password is required
+                            </mat-error>
+                    </mat-form-field>
+                </div>
+    
+                <!-- Phone Number, State -->
+                <!-- <div class="w-full flex flex-col sm:flex-row sm:mb-0">
+                    <mat-form-field class="fuse-mat-emphasized-affix w-full sm:w-1/2 sm:pr-1" floatLabel="always">
+                        <mat-label>Email</mat-label>
+                        <input
+                            [formControlName]="'email'"
+                            placeholder="Enter your email (for payment receipt)"
+                            [required]="true"
+                            matInput>
+                            <mat-error *ngIf="addressForm.get('email').hasError('required')">
+                                Email is required
+                            </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="fuse-mat-emphasized-affix w-full sm:w-1/2" floatLabel="always">
+                        <mat-label>Phone Number</mat-label>
+                        <input
+                            [formControlName]="'phoneNumber'"
+                            [placeholder]="dialingCode + '123456789 (for order update)'"
+                            [required]="true"
+                            (change)="addressForm.get('phoneNumber').patchValue(sanitizePhoneNumber(addressForm.get('phoneNumber').value))"
+                            matInput>
+                        <mat-error *ngIf="addressForm.get('phoneNumber').hasError('required')">
+                            Phone number is required
+                        </mat-error>
+                        <mat-error *ngIf="addressForm.get('phoneNumber').hasError('invalidPhonenumber')">
+                            Invalid phone number
+                        </mat-error>
+                    </mat-form-field>                    
+                </div> -->
+    
+                <!-- Actions -->
+                <div class="flex sm:flex-row sm:items-center justify-end mt-4 sm:mt-6">
+                    <button
+                        class="hover:bg-gray-500 border border-gray-500"
+                        mat-flat-button
+                        type="button"
+                        [color]="'gray'"
+                        (click)="closeDialog()"
+                        >
+                        Cancel
+                    </button>
+                    <span>&nbsp;&nbsp;</span>
+                    <button
+                        mat-flat-button
+                        [disabled]="addressForm.invalid"
+                        type="button"
+                        (click)="updateAddress()"
+                        [color]="'primary'">Delete
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

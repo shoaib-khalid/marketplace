@@ -8,6 +8,7 @@ import { UserService } from 'app/core/user/user.service';
 import { CustomerAddress } from 'app/core/user/user.types';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+import { ConfirmDeleteDialog } from './modal-confirm-delete/modal-confirm-delete.component';
 
 @Component({
     selector       : 'delete-account',
@@ -53,7 +54,7 @@ export class DeleteAccountComponent implements OnInit
         // Show a success message (it can also be an error message)
         const confirmation = this._fuseConfirmationService.open({
             title  : 'Delete Account ?',
-            message: 'Are you sure want to delete your account ? This action cannot be undone',
+            message: 'Confirm to delete your account? Once deleted, it can’t be retrieved.',
             icon: {
                 show: true,
                 name: "heroicons_outline:exclamation",
@@ -68,6 +69,15 @@ export class DeleteAccountComponent implements OnInit
                     label: 'Cancel',
                     show : true,
                 },
+            }
+        });
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+            // If the confirm button pressed...
+            if ( result === 'confirmed' )
+            {
+                let dialogRef = this._dialog.open(ConfirmDeleteDialog, { disableClose: true, data:{ delete: true }});
+
             }
         });
     }
