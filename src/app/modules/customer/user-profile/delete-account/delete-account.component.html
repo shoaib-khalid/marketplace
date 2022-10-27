@@ -1,0 +1,34 @@
+<div class="w-full max-w-3xl">
+
+    <!-- Section -->
+    <div class="w-full">
+        <div class="text-xl">Delete Your Account</div>
+        <div class="text-secondary">We're sorry to see you go... <span class="text-xl">😞</span></div>
+    </div>
+
+    <div class="flex flex-col w-full mt-4">
+        <span class="text-lg font-bold">Before you go</span>
+        <ul class="list-disc ml-4">
+            <li>If you're sick of getting email notifications from us, you can <a class="text-primary-500 hover:underline" href="">disable them here</a></li>
+            <li>If you want to change your username, you can<a class="text-primary-500 hover:underline" href=""> do that here.</a></li>
+            <li>Account deletion is <span class="font-bold">final.</span> There will be no way to restore your account.</li>
+            <!-- ... -->
+        </ul>
+        <div class="flex flex-row mt-4">
+            <!-- <button
+                mat-flat-button
+                class="rounded-lg"
+                [color]="'primary'">
+                <span>Never Mind, Keep My Account</span>
+            </button> -->
+            <button
+                mat-flat-button
+                (click)="deleteAccount()"
+                class="rounded-lg"
+                [color]="'warn'">
+                <span>Delete Account</span>
+            </button>
+        </div>
+    </div>
+
+</div>

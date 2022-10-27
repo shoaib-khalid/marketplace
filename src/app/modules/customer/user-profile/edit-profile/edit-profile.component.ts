@@ -79,6 +79,12 @@ export class EditProfileComponent implements OnInit
                 title      : 'Security',
                 description: 'Manage your password'
             },
+            {
+                id         : 'delete-account',
+                icon       : 'mat_outline:delete_forever',
+                title      : 'Delete Account',
+                description: 'Delete your account'
+            }
         ];
 
         this._fuseMediaWatcherService.onMediaChange$
