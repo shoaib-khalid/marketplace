@@ -14,10 +14,10 @@
                     <mat-form-field class="fuse-mat-emphasized-affix w-full" floatLabel="always">
                         <mat-label>Password</mat-label>
                         <input
-                            [formControlName]="'name'"
+                            [formControlName]="'password'"
                             placeholder="Enter your password"
                             matInput>
-                            <mat-error *ngIf="addressForm.get('name').hasError('required')">
+                            <mat-error *ngIf="addressForm.get('password').hasError('required')">
                                 Password is required
                             </mat-error>
                     </mat-form-field>
@@ -57,7 +57,7 @@
                 <div class="flex sm:flex-row sm:items-center justify-end mt-4 sm:mt-6">
                     <button
                         class="hover:bg-gray-500 border border-gray-500"
-                        mat-flat-button
+                        mat-stroked-button
                         type="button"
                         [color]="'gray'"
                         (click)="closeDialog()"
@@ -69,7 +69,7 @@
                         mat-flat-button
                         [disabled]="addressForm.invalid"
                         type="button"
-                        (click)="updateAddress()"
+                        (click)="closeDialog()"
                         [color]="'primary'">Delete
                     </button>
                 </div>
