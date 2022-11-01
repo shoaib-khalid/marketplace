@@ -1067,7 +1067,7 @@ export class CartListComponent implements OnInit, OnDestroy
                             this.selectedCart.carts[cartIndex].deliveryQuotationId = null;
                             this.selectedCart.carts[cartIndex].deliveryType = null;
                             this.selectedCart.carts[cartIndex].deliveryProviderId = null;
-                            this.selectedCart.carts[cartIndex].deliveryErrorMessage = item.quotation[0].message;
+                            this.selectedCart.carts[cartIndex].deliveryErrorMessage = item.quotation.length ? item.quotation[0].message : "No response from delivery provider";
 
                             // Disable the cart if the carts delivery type is delivery
                             if (this.selectedCart.carts[cartIndex].isSelfPickup === false) {

@@ -420,8 +420,8 @@
                         class="py-2 px-4 rounded-md w-full mt-2 mb-2 md:mb-0 text-white"
                         [ngClass]="{ 'cursor-wait bg-gray-400' : isLoading, 
                                      'cursor-pointer bg-primary' : !isLoading}"
-                        (click)="onlinePay()">
-                        Pay Now
+                        (click)="executeAction(paymentCompletionStatus.id)">
+                        {{ paymentCompletionStatus.label }}
                     </button>
                 </div>
                 <!-- Delivery Address (md) -->

@@ -515,7 +515,7 @@
                                                 </ng-container>
                                                 <ng-template #deliveryErrorDesktop>
                                                     <div>
-                                                        <span *ngIf="selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage" class="font-semibold text-sm tracking-tight" >{{ selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage }}</span>
+                                                        <span *ngIf="selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage" class="text-red-700 font-semibold text-sm tracking-tight" >Error: {{ selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage }}</span>
                                                         <ng-container *ngIf="!selectedCart.carts[i + pagination.startIndex].deliveryErrorMessage && !validateCustomerInfo(i + pagination.startIndex)">
                                                             <div class="text-sm">
                                                                 <span 

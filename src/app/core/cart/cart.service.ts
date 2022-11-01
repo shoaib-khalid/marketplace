@@ -43,65 +43,31 @@ export class CartService
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
 
-    get cartWithDetails$(): Observable<CartWithDetails>
-    {
-        return this._cartWithDetails.asObservable();
-    }
+    /** Getter for cartWithDetails */
+    get cartWithDetails$(): Observable<CartWithDetails> { return this._cartWithDetails.asObservable(); }
+    /** Getter for cartsWithDetails */
+    get cartsWithDetails$(): Observable<CartWithDetails[]> { return this._cartsWithDetails.asObservable(); }
+    /** Setter for cartsWithDetails */
+    set cartsWithDetails(value: CartWithDetails[]) { this._cartsWithDetails.next(value); }
+    /** Getter for cartsWithDetailsPagination */
+    get cartsWithDetailsPagination$(): Observable<CartPagination> { return this._cartsWithDetailsPagination.asObservable(); }
 
-    get cartsWithDetails$(): Observable<CartWithDetails[]>
-    {
-        return this._cartsWithDetails.asObservable();
-    }
+    /** Getter for cartsHeaderWithDetails */
+    get cartsHeaderWithDetails$(): Observable<CartWithDetails[]> { return this._cartsHeaderWithDetails.asObservable(); }
+    /** Setter for cartsWithDetails */
+    set cartsHeaderWithDetails(value: CartWithDetails[]) { this._cartsHeaderWithDetails.next(value); }
+    /** Getter for cartsHeaderWithDetailsPagination */
+    get cartsHeaderWithDetailsPagination$(): Observable<CartPagination> { return this._cartsHeaderWithDetailsPagination.asObservable(); }
 
-    get cartsHeaderWithDetails$(): Observable<CartWithDetails[]>
-    {
-        return this._cartsHeaderWithDetails.asObservable();
-    }
+    /** Getter for cartId */
+    get cartIds$(): string { return localStorage.getItem('cartIds') ?? ''; }
+    /** Setter for cartId */
+    set cartIds(value: string) { localStorage.setItem('cartIds', value); }
 
-    /**
-    * Getter for cart pagination
-    */
-    get cartsWithDetailsPagination$(): Observable<CartPagination>
-    {
-        return this._cartsWithDetailsPagination.asObservable();
-    }
-
-    /**
-    * Getter for cart pagination
-    */
-    get cartsHeaderWithDetailsPagination$(): Observable<CartPagination>
-    {
-        return this._cartsHeaderWithDetailsPagination.asObservable();
-    }
-
-    /**
-     * Setter for cartId
-     */
-    set cartIds(value: string) {
-        localStorage.setItem('cartIds', value);
-    }
-
-    /**
-     * Getter for cartId
-     */
-    get cartIds$(): string
-    {
-        return localStorage.getItem('cartIds') ?? '';
-    }
-
-    /**
-     * Cart Summary
-     */
-
-    get cartSummary$(): Observable<DiscountOfCartGroup>
-    {
-        return this._cartSummary.asObservable();
-    }
-
-    set cartSummary(value: DiscountOfCartGroup)
-    {
-        this._cartSummary.next(value);
-    }
+    /** Cart Summary */
+    get cartSummary$(): Observable<DiscountOfCartGroup> { return this._cartSummary.asObservable(); }
+    /** Setter Cart Summary */
+    set cartSummary(value: DiscountOfCartGroup) { this._cartSummary.next(value); }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods

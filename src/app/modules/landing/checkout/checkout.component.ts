@@ -215,6 +215,11 @@ export class BuyerCheckoutComponent implements OnInit
     visibleCartSummary: boolean = false;
     webOrigin: string; // from which the website is loaded/originated from
 
+    paymentCompletionStatus:
+        | { id: 'CALCULATE_CHARGES'; label: 'Calculate Charges' }
+        | { id: 'PLACE_ORDER'; label: 'Place Order' }
+        | { id: 'ONLINE_PAY'; label: 'Pay Now' };
+
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     /**
      * Constructor
@@ -265,6 +270,14 @@ export class BuyerCheckoutComponent implements OnInit
 
                     // set title
                     this._titleService.setTitle(this.platform.name + " | " + "Checkout");
+
+                    if (this.platform.country === "MYS") {
+                        this.paymentCompletionStatus = { id: "ONLINE_PAY", label: "Pay Now"};
+                    } else if (this.platform.country === "PAK") {
+                        this.paymentCompletionStatus = { id: "PLACE_ORDER", label: "Place Order"};
+                    } else {
+                        console.error("Country not registered");
+                    }
 
                 }
                 // Mark for check
@@ -486,6 +499,19 @@ export class BuyerCheckoutComponent implements OnInit
     // @ Public method
     // -----------------------------------------------------------------------------------------------------
 
+    executeAction(paymentCompletionStatusId) {
+        // if (paymentCompletionStatusId === 'CALCULATE_CHARGES') {
+        //     this.calculateCharges();
+        // } else 
+        if (paymentCompletionStatusId === 'PLACE_ORDER') {
+            this.cashOnDeliveryPay();
+        } else if (paymentCompletionStatusId === 'ONLINE_PAY') {
+            this.onlinePay();
+        } else {
+            console.error('Invalid Payment Completion Status');
+        }
+    }
+    
     onlinePay(){
 
         // Set Loading to true
@@ -670,6 +696,82 @@ export class BuyerCheckoutComponent implements OnInit
                 this.isLoading = false;
             });
         
+    }
+
+    cashOnDeliveryPay() {
+        // Set Loading to true
+        // this.isLoading = true;
+        
+        let orderBodies = [];
+        let platformVoucherCode = null;
+
+        let customerInfo = {
+            address: this.customerAddress ? this.customerAddress.address : '',
+            city: this.customerAddress ? this.customerAddress.city : '',
+            country: this.customerAddress ? this.customerAddress.country : '',
+            state: this.customerAddress ? this.customerAddress.state : '',
+            postCode: this.customerAddress ? this.customerAddress.postCode : '',
+
+            email: this.customerAddress ? this.customerAddress.email : this.selfPickupInfo.email,
+            phoneNumber: this.customerAddress ? this.customerAddress.phoneNumber : this.selfPickupInfo.phoneNumber,
+            name: this.customerAddress ? this.customerAddress.name : this.selfPickupInfo.name
+        }
+
+        this.checkoutItems.forEach(checkout => {
+
+            const orderBody = {
+                cartId: checkout.cartId,
+                cartItems: checkout.selectedItemId.map(element => {
+                    return {
+                        id: element,
+                    }
+                }),
+                customerId: this.customerId,
+                customerNotes: checkout.orderNotes,
+                // voucherCode: checkout.platformVoucherCode,
+                orderPaymentDetails: {
+                    accountName: this.user ? this.user.name : customerInfo.name,
+                    deliveryQuotationReferenceId: checkout.deliveryQuotationId ? checkout.deliveryQuotationId : null
+                },
+                orderShipmentDetails: {
+                    address:  customerInfo.address,
+                    city: customerInfo.city,
+                    country: customerInfo.country,
+                    email: customerInfo.email,
+                    phoneNumber: customerInfo.phoneNumber,
+                    receiverName: customerInfo.name,
+                    state: customerInfo.state,
+                    storePickup: checkout.deliveryType === 'PICKUP' ? true : false,
+                    zipcode: customerInfo.postCode,
+                    deliveryProviderId: checkout.deliveryProviderId,
+                    deliveryType: checkout.deliveryType ? checkout.deliveryType : null
+                }
+
+            };
+            orderBodies.push(orderBody)
+            platformVoucherCode = checkout.platformVoucherCode;
+        })
+        
+        this._checkoutService.postPlaceGroupOrder(orderBodies, true, platformVoucherCode)
+            .subscribe((response) => {
+
+                // after success set the cartItem to empty array
+                this.carts = [];
+                // set in cart service
+                this._cartService.cartsHeaderWithDetails = [];
+
+                // Resolve cart header
+                this._cartService.cartResolver(true).subscribe();
+                
+                this._router.navigate([
+                    'thankyou/SUCCESS/COD/ORDER_CONFIRMED',
+                ]);
+
+                
+            }, (error) => {
+                // Set Loading to false
+                this.isLoading = false;
+            });
     }
 
     postForm(id, path, params, method, encode: boolean) {
