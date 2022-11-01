@@ -28,7 +28,7 @@ export class ConfirmDeleteDialog implements OnInit {
 
 
     platform: Platform;
-    addressForm: FormGroup;
+    deleteAccountForm: FormGroup;
     storeStates: string[] = [];
 
     dialingCode: string;
@@ -53,7 +53,7 @@ export class ConfirmDeleteDialog implements OnInit {
     ngOnInit(): void {
 
         // Create the forms
-        this.addressForm = this._formBuilder.group({
+        this.deleteAccountForm = this._formBuilder.group({
             password       : ['', Validators.required],
         });
 
@@ -86,6 +86,14 @@ export class ConfirmDeleteDialog implements OnInit {
 
 
     }
+
+    deleteAccount(){
+        this._userService.deactivateCustomerById()
+            .subscribe(response => {
+                console.log('DELETED!!!!!!! :', response); 
+            });
+    }
+
 
     closeDialog(){
         this.dialogRef.close();
