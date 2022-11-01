@@ -5,7 +5,7 @@
     <!-- Promotion Banner -->
     <swiper-banner class="w-full"></swiper-banner>
     <!-- Locations -->
-    <featured-locations class="w-full mt-4" [locations]="locations" [showViewAll]="false" [title]="'Locations'"></featured-locations>
+    <featured-locations *ngIf="locations && locations.length > 1" class="w-full mt-4" [locations]="locations" [showViewAll]="false" [title]="'Locations'"></featured-locations>
     <!-- Categories -->
     <featured-categories class="w-full mt-4 sm:mt-8" [categories]="categories" [showViewAll]="false" [title]="'Categories'"></featured-categories>
     <!-- Stores Details -->
