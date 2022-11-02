@@ -16,6 +16,9 @@ import { StoresService } from './core/store/store.service';
 import { Store } from './core/store/store.types';
 import { CartService } from './core/cart/cart.service';
 import { CartItem } from './core/cart/cart.types';
+import { App } from '@capacitor/app';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
+
 
 declare let gtag: Function;
 
@@ -58,6 +61,7 @@ export class AppComponent
         private _apiServer: AppConfig,
         private _userService: UserService,
         private _cartsService: CartService,
+        private _fuseConfirmationService: FuseConfirmationService
         // private _swUpdate: SwUpdate
     )
     {        
@@ -242,8 +246,32 @@ export class AppComponent
                 this.customerActivity.cart = this.cartIds;
 
                 this._analyticService.customerActivity = this.customerActivity;
-                this._analyticService.postActivity(this.customerActivity).subscribe();              
+                this._analyticService.postActivity(this.customerActivity).subscribe(); 
+                
+                // back handler for android pwa app 
+                // App.addListener('backButton', ({ canGoBack }) => {
+                //     if(canGoBack && event.url !== '/'){
+                //         window.history.back();
+                //     } 
+                //     else if (event.url === '/')
+                //     {
+                //         App.exitApp();
+                //     }
+                // });
+                
+
             }
         });
+
+        // back handler for android pwa app 
+        App.addListener('backButton', ({ canGoBack }) => {
+            if(canGoBack){
+                window.history.back();
+            } 
+            else {
+                App.exitApp();
+            }
+        });
+        
     }
 }
