@@ -1022,8 +1022,9 @@ export class CartListComponent implements OnInit, OnDestroy
 
     getDeliveryCharges(deliveryChargesBody: DeliveryCharges[] )
     {
-
+        // return if empty address
         if (!this.customerAddress) return;
+        // set this to initiate loading
         this.isGettingDeliveryPrices = true;
         this._checkoutService.postToRetrieveDeliveriesCharges(deliveryChargesBody)
             .subscribe((deliveryProviderResponse: DeliveryProviders[])=>{     
@@ -1071,10 +1072,17 @@ export class CartListComponent implements OnInit, OnDestroy
 
                             // Disable the cart if the carts delivery type is delivery
                             if (this.selectedCart.carts[cartIndex].isSelfPickup === false) {
+                                // Disable the store
                                 this.selectedCart.carts[cartIndex].disabled = true;
+                                // Unselect the store
+                                this.selectedCart.carts[cartIndex].selected = false;
+                                
                                 this.selectedCart.carts[cartIndex].cartItem.forEach(item => {
+                                    // Disable the item
                                     item.disabled = true;
-                                })
+                                    // Unselect the item
+                                    item.selected = false;
+                                });
                             }
                         }
                         // Get all quotations

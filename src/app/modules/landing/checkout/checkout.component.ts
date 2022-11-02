@@ -591,12 +591,8 @@ export class BuyerCheckoutComponent implements OnInit
 
                 this._checkoutService.postMakePayment(paymentBody)
                     .subscribe((response) => {
-
                         this.payment = response;
-
-                        console.log("this.payment" + JSON.stringify(this.payment));
-                        
-
+                        // console.info("this.payment" + JSON.stringify(this.payment));
                         if (this.payment.isSuccess === true) {
                             if (this.payment.providerId == "1") {
                                 window.location.href = this.payment.paymentLink;
