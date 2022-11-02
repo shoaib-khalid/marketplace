@@ -251,7 +251,7 @@ export class EditCartAddressDialog implements OnInit {
                     
                     // Find state
                     let stateIndex = address.findIndex(item => item.types.includes("administrative_area_level_1"));
-                    let state = stateIndex > - 1 ? address[stateIndex].long_name : '';
+                    let state = stateIndex > -1 ? address[stateIndex].long_name : '';
 
                     // Update state if "state from google" not empty only                    
                     if ((state && state !== "") && (!this.addressForm.get('state').value || this.addressForm.get('state').value === ""))
@@ -259,7 +259,7 @@ export class EditCartAddressDialog implements OnInit {
 
                     // Find city
                     let cityIndex = address.findIndex(item => item.types.includes("locality"));
-                    let city = address[cityIndex] ? address[cityIndex].long_name : ''   
+                    let city = address[cityIndex] ? address[cityIndex].long_name : '';
                                         
                     if((state && state !== "") && (!this.addressForm.get('city').value || this.addressForm.get('city').value === "")) {  
                         this._storesService.getStoreRegionCountryStateCity({ stateId: state, cityId: city },false)
