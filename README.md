@@ -22,3 +22,14 @@ OR
 
 http://deliverin-pk.localhost:[portnumber]/
 ```
+4. To build this application, execute below command:
+- for web :
+```
+ng build 
+```
+- for android mobile app
+```
+ng build --output-path=www
+npx cap sync android
+npx cap open android
+```

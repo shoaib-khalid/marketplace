@@ -6,7 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { PlatformService } from 'app/core/platform/platform.service';
 import { AnalyticService } from './core/analytic/analytic.service';
 import { AppConfig } from './config/service.config';
-import { SwUpdate } from '@angular/service-worker';
+// import { SwUpdate } from '@angular/service-worker';
 import { UserService } from './core/user/user.service';
 import { User, UserSession } from './core/user/user.types';
 import { CustomerActivity } from './core/analytic/analytic.types';
@@ -58,13 +58,13 @@ export class AppComponent
         private _apiServer: AppConfig,
         private _userService: UserService,
         private _cartsService: CartService,
-        private _swUpdate: SwUpdate
+        // private _swUpdate: SwUpdate
     )
     {        
         // reload if there are any update for PWA
-        _swUpdate.available.subscribe(event => {
-            _swUpdate.activateUpdate().then(()=>document.location.reload());
-        });
+        // _swUpdate.available.subscribe(event => {
+        //     _swUpdate.activateUpdate().then(()=>document.location.reload());
+        // });
     }
 
     ngOnInit() {
