@@ -62,9 +62,7 @@
                             "src/styles/tailwind.scss",
                             "./node_modules/font-awesome/css/font-awesome.css"
                         ],
-                        "scripts": [],
-                        "serviceWorker": true,
-                        "ngswConfigPath": "ngsw-config.json"
+                        "scripts": []
                     },
                     "configurations": {
                         "production": {
