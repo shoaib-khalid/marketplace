@@ -167,7 +167,8 @@ export class BuyerCheckoutComponent implements OnInit
     }[];
     totalSelectedCartItem: number = 0;
     checkoutItems: CheckoutItems[] = [];
-        
+    totalQuantity: number = 0;
+
     customerId: string = '';
     customerAddress: CustomerAddress;
 
@@ -294,6 +295,10 @@ export class BuyerCheckoutComponent implements OnInit
                             
                 if (typeof(cartsWithDetails) !== "boolean" && cartsWithDetails) {
                     this.carts = cartsWithDetails;
+                    
+                    let cartItems = this.carts.map(x => x.cartItems).flat();
+                    
+                    this.totalQuantity = cartItems.map(element => element.quantity).reduce((a, b) => a + b, 0);   
                     
                     // Set default deliveryCharges
                     if (this.deliveryCharges) {
@@ -960,6 +965,15 @@ export class BuyerCheckoutComponent implements OnInit
         let cartItemsTotal: number;
         if (cartItems.length && cartItems.length > 0) {
             return cartItems.reduce((partialSum, item) => partialSum + item.totalPrice, 0);
+        } else {
+            return cartItemsTotal;
+        }
+    }
+
+    getCartItemsTotalQty(cartItems: CartItem[]) : number {
+        let cartItemsTotal: number;
+        if (cartItems.length && cartItems.length > 0) {
+            return cartItems.reduce((partialSum, item) => partialSum + item.quantity, 0);
         } else {
             return cartItemsTotal;
         }

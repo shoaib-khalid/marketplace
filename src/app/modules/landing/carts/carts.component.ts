@@ -161,7 +161,8 @@ export class CartListComponent implements OnInit, OnDestroy
             cartItem: { 
                 id: string, 
                 selected: boolean,
-                disabled: boolean
+                disabled: boolean,
+                quantity: number
             }[], 
             selected: boolean, 
             disabled: boolean,
@@ -253,7 +254,6 @@ export class CartListComponent implements OnInit, OnDestroy
     guestVouchers: any = null ;
     displayRedeem: boolean = false;
 
-
     selfPickupInfo: {
         name: string,
         email: string,
@@ -272,6 +272,7 @@ export class CartListComponent implements OnInit, OnDestroy
     hasSelfPickup: boolean;
     hasDelivery: boolean;
     isGettingDeliveryPrices: boolean = false;
+    totalQuantity: number = 0;
 
     /**
      * Constructor
@@ -377,6 +378,7 @@ export class CartListComponent implements OnInit, OnDestroy
                                         else {
                                             this.selectedCart.carts[cartIdIndex].cartItem[selectedCartItemIndex].disabled = false;
                                         }
+                                        this.selectedCart.carts[cartIdIndex].cartItem[selectedCartItemIndex].quantity = cartItem.quantity;
                                     }
                                 })
                             } else {
@@ -387,7 +389,8 @@ export class CartListComponent implements OnInit, OnDestroy
                                         let obj = {
                                             id: element.id,
                                             selected: false,
-                                            disabled: false
+                                            disabled: false,
+                                            quantity: element.quantity
                                         }
                                         // Disable the item if quantity is invalid or store is closed
                                         if ((element.quantity > element.productInventory.quantity) && (element.productInventory.product.allowOutOfStockPurchases === false)) {
@@ -469,7 +472,8 @@ export class CartListComponent implements OnInit, OnDestroy
                                         let obj = {
                                             id: element.id,
                                             selected: false,
-                                            disabled: false
+                                            disabled: false,
+                                            quantity: element.quantity
                                         }
                                         // Disable the item if quantity is invalid or store is closed
                                         if ((element.quantity > element.productInventory.quantity) && (element.productInventory.product.allowOutOfStockPurchases === false)) {
@@ -854,6 +858,15 @@ export class CartListComponent implements OnInit, OnDestroy
         let cartItemsTotal: number;
         if (cartItems.length && cartItems.length > 0) {
             return cartItems.reduce((partialSum, item) => partialSum + item.totalPrice, 0);
+        } else {
+            return cartItemsTotal;
+        }
+    }
+
+    getCartItemsTotalQty(cartItems: CartItem[]) : number {
+        let cartItemsTotal: number;
+        if (cartItems.length && cartItems.length > 0) {
+            return cartItems.reduce((partialSum, item) => partialSum + item.quantity, 0);
         } else {
             return cartItemsTotal;
         }
@@ -1269,6 +1282,10 @@ export class CartListComponent implements OnInit, OnDestroy
         // Get totalSelectedCartItem to be displayed
         // .reduce will sum up all number in the array of number created by .map
         this.totalSelectedCartItem = checkoutListBody.map(item => item.selectedItemId.length).reduce((partialSum, a) => partialSum + a, 0);
+
+        let selectedCartItems = this.selectedCart.carts.map(x => x.cartItem).flat().filter(i => i.selected === true);
+        
+        this.totalQuantity = selectedCartItems.map(element => element.quantity).reduce((a, b) => a + b, 0);        
 
         this.isPristine = (this.totalSelectedCartItem < 1) ? true : false;
 

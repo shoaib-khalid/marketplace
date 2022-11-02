@@ -232,21 +232,21 @@
                                 </div>
                                 <!-- Shipping Fee & Total Items -->
                                 <div class="flex flex-row justify-between items-center mt-2">
-                                    <div class="flex flex-col sm:flex-row sm:min-w-44 gap-0 sm:gap-1">
+                                    <div class="flex flex-col sm:flex-row sm:min-w-44 gap-0 sm:gap-x-1 items-start sm:items-center">
                                         <!-- <span class="font-semibold text-xs sm:text-sm">{{ (getDeliveryFee(cart.id) ? getDeliveryFee(cart.id).deliveryFee : 0) | currency: cart.store.regionCountry.currencySymbol }}</span> -->
                                         <span class="text-sm sm:text-md">Delivery Fee:</span>
                                         <ng-container *ngIf="getDeliveryFee(cart.id)">
                                             <div class="flex flex-col">
                                                 <ng-container *ngIf="getDeliveryFee(cart.id).deliveryType !== 'PICKUP'; else selfPickup">
-                                                    <div class="flex flex-row gap-1 items-end">
+                                                    <div class="flex flex-row gap-1 items-center">
                                                         <!-- Ori Price  -->
                                                         <span 
                                                             [ngClass]="getDeliveryFee(cart.id).deliveryPrice.discountAmount !== 0 && getDeliveryFee(cart.id).deliveryPrice.discountAmount ? 
                                                                 'line-through font-normal text-xs' : 'text-sm font-semibold'"
-                                                            class="tracking-tight leading-tight md:leading-normal">{{(getDeliveryFee(cart.id).deliveryPrice.deliveryFee) | currency: cart.store.regionCountry.currencySymbol}}</span>
+                                                            class="tracking-tight">{{(getDeliveryFee(cart.id).deliveryPrice.deliveryFee) | currency: cart.store.regionCountry.currencySymbol}}</span>
                                                         <!-- Discounted price  -->
                                                         <span *ngIf="getDeliveryFee(cart.id).deliveryPrice.discountAmount !== 0 && getDeliveryFee(cart.id).deliveryPrice.discountAmount"
-                                                            class="font-semibold text-sm tracking-tight leading-tight md:leading-normal">{{(getDeliveryFee(cart.id).deliveryPrice.discountedPrice) | currency: cart.store.regionCountry.currencySymbol}}</span>
+                                                            class="font-semibold text-sm tracking-tight">{{(getDeliveryFee(cart.id).deliveryPrice.discountedPrice) | currency: cart.store.regionCountry.currencySymbol}}</span>
                                                         <!-- Combined shipping  -->
                                                         <span *ngIf="checkCombineShipping(cart.id)"
                                                             class="text-xs md:text-sm tracking-tighter">
@@ -266,8 +266,8 @@
                                         </ng-container>
                                     </div>
                                     <div class="flex flex-col sm:flex-row sm:items-center sm:min-w-auto gap-0 sm:gap-x-1">
-                                        <span class="text-sm sm:text-md mr-1 sm:mr-0">Total Quantity ({{cart.cartItems ? cart.cartItems.length : 0}}):</span>
-                                        <span class="font-semibold text-sm sm:text-sm">{{ getCartItemsTotal(cart.cartItems) | currency: cart.store.regionCountry.currencySymbol }}</span>
+                                        <span class="text-sm sm:text-md">Total Qty ({{cart.cartItems ? getCartItemsTotalQty(cart.cartItems) : 0}}):</span>
+                                        <span class="font-semibold text-sm text-center sm:text-left">{{ getCartItemsTotal(cart.cartItems) | currency: cart.store.regionCountry.currencySymbol }}</span>
                                     </div>
                                 </div>
                                 <!-- Store Address for self pickup  -->
@@ -341,7 +341,7 @@
                     <div *ngIf="visibleCartSummary">
                         <!-- Sub Total -->
                         <div class="flex flex-row justify-between mt-2">
-                            <span class="text-md text-secondary">Sub Total <small *ngIf="totalSelectedCartItem > 0">(Qty: {{totalSelectedCartItem}})</small></span>
+                            <span class="text-md text-secondary">Sub Total <small *ngIf="totalQuantity > 0">(Qty: {{totalQuantity}})</small></span>
                             <span class="text-md font-semibold">{{paymentDetails.cartSubTotal | currency: platform.currency}}</span>
                         </div>
                         <!-- Order Discount -->
