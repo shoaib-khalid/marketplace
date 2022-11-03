@@ -6,6 +6,7 @@ export interface User
     avatar?: string;
     status?: string;
     username?: string;
+    channel?: string;
 }
 
 export interface Customer

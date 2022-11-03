@@ -586,6 +586,56 @@ export class UserService
         );
     }
 
+    deactivateCustomerById()
+    {
+        let userService = this._apiServer.settings.apiServer.userService;
+        let customerId = this._jwt.getJwtPayload(this._authService.jwtAccessToken).uid;
+
+        const header = {
+            headers: new HttpHeaders().set("Authorization", this._authService.publicToken)
+        };
+
+   
+        return this.client$.pipe(
+            take(1),
+            switchMap(client => this._httpClient.put<any>(userService + '/customers' + '/deactivate/' + customerId , header).pipe(
+                map((response) => {
+
+                    this._logging.debug("Response from UserService (deactivateCustomerById)",response);
+
+                    // Return the new product
+                    return response["data"];
+                })  
+            )) 
+        );
+    }
+
+    
+    validatePasswordCustomerById(password: string)
+    {
+        let userService = this._apiServer.settings.apiServer.userService;
+        let customerId = this._jwt.getJwtPayload(this._authService.jwtAccessToken).uid;
+
+        const header = {
+            headers: new HttpHeaders().set("Authorization", this._authService.publicToken)
+        };
+
+   
+        return this.client$.pipe(
+            take(1),
+            switchMap(client => this._httpClient.put<any>(userService + '/customers/'  + customerId + '/validatepassword/' , password, header).pipe(
+                map((response) => {
+
+                    this._logging.debug("Response from UserService (validatePasswordCustomerById)",response);
+
+                    // Return the new product
+                    return response;
+                })  
+            )) 
+        );
+    }
+
+
     generateSession(body: UserSession): Observable<any>
     {        
         let userService = this._apiServer.settings.apiServer.userService;

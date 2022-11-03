@@ -31,6 +31,8 @@ import { EditSecurityComponent } from './security/security.component';
 import { EditDeliveryAddressComponent } from './delivery-address/delivery-address.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { _CustomerAddressesModule } from 'app/layout/common/_customer-addresses/customer-addresses.module';
+import { DeleteAccountComponent } from './delete-account/delete-account.component';
+import { ConfirmDeleteDialog } from './delete-account/modal-confirm-delete/modal-confirm-delete.component';
 
 @NgModule({
     declarations: [
@@ -38,6 +40,8 @@ import { _CustomerAddressesModule } from 'app/layout/common/_customer-addresses/
         EditAccountComponent,
         EditSecurityComponent,
         EditDeliveryAddressComponent,
+        DeleteAccountComponent,
+        ConfirmDeleteDialog
     ],
     imports     : [
         RouterModule.forChild(userProfileRoutes),
