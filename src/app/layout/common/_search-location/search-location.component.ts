@@ -12,6 +12,10 @@ import { StoresService } from 'app/core/store/store.service';
 import { FuseLoadingService } from '@fuse/services/loading';
 import { CurrentLocationService } from 'app/core/_current-location/current-location.service';
 import { CurrentLocation } from 'app/core/_current-location/current-location.types';
+import { Capacitor } from '@capacitor/core';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { Geolocation } from '@capacitor/geolocation';
+
 
 
 
@@ -66,7 +70,8 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _platformService: PlatformService,
-        private _currentLocationService: CurrentLocationService
+        private _currentLocationService: CurrentLocationService,
+        private _fuseConfirmationService: FuseConfirmationService
     )
     {
     }
@@ -262,11 +267,35 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
      */
     locateMe() {
 
+        if (Capacitor.isNativePlatform()) {
+            // Open the confirmation dialog
+            const confirmation = this._fuseConfirmationService.open({
+                title  : 'Delete Address',
+                message: 'Are you sure you want to remove this address? This action cannot be undone!',
+                actions: {
+                    confirm: {
+                        label: 'Delete'
+                    }
+                }
+            });
+
+            const printCurrentPosition = async () => {
+                const coordinates = await Geolocation.getCurrentPosition();
+              
+                console.log('Current position:', coordinates);
+            };
+    
+            const checkPermissions = Geolocation.checkPermissions();
+    
+            console.log('checkPermissions:', checkPermissions);
+        }
+
         // show loading
         this._fuseLoadingService.show();
 
         // GoogleMap API
         navigator.geolocation.getCurrentPosition((position) => {
+
             var crd = position.coords;
             this.queryLat = crd.latitude;
             this.queryLong = crd.longitude;
@@ -276,6 +305,7 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
                 lng     : this.queryLong,
                 keyword : this.keyword
             };
+            
             this.loader.load().then(() => {
                 let geocoder: google.maps.Geocoder = new google.maps.Geocoder();
                 geocoder.geocode({ location: location})
