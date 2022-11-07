@@ -12,6 +12,10 @@ import { StoresService } from 'app/core/store/store.service';
 import { FuseLoadingService } from '@fuse/services/loading';
 import { CurrentLocationService } from 'app/core/_current-location/current-location.service';
 import { CurrentLocation } from 'app/core/_current-location/current-location.types';
+import { Capacitor } from '@capacitor/core';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { Geolocation } from '@capacitor/geolocation';
+
 
 
 
@@ -66,7 +70,8 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _platformService: PlatformService,
-        private _currentLocationService: CurrentLocationService
+        private _currentLocationService: CurrentLocationService,
+        private _fuseConfirmationService: FuseConfirmationService,
     )
     {
     }
@@ -267,6 +272,7 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
 
         // GoogleMap API
         navigator.geolocation.getCurrentPosition((position) => {
+
             var crd = position.coords;
             this.queryLat = crd.latitude;
             this.queryLong = crd.longitude;
@@ -276,6 +282,7 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
                 lng     : this.queryLong,
                 keyword : this.keyword
             };
+            
             this.loader.load().then(() => {
                 let geocoder: google.maps.Geocoder = new google.maps.Geocoder();
                 geocoder.geocode({ location: location})
@@ -295,11 +302,41 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
             // hide loading
             this._fuseLoadingService.hide();
 
+            if (Capacitor.isNativePlatform()) {
+
+                // cordova.plugins.diagnostic.switchToSettings(function(){
+                //     console.log("Successfully switched to Settings app");
+                // }, function(error){
+                //     console.error("The following error occurred: "+error);
+                // })
+
+                const confirmation = this._fuseConfirmationService.open({
+                    icon   : {
+                       name: "location_disabled" 
+                    },
+                    title  : 'Location Disabled',
+                    message: 'Please enable your location to locate store near you',
+                    actions: {
+                        confirm: {
+                            label: 'OK'
+                        },
+                        cancel:{
+                            show: false
+                        }
+                    }
+                });
+
+                Capacitor.Plugins.Geolocation.requestPermissions()
+
+            }
+
             this.autoCompleteList = [{
                 type: "error",
                 location: "Unable to detect current address",
                 description: "Enable location access OR enter street address/city"
             }]
+        }, {
+            timeout: 3
         });
     }
 
