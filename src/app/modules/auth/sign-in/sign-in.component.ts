@@ -333,23 +333,28 @@ export class AuthSignInComponent implements OnInit
         
         } 
 
-        const dialogRef = this._dialog.open( 
-            AuthModalComponent,{
-                width : '520px',
-                maxWidth: '80vw',
-                data:{ 
-                    icon : 'heroicons_solid:exclamation',
-                    title : 'Disclaimer',
-                    description : 'While using Apple ID to create your DeliverIn account, please select option to "Share My Email" to ensure your DeliverIn account is created properly.'
-                }
-            });
-        dialogRef.afterClosed().subscribe((result) => {
-            // If the confirm button pressed...
-            this._socialAuthService.signIn(AppleLoginProvider.PROVIDER_ID)
+        // const dialogRef = this._dialog.open( 
+        //     AuthModalComponent,{
+        //         width : '520px',
+        //         maxWidth: '80vw',
+        //         data:{ 
+        //             icon : 'heroicons_solid:exclamation',
+        //             title : 'Disclaimer',
+        //             description : 'While using Apple ID to create your DeliverIn account, please select option to "Share My Email" to ensure your DeliverIn account is created properly.'
+        //         }
+        //     });
+        // dialogRef.afterClosed().subscribe((result) => {
+        //     // If the confirm button pressed...
+        //     this._socialAuthService.signIn(AppleLoginProvider.PROVIDER_ID)
+        //         .then(userData => {
+
+        //         });
+        // });
+
+        this._socialAuthService.signIn(AppleLoginProvider.PROVIDER_ID)
                 .then(userData => {
 
                 });
-        });
        
    }
 
