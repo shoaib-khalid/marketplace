@@ -71,7 +71,7 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _platformService: PlatformService,
         private _currentLocationService: CurrentLocationService,
-        private _fuseConfirmationService: FuseConfirmationService
+        private _fuseConfirmationService: FuseConfirmationService,
     )
     {
     }
@@ -267,29 +267,6 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
      */
     locateMe() {
 
-        if (Capacitor.isNativePlatform()) {
-            // Open the confirmation dialog
-            const confirmation = this._fuseConfirmationService.open({
-                title  : 'Delete Address',
-                message: 'Are you sure you want to remove this address? This action cannot be undone!',
-                actions: {
-                    confirm: {
-                        label: 'Delete'
-                    }
-                }
-            });
-
-            const printCurrentPosition = async () => {
-                const coordinates = await Geolocation.getCurrentPosition();
-              
-                console.log('Current position:', coordinates);
-            };
-    
-            const checkPermissions = Geolocation.checkPermissions();
-    
-            console.log('checkPermissions:', checkPermissions);
-        }
-
         // show loading
         this._fuseLoadingService.show();
 
@@ -325,11 +302,41 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
             // hide loading
             this._fuseLoadingService.hide();
 
+            if (Capacitor.isNativePlatform()) {
+
+                // cordova.plugins.diagnostic.switchToSettings(function(){
+                //     console.log("Successfully switched to Settings app");
+                // }, function(error){
+                //     console.error("The following error occurred: "+error);
+                // })
+
+                const confirmation = this._fuseConfirmationService.open({
+                    icon   : {
+                       name: "location_disabled" 
+                    },
+                    title  : 'Location Disabled',
+                    message: 'Please enable your location to locate store near you',
+                    actions: {
+                        confirm: {
+                            label: 'OK'
+                        },
+                        cancel:{
+                            show: false
+                        }
+                    }
+                });
+
+                Capacitor.Plugins.Geolocation.requestPermissions()
+
+            }
+
             this.autoCompleteList = [{
                 type: "error",
                 location: "Unable to detect current address",
                 description: "Enable location access OR enter street address/city"
             }]
+        }, {
+            timeout: 3
         });
     }
 
