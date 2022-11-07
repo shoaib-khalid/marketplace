@@ -1,0 +1,13 @@
+<div 
+    class="app-splash-screen" 
+    [ngStyle]="{ left: windowWidth, opacity: opacityChange, transition: splashTransition}" 
+    *ngIf="showSplash">
+    <div class="app-splash-inner">
+        <div class="w-42 animate-bounce ">
+            <img [src]="'assets/icons/icon-144x144.png'">
+        </div>
+        <div class="w-30">
+            <img [src]="'assets/animate/loading.gif'">
+        </div>
+    </div>
+</div>
