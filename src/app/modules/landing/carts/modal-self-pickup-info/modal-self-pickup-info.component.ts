@@ -116,6 +116,9 @@ export class SelfPickupInfoDialog implements OnInit {
             .subscribe((result) => {
                     
                 this.user = result;
+                if(this.user) {
+                    this.addressForm.get('email').clearValidators();
+                }
                                     
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -158,6 +161,10 @@ export class SelfPickupInfoDialog implements OnInit {
         
         if (this.data) {
             this.addressForm.patchValue(this.data.user)
+
+            if(this.user){
+
+            }
         }
 
     }
