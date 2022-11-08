@@ -300,72 +300,69 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
 
         }, error => {
 
-            // if (Object.keys(error).length === 0){
-                if (Capacitor.isNativePlatform()) {
-    
-                    if(error.code === 31) {
+            if (Capacitor.isNativePlatform()) {
 
-                        const confirmation = this._fuseConfirmationService.open({
-                            icon   : {
-                                name: "location_disabled" 
+                if(error.code === 1) {
+
+                    const confirmation = this._fuseConfirmationService.open({
+                        icon   : {
+                            name: "location_disabled" 
+                        },
+                        title  : 'Location Disabled',
+                        message: 'Please allow your location permission access',
+                        actions: {
+                            confirm: {
+                                label: 'OK'
                             },
-                            title  : 'Location Disabled',
-                            message: 'Please allow your location permission access',
-                            actions: {
-                                confirm: {
-                                    label: 'OK'
-                                },
-                                cancel:{
-                                    show: false
-                                }
+                            cancel:{
+                                show: false
                             }
-                        });
+                        }
+                    });
 
-                        // Subscribe to the confirmation dialog closed action
-                        confirmation.afterClosed().subscribe((result) => {
-    
-                            // If the confirm button pressed...
-                            if ( result === 'confirmed' )
-                            {
-                                Capacitor.Plugins.Geolocation.requestPermissions(); 
+                    // Subscribe to the confirmation dialog closed action
+                    confirmation.afterClosed().subscribe((result) => {
 
-                                // Mark for check
-                                this._changeDetectorRef.markForCheck();
-                            }
-                        })
-                    }
+                        // If the confirm button pressed...
+                        if ( result === 'confirmed' )
+                        {
+                            Capacitor.Plugins.Geolocation.requestPermissions(); 
 
-                    if(error.code !== 33){
-
-                        const confirmation = this._fuseConfirmationService.open({
-                            icon   : {
-                                name: "location_disabled" 
-                            },
-                            title  : 'Location Disabled',
-                            message: 'Please enable your location to locate store near you',
-                            actions: {
-                                confirm: {
-                                    label: 'OK'
-                                },
-                                cancel:{
-                                    show: false
-                                }
-                            }
-                        });
-                    }
-    
-                    Capacitor.Plugins.Geolocation.requestPermissions();
-
-                    // Mark for check
-                    this._changeDetectorRef.markForCheck();
-    
+                            // Mark for check
+                            this._changeDetectorRef.markForCheck();
+                        }
+                    })
                 }
-            // }
+
+                // if(error.code !== 3 && error.code === 1){
+
+                //     const confirmation = this._fuseConfirmationService.open({
+                //         icon   : {
+                //             name: "location_disabled" 
+                //         },
+                //         title  : 'Location Disabled',
+                //         message: 'Please enable your location to locate store near you ' + error.message + '//' + error.code,
+                //         actions: {
+                //             confirm: {
+                //                 label: 'OK'
+                //             },
+                //             cancel:{
+                //                 show: false
+                //             }
+                //         }
+                //     });
+                // }
+
+                Capacitor.Plugins.Geolocation.requestPermissions();
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+
+            }
             // hide loading
             this._fuseLoadingService.hide();
 
             
-
             this.autoCompleteList = [{
                 type: "error",
                 location: "Unable to detect current address",
@@ -373,7 +370,7 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
             }]
         },
         {
-            timeout: 10
+            timeout: 5
         }
         );
     }
