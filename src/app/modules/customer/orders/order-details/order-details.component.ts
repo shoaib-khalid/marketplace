@@ -57,6 +57,7 @@ export class OrderDetailsComponent implements OnInit
     customerAuthenticate: CustomerAuthenticate;
     
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    totalQuantity: number = 0;
 
     /**
      * Constructor
@@ -103,8 +104,12 @@ export class OrderDetailsComponent implements OnInit
 
         // getOrderById
         this._orderService.getOrderById(this.orderId)
-            .subscribe((orderByIdResponse)=>{                        
+            .subscribe((orderByIdResponse : OrderDetails)=>{                        
                 this.orderDetails = orderByIdResponse;
+
+                this.totalQuantity = orderByIdResponse.orderItemWithDetails.reduce(
+                    (previousValue, currentValue) => previousValue + currentValue.quantity,
+                    0)
             });
         
         // getDeliveryRiderDetails
