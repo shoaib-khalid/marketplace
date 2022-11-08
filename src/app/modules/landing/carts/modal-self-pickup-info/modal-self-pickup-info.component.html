@@ -36,7 +36,7 @@
                                 Email is required
                             </mat-error>
                     </mat-form-field>
-                    <mat-form-field class="fuse-mat-emphasized-affix w-full sm:w-1/2" floatLabel="always">
+                    <mat-form-field class="fuse-mat-emphasized-affix w-full sm:w-1/2" [ngClass]="user ? 'sm:w-full' : ''" floatLabel="always">
                         <mat-label>Phone Number</mat-label>
                         <input
                             [formControlName]="'phoneNumber'"
