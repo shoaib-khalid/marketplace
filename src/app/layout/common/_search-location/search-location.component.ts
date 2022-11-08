@@ -373,7 +373,7 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
             }]
         },
         {
-            timeout: 5
+            timeout: 10
         }
         );
     }
