@@ -299,45 +299,83 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
             });
 
         }, error => {
+
+            // if (Object.keys(error).length === 0){
+                if (Capacitor.isNativePlatform()) {
+    
+                    if(error.code === 31) {
+
+                        const confirmation = this._fuseConfirmationService.open({
+                            icon   : {
+                                name: "location_disabled" 
+                            },
+                            title  : 'Location Disabled',
+                            message: 'Please allow your location permission access',
+                            actions: {
+                                confirm: {
+                                    label: 'OK'
+                                },
+                                cancel:{
+                                    show: false
+                                }
+                            }
+                        });
+
+                        // Subscribe to the confirmation dialog closed action
+                        confirmation.afterClosed().subscribe((result) => {
+    
+                            // If the confirm button pressed...
+                            if ( result === 'confirmed' )
+                            {
+                                Capacitor.Plugins.Geolocation.requestPermissions(); 
+
+                                // Mark for check
+                                this._changeDetectorRef.markForCheck();
+                            }
+                        })
+                    }
+
+                    if(error.code !== 33){
+
+                        const confirmation = this._fuseConfirmationService.open({
+                            icon   : {
+                                name: "location_disabled" 
+                            },
+                            title  : 'Location Disabled',
+                            message: 'Please enable your location to locate store near you',
+                            actions: {
+                                confirm: {
+                                    label: 'OK'
+                                },
+                                cancel:{
+                                    show: false
+                                }
+                            }
+                        });
+                    }
+    
+                    Capacitor.Plugins.Geolocation.requestPermissions();
+
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+    
+                }
+            // }
             // hide loading
             this._fuseLoadingService.hide();
 
-            if (Capacitor.isNativePlatform()) {
-
-                // cordova.plugins.diagnostic.switchToSettings(function(){
-                //     console.log("Successfully switched to Settings app");
-                // }, function(error){
-                //     console.error("The following error occurred: "+error);
-                // })
-
-                const confirmation = this._fuseConfirmationService.open({
-                    icon   : {
-                       name: "location_disabled" 
-                    },
-                    title  : 'Location Disabled',
-                    message: 'Please enable your location to locate store near you',
-                    actions: {
-                        confirm: {
-                            label: 'OK'
-                        },
-                        cancel:{
-                            show: false
-                        }
-                    }
-                });
-
-                Capacitor.Plugins.Geolocation.requestPermissions()
-
-            }
+            
 
             this.autoCompleteList = [{
                 type: "error",
                 location: "Unable to detect current address",
                 description: "Enable location access OR enter street address/city"
             }]
-        }, {
-            timeout: 3
-        });
+        },
+        {
+            timeout: 5
+        }
+        );
     }
 
     /**
