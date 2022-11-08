@@ -25,12 +25,12 @@
     
                 <!-- Phone Number, State -->
                 <div class="w-full flex flex-col sm:flex-row sm:mb-0">
-                    <mat-form-field class="fuse-mat-emphasized-affix w-full sm:w-1/2 sm:pr-1" floatLabel="always">
+                    <mat-form-field *ngIf="!user" class="fuse-mat-emphasized-affix w-full sm:w-1/2 sm:pr-1" floatLabel="always">
                         <mat-label>Email</mat-label>
                         <input
                             [formControlName]="'email'"
                             placeholder="Enter your email (for payment receipt)"
-                            [required]="true"
+                            [required]="user ? true :false"
                             matInput>
                             <mat-error *ngIf="addressForm.get('email').hasError('required')">
                                 Email is required
