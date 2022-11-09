@@ -155,7 +155,7 @@ export class _SwiperBannerComponent
         this._adsService.bannersDesktop$
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((banner: Banner[]) => {
-            if (banner) {
+            if (banner && banner.length > 0) {
                 this.galleryImages = banner;
             }
             // set default banner here
@@ -180,7 +180,7 @@ export class _SwiperBannerComponent
         this._adsService.bannersMobile$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((banner: Banner[]) => {
-                if (banner) {
+                if (banner && banner.length > 0) {
                     this.mobileGalleryImages = banner;
                 }
                 // set default banner here
