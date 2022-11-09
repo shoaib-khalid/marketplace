@@ -32,6 +32,7 @@
                 <span class="text-sm font-semibold tracking-wider text-secondary">{{ result.storeId ? result.storeId : "No Store" }}</span>
             </mat-optgroup> -->
             <mat-option
+                [value]="result.searchText"
                 class="group relative mb-1 py-0 px-6 text-md rounded-md hover:bg-gray-100 dark:hover:bg-hover"
             >
                 <ng-container *ngTemplateOutlet="historyResult; context: {$implicit: result}"></ng-container>

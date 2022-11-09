@@ -59,9 +59,15 @@
                 [fuseScrollbarOptions]="{wheelPropagation: false, suppressScrollY: true}" class="scrollbar-hide flex h-14 flex-nowrap items-center justify-start overflow-x-auto md:rounded-md w-screen md:w-full bg-card md:ring-1 md:ring-gray-300 md:mx-0 -mx-2 sticky top-0 my-2 md:mt-4 z-40">
                     <div class="h-full grid grid-flow-col grid-rows-1">
                         <div 
-                            [ngClass]="!selectedCategory ? 'border-primary border-b-4 ' : '' "
+                            [ngClass]="(!selectedCategory && selectedCustomCategory === 'top10') ? 'border-primary border-b-4 ' : '' "
                             class="flex flex-col w-28 filter-article justify-center cursor-pointer hover:bg-primary-300 " 
-                            (click)="chooseCategory(null)">
+                            (click)="chooseCategory(null, 'top10')">
+                            <span class="m-1 text-sm text-center font-semibold line-clamp-2 leading-4">Top 10</span>
+                        </div>
+                        <div 
+                            [ngClass]="(!selectedCategory && selectedCustomCategory === 'all') ? 'border-primary border-b-4 ' : '' "
+                            class="flex flex-col w-28 filter-article justify-center cursor-pointer hover:bg-primary-300 " 
+                            (click)="chooseCategory(null, 'all')">
                             <span class="m-1 text-sm text-center font-semibold line-clamp-2 leading-4">All</span>
                         </div>
                         <ng-container #categoriesElement *ngFor="let category of storeCategories; let i = index">
@@ -78,7 +84,7 @@
 
                 <div class="flex flex-col md:flex-row w-full gap-0 md:gap-4">
                     <!-- Search -->
-                    <search class="w-full mb-2 sm:mt-2 sm:mb-4 z-10" [storeId]="store.id" [store]="storeDetails"></search>
+                    <search (search)="searchClicked()" class="w-full mb-2 sm:mt-2 sm:mb-4 z-10" [storeId]="store.id" [store]="storeDetails"></search>
                     <!-- Sort -->
                     <div class="flex flex-row items-center justify-between md:justify-end mt-1 md:mt-0 md:mb-2 w-full pb-2 sm:pb-0">
                         <mat-select
@@ -144,19 +150,24 @@
                     <!-- Products -->
                     <ng-container *ngIf="(products$ | async) as products">
                         <ng-container *ngIf="isLoading === false; else productLoading">
-                            <store-products class="w-full" [products]="products" [productViewOrientation]="productViewOrientation" [store]="store" [storeSlug]="storeDomain" [catalogueSlug]="catalogueSlug"></store-products>
-                            <!-- Pagination -->
-                            <ng-container *ngIf="pagination">
-                                <div class="flex w-full items-center justify-center mb-2">
-                                    <pagination 
-                                        [itemLength]="pagination.length" 
-                                        [initialPage]="pagination.page + 1"
-                                        [pageSize]="pagination.size"
-                                        (changePage)="onChangePage($event)"
-                                        (click)="scroll('scrollContainer')"
-                                        #productPaginator></pagination>
-                                </div>
+                            <ng-container *ngIf="!selectedCategory && selectedCustomCategory === 'top10'; else notTop10">
+                                <store-products class="w-full" [products]="famousProducts" [productViewOrientation]="productViewOrientation" [store]="store" [storeSlug]="storeDomain" [catalogueSlug]="catalogueSlug"></store-products>
                             </ng-container>
+                            <ng-template #notTop10>
+                                <store-products class="w-full" [products]="products" [productViewOrientation]="productViewOrientation" [store]="store" [storeSlug]="storeDomain" [catalogueSlug]="catalogueSlug"></store-products>
+                                <!-- Pagination -->
+                                <ng-container *ngIf="pagination">
+                                    <div class="flex w-full items-center justify-center mb-2">
+                                        <pagination 
+                                            [itemLength]="pagination.length" 
+                                            [initialPage]="pagination.page + 1"
+                                            [pageSize]="pagination.size"
+                                            (changePage)="onChangePage($event)"
+                                            (click)="scroll('scrollContainer')"
+                                            #productPaginator></pagination>
+                                    </div>
+                                </ng-container>
+                            </ng-template>
                         </ng-container>
                     </ng-container>
 

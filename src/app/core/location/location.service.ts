@@ -611,6 +611,29 @@ export class LocationService
             );
     }
 
+    getFamousProduct(tagKeyword: string): Observable <any>
+    {
+        let locationService = this._apiServer.settings.apiServer.locationService;
+        let accessToken = this._authService.publicToken;
+
+        const header = {
+            headers: new HttpHeaders().set("Authorization", `Bearer ${accessToken}`)
+        }; 
+
+        return this._httpClient.get<any>(locationService + '/famous/' + tagKeyword, header)
+            .pipe(
+                catchError(() =>
+                    // Return false
+                    of(false)
+                ),
+                switchMap(async (response: any) => {
+                    this._logging.debug("Response from LocationService (getFamousProduct)", response);
+
+                    return response.data;
+                })
+            );
+    }  
+
     /**
      * 
      * @param params

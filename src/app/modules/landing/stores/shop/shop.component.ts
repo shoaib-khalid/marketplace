@@ -16,7 +16,7 @@ import { Store, StoreAssets, StoreCategory } from 'app/core/store/store.types';
 import { BottomPopUpService } from 'app/layout/common/_bottom-popup/bottom-popup.service';
 import { SearchService } from 'app/layout/common/_search/search.service';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from 'ngx-gallery-9';
-import { debounceTime, map, Observable, Subject, switchMap, takeUntil, take } from 'rxjs';
+import { debounceTime, map, Observable, Subject, switchMap, takeUntil, take, distinctUntilChanged } from 'rxjs';
 import { ShopService } from './shop.service';
 import { AppConfig } from 'app/config/service.config';
 import { Cart, CartItem, CustomerCart } from 'app/core/cart/cart.types';
@@ -25,6 +25,7 @@ import { AuthService } from 'app/core/auth/auth.service';
 import { JwtService } from 'app/core/jwt/jwt.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { _BottomSheetComponent } from 'app/modules/landing/stores/_bottom-sheet-product/bottom-sheet.component';
+import { LocationService } from 'app/core/location/location.service';
 
 @Component({
     selector     : 'landing-shop',
@@ -182,6 +183,7 @@ export class LandingShopComponent implements OnInit
     store: Store
     storeCategories: StoreCategory[];
     selectedCategory: StoreCategory = null;
+    selectedCustomCategory: string = "top10";
     catalogueSlug: string = "all-products";
     storeDomain: string;
     storeDetails: {
@@ -192,6 +194,7 @@ export class LandingShopComponent implements OnInit
     // product
     products$: Observable<Product[]>;
     products: Product[] = [];
+    famousProducts: Product[] = [];
     pagination: ProductPagination;
 
     sortInputControl: FormControl = new FormControl('recent');
@@ -236,6 +239,7 @@ export class LandingShopComponent implements OnInit
         private _searchService: SearchService,
         private _datePipe: DatePipe,
         private _shopService: ShopService,
+        private _locationService: LocationService,
         private _fuseConfirmationService: FuseConfirmationService,
         private _apiServer: AppConfig,
         private _cartService: CartService,
@@ -435,8 +439,20 @@ export class LandingShopComponent implements OnInit
                         this.storeCategories = storeCategories;
 
                         this._storesService.storeCategory$
-                            .pipe(takeUntil(this._unsubscribeAll))
+                            .pipe(
+                                distinctUntilChanged((prev, curr) => curr && prev === curr),
+                                takeUntil(this._unsubscribeAll)
+                            )
                             .subscribe((storeCategory: StoreCategory) => {
+
+                                
+                                if (this.selectedCategory && storeCategory && (storeCategory.id === this.selectedCategory.id)) {
+                                    return;
+                                }
+
+                                // if (this.selectedCustomCategory === "all" && storeCategory === null && this.selectedCategory === null) {
+                                //     return;
+                                // }
                                 
                                 // Select the category if its already selected before
                                 if (storeCategory && this.storeCategories.map(x => x.id).includes(storeCategory.id)){
@@ -472,6 +488,21 @@ export class LandingShopComponent implements OnInit
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
                 });
+
+                // Famous Product
+                let tagKeyword = this.store.id;
+                this._locationService.getFamousProduct(tagKeyword)
+                    .pipe(takeUntil(this._unsubscribeAll))
+                    .subscribe((famousProducts)=>{
+
+                        this.famousProducts = famousProducts;
+                        
+                        // set loading to false
+                        this.isLoading = false;
+
+                        // Mark for check
+                        this._changeDetectorRef.markForCheck();
+                    });
         });
 
         // Get the products
@@ -563,19 +594,27 @@ export class LandingShopComponent implements OnInit
         this._changeDetectorRef.markForCheck();
     }
 
-    chooseCategory(category : StoreCategory) {
+    chooseCategory(category : StoreCategory, customCategory: string = null) {
+
+        if (customCategory) {
+            this.selectedCustomCategory = customCategory;
+        } 
         
         if (category) {
+            // do nothing if selected category is same with category
+            if (this.selectedCategory && category.id === this.selectedCategory.id) {                
+                return;
+            }
             // Resolve selected category
             this._storesService.getStoreCategoriesById(category.id).subscribe();
         } else {
-            this._storesService.storeCategory = null;
             this.selectedCategory = null;
+            this._storesService.storeCategory = null;
         }
         
         this.catalogueSlug = category ? category.name.toLowerCase().replace(/ /g, '-').replace(/[-]+/g, '-').replace(/[^\w-]+/g, '') : "all-products";
 
-        this.pageOfItems['currentPage'] = 1;
+        if (this.pageOfItems) this.pageOfItems['currentPage'] = 1;
 
         this.oldPaginationIndex = 0;
         
@@ -906,4 +945,9 @@ export class LandingShopComponent implements OnInit
         }, 0);
         
     }
+
+    searchClicked(){
+        this.selectedCustomCategory = "all";
+    }
+    
 }
