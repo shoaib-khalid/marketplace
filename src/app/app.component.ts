@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { Platform, PlatformTag } from 'app/core/platform/platform.types';
@@ -16,7 +16,7 @@ import { StoresService } from './core/store/store.service';
 import { Store } from './core/store/store.types';
 import { CartService } from './core/cart/cart.service';
 import { CartItem } from './core/cart/cart.types';
-import { App } from '@capacitor/app';
+import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 
 
@@ -61,7 +61,8 @@ export class AppComponent
         private _apiServer: AppConfig,
         private _userService: UserService,
         private _cartsService: CartService,
-        private _fuseConfirmationService: FuseConfirmationService
+        private _fuseConfirmationService: FuseConfirmationService,
+        private _zone: NgZone
         // private _swUpdate: SwUpdate
     )
     {        
@@ -69,6 +70,8 @@ export class AppComponent
         // _swUpdate.available.subscribe(event => {
         //     _swUpdate.activateUpdate().then(()=>document.location.reload());
         // });
+        this.initializeApp();
+
     }
 
     ngOnInit() {
@@ -273,5 +276,23 @@ export class AppComponent
             }
         });
         
+    }
+
+    initializeApp() {
+        App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
+            this._zone.run(() => {
+                // Example url: https://beerswift.app/tabs/tab2
+                // slug = /tabs/tab2
+                const slug = event.url.split(".app").pop();
+
+                console.log('event.url', slug);
+                
+                if (slug) {
+                    this._router.navigateByUrl(slug);
+                }
+                // If no match, do nothing - let regular routing
+                // logic take over
+            });
+        });
     }
 }
