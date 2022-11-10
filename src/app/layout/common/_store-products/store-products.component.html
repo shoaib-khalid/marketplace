@@ -6,11 +6,11 @@
                 <!-- Products -->
                 <ng-container *ngFor="let product of products">
                     <!-- Product -->
-                    <div class="flex flex-col h-80 md:h-120 w-full lg:max-w-65 shadow border group duration-100 ring-0 hover:ring-2 ring-primary-600 rounded-lg overflow-hidden cursor-pointer"
+                    <div class="flex flex-col min-h-60 max-h-60 md:min-h-120 md:max-h-120 md:h-120 w-full lg:max-w-65 shadow border group duration-100 ring-0 hover:ring-2 ring-primary-600 rounded-lg overflow-hidden cursor-pointer"
                         [ngClass]="isProductHasStock(product) ? 'bg-card hover:border-primary' : 'bg-gray-200 hover:border-gray-600'"
                         (click)="redirectToProduct(product)">
                         <!-- Product Header -->
-                        <div class="relative flex flex-col p-2 h-40 md:h-60 bg-white bg-no-repeat bg-cover bg-center" 
+                        <div class="relative flex flex-col p-2 h-3/5 md:h-60 bg-white bg-no-repeat bg-cover bg-center"
                             [style]="(product.thumbnailUrl ? 
                                   'background-image: url(\'' + product.thumbnailUrl + '\');' 
                                 : (
@@ -44,31 +44,31 @@
                             </ng-container>
                         </div>
                         <!-- Product Footer -->
-                        <div class="flex flex-col px-3 md:px-4 mb-3 md:mb-4 h-56 md:h-60 w-full justify-between">
-                            <div class="mt-2 md:mt-4 mb-2">
+                        <div class="flex flex-col px-2 md:px-4 mb-2 md:mb-4 h-2/5 md:h-60 w-full justify-between">	
+                            <div class="mt-1.5 md:mt-4 mb-0 md:mb-2">
                                 <!-- Product name  -->
-                                <span class=" line-clamp-2 font-bold text-base md:text-xl">{{product.name}}</span>
+                                <span class="line-clamp-2 font-semibold text-base md:text-xl leading-snug md:leading-normal">{{product.name}}</span>
                                 <!-- Description -->
                                 <div class="h-auto">
-                                    <div class="mt-2 mb-4 text-ellipsis overflow-hidden">
-                                        <span class="text-gray-500 line-clamp-3 md:line-clamp-4 text-sm md:text-base" [innerHtml]="product.description"></span>
+                                    <div class="my-1 md:my-2 text-ellipsis overflow-hidden">	
+                                        <span class="text-gray-500 line-clamp-1 md:line-clamp-4 text-sm md:text-base leading-tight md:leading-normal" [innerHtml]="product.description"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex flex-row items-center justify-between">
-                                <div *ngIf="product.productInventories.length > 0 && product.productInventories[0].itemDiscount;else noItemDiscountGrid">
+                            <div class="flex flex-row items-center justify-between leading-none md:leading-normal">
+                                <div class="flex flex-row md:flex-col gap-1 md:gap-0 items-end md:items-start" *ngIf="product.productInventories.length > 0 && product.productInventories[0].itemDiscount; else noItemDiscountGrid">
                                     <p class="line-through text-xs md:text-sm">{{product.productInventories[0].price | currency: platform.currency}}</p>
                                     <p class="font-semibold text-black text-lg md:text-2xl duration-100" [ngClass]="isProductHasStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{product.productInventories[0].itemDiscount.discountedPrice | currency: platform.currency}}</p>
                                 </div>
                                 <ng-template #noItemDiscountGrid>
                                     <p class="font-semibold text-black text-lg md:text-2xl duration-100" [ngClass]="isProductHasStock(product) === false ? 'group-hover:text-black' : 'group-hover:text-primary'">{{ (product.productInventories.length > 0 ? product.productInventories[0].price : 0) | currency: platform.currency}}</p>
                                 </ng-template>
-                                <button
+                                <!-- <button
                                     *ngIf="!currentScreenSize.includes('md')"
                                     mat-icon-button
                                     (click)="selectProduct(product); $event.stopPropagation()">
                                     <mat-icon class="text-primary icon-size-7" [svgIcon]="'mat_solid:add_box'"></mat-icon>
-                                </button>
+                                </button> -->
                             </div>
                         </div>
                     </div>

@@ -892,11 +892,27 @@ export class _BottomSheetComponent implements OnInit, OnDestroy
 
                 this.selectedProductInventory = selectedProductInventory;
 
-                this.displayedProduct.price = selectedProductInventory.price
-                this.displayedProduct.itemCode = selectedProductInventory.itemCode
-                this.displayedProduct.sku = selectedProductInventory.sku
-                this.displayedProduct.discountAmount = selectedProductInventory.itemDiscount ? selectedProductInventory.itemDiscount.discountAmount : null;
-                this.displayedProduct.discountedPrice = selectedProductInventory.itemDiscount ? selectedProductInventory.itemDiscount.discountedPrice : null;
+                if (this.selectedProductInventory.itemDiscount) {
+                    this.displayedProduct.price = this.selectedProductInventory.itemDiscount.discountedPrice;
+                    this.displayedProduct.itemCode = this.selectedProductInventory.itemCode;
+                    this.displayedProduct.sku = this.selectedProductInventory.sku;
+                    this.displayedProduct.discountAmount = this.selectedProductInventory.itemDiscount.discountAmount;
+                    this.displayedProduct.discountedPrice = this.selectedProductInventory.itemDiscount.discountedPrice;
+                    this.displayedProduct.normalPrice = this.selectedProductInventory.itemDiscount.normalPrice;
+                    // set the base price
+                    this.displayedProduct.basePrice = this.selectedProductInventory.itemDiscount.discountedPrice;
+    
+                }
+                else {
+                    this.displayedProduct.price = this.selectedProductInventory.price;
+                    this.displayedProduct.itemCode = this.selectedProductInventory.itemCode;
+                    this.displayedProduct.sku = this.selectedProductInventory.sku;
+                    this.displayedProduct.discountAmount = null;
+                    this.displayedProduct.discountedPrice = null;
+                    this.displayedProduct.normalPrice = this.selectedProductInventory.price;
+                    // set the base price
+                    this.displayedProduct.basePrice = this.selectedProductInventory.price;
+                }
 
                 // reorder image collection 
                 this.galleryImages = [];
