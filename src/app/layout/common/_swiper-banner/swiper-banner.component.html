@@ -1,7 +1,7 @@
 <ng-container *ngIf="galleryImages || mobileGalleryImages">
     <div class="flex flex-row relative items-center w-full bg-no-repeat bg-cover bg-center overflow-hidden rounded-xl">
         <div 
-            class="absolute left-0 md:bottom-[40%] bottom-[15%] z-20 flex items-center h-20 w-6 md:w-12 bg-black bg-opacity-10 hover:bg-opacity-20 duration-150 justify-center cursor-pointer"
+            class="absolute left-0 md:bottom-[40%] sm:bottom-[30%] bottom-[15%] z-20 flex items-center h-20 w-6 md:w-12 bg-black bg-opacity-10 hover:bg-opacity-20 duration-150 justify-center cursor-pointer"
             (click)="swipePrev()"
             >
             <mat-icon
@@ -26,7 +26,7 @@
             >
             <ng-container *ngIf="currentScreenSize.includes('sm'); else mobileImages">
                 <ng-template swiperSlide *ngFor="let image of galleryImages">
-                    <div class="flex flex-col items-center justify-center cursor-pointer h-30 md:h-96 w-full" (click)="actionOnClick(image.actionUrl)">
+                    <div class="flex flex-col items-center justify-center cursor-pointer h-30 sm:h-48 md:h-96 w-full" (click)="actionOnClick(image.actionUrl)">
                         <img
                             class=""
                             [src]="image.bannerUrl"
@@ -36,7 +36,7 @@
             </ng-container>
             <ng-template #mobileImages>
                 <ng-template swiperSlide *ngFor="let image of mobileGalleryImages">
-                    <div class="flex flex-col items-center justify-center cursor-pointer h-30 md:h-96 w-full" (click)="actionOnClick(image.actionUrl)">
+                    <div class="flex flex-col items-center justify-center cursor-pointer h-30 sm:h-48 md:h-96 w-full" (click)="actionOnClick(image.actionUrl)">
                         <img
                             class=""
                             [src]="image.bannerUrl"
@@ -47,7 +47,7 @@
         </swiper>
         
         <div 
-            class="absolute right-0 md:bottom-[40%] bottom-[15%] z-20 flex items-center h-20 w-6 md:w-12 bg-black bg-opacity-10 hover:bg-opacity-20 duration-150 justify-center cursor-pointer"
+            class="absolute right-0 md:bottom-[40%] sm:bottom-[30%] bottom-[15%] z-20 flex items-center h-20 w-6 md:w-12 bg-black bg-opacity-10 hover:bg-opacity-20 duration-150 justify-center cursor-pointer"
             (click)="swipeNext()"
             >
             <mat-icon
