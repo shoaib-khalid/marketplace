@@ -388,18 +388,18 @@
                     </div>
                     <!-- Address  -->
                     <div class="flex flex-col justify-between gap-y-2 text-white w-full mt-5">
-                        <span class="text-white text-sm">Operated by: {{ marketplaceInfo.reg }}</span>
+                        <span *ngIf="marketplaceInfo.reg" class="text-white text-sm">Operated by: {{ marketplaceInfo.reg }}</span>
                         <!-- <div class="flex flex-row">
                             <mat-icon class="text-white" svgIcon="mat_solid:location_on"></mat-icon>
                             <address class="text-white text-sm">{{ marketplaceInfo.address }}</address>
                         </div> -->
                         <div class="flex flex-row">
-                            <div class="flex flex-row">
+                            <div class="flex flex-row gap-1 items-center">
                                 <mat-icon class="text-white" svgIcon="heroicons_solid:phone"></mat-icon>
                                 <a class="text-sm" [href]="'tel:' + marketplaceInfo.phonenumber">{{ marketplaceInfo.phonenumber }}</a>
                             </div>
                             &nbsp; &nbsp;
-                            <div class="flex flex-row gap-1 md:gap-2 tracking-tight">
+                            <div class="flex flex-row gap-1 tracking-tight items-center">
                                 <mat-icon class="text-white" svgIcon="heroicons_solid:mail"></mat-icon>
                                 <a class="text-sm" [href]="'mailto:' + marketplaceInfo.email">{{ marketplaceInfo.email }}</a>
                             </div>

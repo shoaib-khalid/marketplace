@@ -30,7 +30,18 @@ export class FooterComponent implements OnInit
 
     @Input() footerType: string = "footer-01";
 
-    marketplaceInfo: { phonenumber: string; email: string; address: string; reg:string };
+    marketplaceInfo: 
+    { 
+        phonenumber : string, 
+        email       : string,
+        address     : string,
+        reg         :string 
+    } = {
+        phonenumber : null,
+        email       : null, 
+        address     : null, 
+        reg         : null 
+    };
     landingPage: boolean = true;
     paymentLogos: string[] = [];
     
@@ -86,8 +97,34 @@ export class FooterComponent implements OnInit
                     
                     // Get categories
                     this._locationService.getParentCategories({ pageSize: 50, regionCountryId: this.platform.country })
-                    .subscribe((category : ParentCategory[]) => {
-                    });
+                    .subscribe();
+
+                    this.marketplaceInfo = {
+                        email: this.platform.platformDetails.email,
+                        phonenumber: this.platform.platformDetails.phoneNumber,
+                        address: this.platform.platformDetails.address,
+                        reg: this.platform.platformDetails.businessReg
+                    };
+
+                    this.paymentLogos = this.platform.paymentProviders.map(x => x.providerImage);
+            
+                    this.providerLogos = this.platform.deliveryProviders.map(x => x.providerImage);
+
+                    // this.paymentLogos = [
+                    //     this._apiServer.settings.apiServer.assetsService + '/store-assets/tng-ewallet.png',
+                    //     this._apiServer.settings.apiServer.assetsService + '/store-assets/grabpay.png',
+                    //     this._apiServer.settings.apiServer.assetsService + '/store-assets/fpx.png',
+                    //     this._apiServer.settings.apiServer.assetsService + '/store-assets/visa-mastercard.png',
+                    //     this._apiServer.settings.apiServer.assetsService + '/store-assets/boost.png'
+                    // ]
+            
+                    // this.providerLogos = [
+                    //     this._apiServer.settings.apiServer.assetsService + '/delivery-assets/provider-logo/borzo.png',
+                    //     this._apiServer.settings.apiServer.assetsService +'/delivery-assets/provider-logo/jnt.png',
+                    //     this._apiServer.settings.apiServer.assetsService + '/delivery-assets/provider-logo/lalamove.png',
+                    //     this._apiServer.settings.apiServer.assetsService + '/delivery-assets/provider-logo/pickupp.png',
+                    //     // 'https://symplified.it/delivery-assets/provider-logo/tcs.png'
+                    // ]
                 }
 
                 // Mark for check
@@ -108,29 +145,6 @@ export class FooterComponent implements OnInit
             // Mark for check
             this._changeDetectorRef.markForCheck();
         });
-
-        this.marketplaceInfo = {
-            email: "hello@deliverin.my",
-            phonenumber: "+60125033299",
-            address: "First Subang, Unit S-14-06, Level 14, Jalan SS15/4G, 47500 Subang Jaya, Selangor",
-            reg: "Symple Business System Sdn Bhd (SSM Reg #: 1436952-D)"
-        };
-
-        this.paymentLogos = [
-            this._apiServer.settings.apiServer.assetsService + '/store-assets/tng-ewallet.png',
-            this._apiServer.settings.apiServer.assetsService + '/store-assets/grabpay.png',
-            this._apiServer.settings.apiServer.assetsService + '/store-assets/fpx.png',
-            this._apiServer.settings.apiServer.assetsService + '/store-assets/visa-mastercard.png',
-            this._apiServer.settings.apiServer.assetsService + '/store-assets/boost.png'
-        ]
-
-        this.providerLogos = [
-            this._apiServer.settings.apiServer.assetsService + '/delivery-assets/provider-logo/borzo.png',
-            this._apiServer.settings.apiServer.assetsService +'/delivery-assets/provider-logo/jnt.png',
-            this._apiServer.settings.apiServer.assetsService + '/delivery-assets/provider-logo/lalamove.png',
-            this._apiServer.settings.apiServer.assetsService + '/delivery-assets/provider-logo/pickupp.png',
-            // 'https://symplified.it/delivery-assets/provider-logo/tcs.png'
-        ]
                 
         if ( this._router.url === '/' ) {
             this.landingPage = true;
@@ -194,11 +208,7 @@ export class FooterComponent implements OnInit
     // -----------------------------------------------------------------------------------------------------
 
     goToUrl(){
-        const phonenumber = this.marketplaceInfo.phonenumber.replace(/[^0-9]/g, '');
-        const message = encodeURI('Tell me more about joining Deliverin platform!')
-        window.open("https://wa.me/" + phonenumber + '?text=' + message, "_blank");
-
-        // this._document.location.href = "https://wa.me/" + phonenumber + '?text=' + message;
+        window.open(this.platform.platformDetails.whatsappUrl, "_blank");
     }
 
     navigate(type: string) {
@@ -206,8 +216,8 @@ export class FooterComponent implements OnInit
     }
 
     goToFacebook() {
-        window.open("https://www.facebook.com/DeliverIn.My/", "_blank");
-        // this._document.location.href = "https://www.facebook.com/DeliverIn.My/"
+        window.open(this.platform.platformDetails.fbUrl, "_blank");
+        this.platform
     }
 
     

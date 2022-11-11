@@ -41,7 +41,7 @@ export class LandingDataResolver implements Resolve<any>
     {        
         // Fork join multiple API endpoint calls to wait all of them to finish
         return forkJoin([
-            this._adsService.set(),
+            // this._adsService.set(),
             this._userService.getCustomerAddresses(),
             this._floatingBannerService.resolveBanners()
             // this._httpstatService.get(500)

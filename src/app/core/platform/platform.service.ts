@@ -143,36 +143,48 @@ export class PlatformService
                 ),
                 switchMap(async (response: any) => {
                     
-                    this._logging.debug("Response from PlatformsService (Set)",response);
+                    
+                    if (response) {
+                        this._logging.debug("Response from PlatformsService (Set)", response);
 
-                    // Get currency
-                    this._storesService.getStoreRegionCountriesById(response["data"][0].platformCountry)
-                        .subscribe((country) => {
-                            let newPlatform = {
-                                id          : response ? response["data"][0].platformId : null,
-                                name        : response ? response["data"][0].platformName : null,
-                                logo        : response ? response["data"][0].platformLogo : null,
-                                logoDark    : response ? response["data"][0].platformLogoDark : null,
-                                logoSquare  : response ? response["data"][0].platformLogoSquare : null,
-                                country     : response ? response["data"][0].platformCountry : null,
-                                favicon16   : response ? response["data"][0].platformFavIcon : null,
-                                favicon32   : response ? response["data"][0].platformFavIcon32 : null,
-                                gacode      : response ? response["data"][0].gaCode : null,
-                                currency    : country  ? country.currencySymbol: null
-                            };
+                        // Get currency
+                        this._storesService.getStoreRegionCountriesById(response["data"][0].platformCountry)
+                            .subscribe((country) => {
+                                let newPlatform = {
+                                    id          : response["data"][0].platformId,
+                                    name        : response["data"][0].platformName,
+                                    logo        : response["data"][0].platformLogo,
+                                    logoDark    : response["data"][0].platformLogoDark,
+                                    logoSquare  : response["data"][0].platformLogoSquare,
+                                    country     : response["data"][0].platformCountry,
+                                    favicon16   : response["data"][0].platformFavIcon,
+                                    favicon32   : response["data"][0].platformFavIcon32,
+                                    gacode      : response["data"][0].gaCode,
+                                    currency    : country  ? country.currencySymbol: null,
+                                    platformDetails     : response["data"][0].platformConfigDetails,
+                                    deliveryProviders   : response["data"][0].platformDeliveryProvider,
+                                    paymentProviders    : response["data"][0].platformPaymentProvider,
+                                };
 
-                            // set this
-                            this.platformControl.setValue(newPlatform);
-        
-                            // Update the store
-                            this._platform.next(newPlatform);
-        
-                            // Return the store
-                            return newPlatform;
-                        });
-
-                    // Get banner
-                    this._adsService.getBanner(response["data"][0].platformCountry).subscribe();
+                                const ads = {
+                                    bannerUrl   : response["data"][0].platformConfigDetails.adsImageUrl,
+                                    redirectUrl : response["data"][0].platformConfigDetails.actionAdsUrl
+                                };
+                                this._adsService.ads = [ads]
+    
+                                // set this
+                                this.platformControl.setValue(newPlatform);
+            
+                                // Update the store
+                                this._platform.next(newPlatform);
+            
+                                // Return the store
+                                return newPlatform;
+                            });
+    
+                        // Get banner
+                        this._adsService.getBanner(response["data"][0].platformCountry).subscribe();
+                    }
                 })
             );
     }
