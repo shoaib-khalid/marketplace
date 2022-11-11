@@ -18,5 +18,5 @@
             [title]="storesDetailsTitle"></featured-stores>
     </ng-container>
     <!-- Ads Banner -->
-    <ads-banner class="w-full sm:mb-2" [banners]="ads"></ads-banner>
+    <ads-banner *ngIf="ads" class="w-full sm:mb-2" [banners]="ads"></ads-banner>
 </div>

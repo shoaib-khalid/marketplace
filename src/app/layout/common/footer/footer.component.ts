@@ -100,10 +100,10 @@ export class FooterComponent implements OnInit
                     .subscribe();
 
                     this.marketplaceInfo = {
-                        email: this.platform.platformDetails.email,
-                        phonenumber: this.platform.platformDetails.phoneNumber,
-                        address: this.platform.platformDetails.address,
-                        reg: this.platform.platformDetails.businessReg
+                        email: this.platform.platformDetails ? this.platform.platformDetails.email : null,
+                        phonenumber: this.platform.platformDetails ? this.platform.platformDetails.phoneNumber : null,
+                        address: this.platform.platformDetails ? this.platform.platformDetails.address : null,
+                        reg: this.platform.platformDetails ? this.platform.platformDetails.businessReg : null
                     };
 
                     this.paymentLogos = this.platform.paymentProviders.map(x => x.providerImage);
@@ -208,7 +208,10 @@ export class FooterComponent implements OnInit
     // -----------------------------------------------------------------------------------------------------
 
     goToUrl(){
-        window.open(this.platform.platformDetails.whatsappUrl, "_blank");
+        if (this.platform.platformDetails) {
+            window.open(this.platform.platformDetails.whatsappUrl, "_blank");
+        }
+        else return
     }
 
     navigate(type: string) {
@@ -216,8 +219,10 @@ export class FooterComponent implements OnInit
     }
 
     goToFacebook() {
-        window.open(this.platform.platformDetails.fbUrl, "_blank");
-        this.platform
+        if (this.platform.platformDetails) {
+            window.open(this.platform.platformDetails.fbUrl, "_blank");
+        }
+        else return
     }
 
     
