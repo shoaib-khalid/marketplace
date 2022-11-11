@@ -168,8 +168,8 @@ export class PlatformService
 
                                 // Set ads banner 
                                 const ads = {
-                                    bannerUrl   : response["data"][0].platformConfigDetails.adsImageUrl,
-                                    redirectUrl : response["data"][0].platformConfigDetails.actionAdsUrl
+                                    bannerUrl   : response["data"][0].platformConfigDetails ? response["data"][0].platformConfigDetails.adsImageUrl : null,
+                                    redirectUrl : response["data"][0].platformConfigDetails ? response["data"][0].platformConfigDetails.actionAdsUrl : null
                                 };
                                 this._adsService.ads = [ads]
     
