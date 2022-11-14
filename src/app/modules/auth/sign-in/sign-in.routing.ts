@@ -5,10 +5,5 @@ export const authSignInRoutes: Route[] = [
     {
         path     : '',
         component: AuthSignInComponent
-    },
-    {
-        path: ':slug',
-        component: AuthSignInComponent,
-
     }
 ];

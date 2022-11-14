@@ -20,6 +20,7 @@ import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { Platform as IonicPlatform } from '@ionic/angular';
+import { AuthSignInComponent } from './modules/auth/sign-in/sign-in.component';
 
 declare let gtag: Function;
 
@@ -290,7 +291,7 @@ export class AppComponent
     }
 
     setupDeeplinks() {
-        this._deeplinks.route({ '/:slug': 'sign-in' }).subscribe(
+        this._deeplinks.route({ '/sign-in': AuthSignInComponent }).subscribe(
             match => {
                 console.log('Successfully matched route', match);
         
