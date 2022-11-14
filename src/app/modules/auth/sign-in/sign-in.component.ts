@@ -19,6 +19,8 @@ import { HttpStatService } from 'app/mock-api/httpstat/httpstat.service';
 import { CartService } from 'app/core/cart/cart.service';
 import { Cart, CartItem } from 'app/core/cart/cart.types';
 import { AppleLoginService } from '../apple-login/apple-login.service';
+import { Capacitor } from '@capacitor/core';
+import { DeepLinksService } from 'app/core/_deeplinks/deeplinks.service';
 // import * as saveAs from 'file-saver';
 
 @Component({
@@ -69,7 +71,9 @@ export class AuthSignInComponent implements OnInit
         private _httpstatService: HttpStatService,
         private _changeDetectorRef: ChangeDetectorRef,
         private _cartsService: CartService,
-        private _appleLoginService: AppleLoginService
+        private _appleLoginService: AppleLoginService,
+        private _deepLinksService: DeepLinksService
+
 
     )
     {
@@ -109,8 +113,25 @@ export class AuthSignInComponent implements OnInit
                 this._changeDetectorRef.markForCheck();
         });
 
+        this._deepLinksService.getDeeplinks()
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((deepLinks) => {               
+
+            console.log('deepLinks', deepLinks);
+            
+            // this.post = deepLinks;                
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }, (error)=> {
+            console.log("disini", error);
+            
+        });
+
         // We need to check first the location before we proceed to send the payload
         // this.signInForm.disable();
+
+
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -252,6 +273,11 @@ export class AuthSignInComponent implements OnInit
                         // if no guestCartId/storeId
                         else {
                             this._cartsService.redirect(redirectURL);
+                        }
+
+                        // Open native App
+                        if(Capacitor){
+                            
                         }
                     },
                     exception => {

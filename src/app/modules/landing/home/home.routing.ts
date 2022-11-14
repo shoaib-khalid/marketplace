@@ -9,12 +9,7 @@ export const landingHomeRoutes: Route[] = [
             {
                 path: '',
                 component: LandingHomeComponent,
-            },
-            // {
-            //     path: ':slug',
-            //     component: LandingHomeComponent,
-
-            // }
+            }
         ],
     },
 ];
