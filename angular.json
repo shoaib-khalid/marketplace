@@ -47,7 +47,7 @@
                             },
                             "src/.htaccess",
                             "src/manifest.webmanifest",
-                            ".well-known"
+                            "src/.well-known"
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": [
