@@ -47,7 +47,7 @@
                             },
                             "src/.htaccess",
                             "src/manifest.webmanifest",
-                            "src/assetlinks.json"
+                            ".well-known"
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": [
