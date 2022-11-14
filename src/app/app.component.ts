@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { Platform, PlatformTag } from 'app/core/platform/platform.types';
@@ -16,9 +16,10 @@ import { StoresService } from './core/store/store.service';
 import { Store } from './core/store/store.types';
 import { CartService } from './core/cart/cart.service';
 import { CartItem } from './core/cart/cart.types';
-import { App } from '@capacitor/app';
+import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { Platform as IonicPlatform } from '@ionic/angular';
 
 declare let gtag: Function;
 
@@ -61,7 +62,10 @@ export class AppComponent
         private _apiServer: AppConfig,
         private _userService: UserService,
         private _cartsService: CartService,
-        private _fuseConfirmationService: FuseConfirmationService
+        private _fuseConfirmationService: FuseConfirmationService,
+        private _deeplinks: Deeplinks,
+        private _zone: NgZone,
+        private _ionicPlatform: IonicPlatform 
         // private _swUpdate: SwUpdate
     )
     {        
@@ -69,6 +73,8 @@ export class AppComponent
         // _swUpdate.available.subscribe(event => {
         //     _swUpdate.activateUpdate().then(()=>document.location.reload());
         // });
+        this.initializeApp();
+
     }
 
     ngOnInit() {
@@ -274,4 +280,32 @@ export class AppComponent
         });
         
     }
+
+    initializeApp() {
+        this._ionicPlatform.ready().then(() => {
+        //   this.statusBar.styleDefault();
+        //   this.splashScreen.hide();
+          this.setupDeeplinks();
+        });
+    }
+
+    setupDeeplinks() {
+        this._deeplinks.route({ '/:slug': '' }).subscribe(
+            match => {
+                console.log('Successfully matched route', match);
+        
+                // Create our internal Router path by hand
+                const internalPath = `/${match.$route}/${match.$args['slug']}`;
+        
+                // Run the navigation in the Angular zone
+                this._zone.run(() => {
+                this._router.navigateByUrl(internalPath);
+                });
+            },
+            nomatch => {
+                // nomatch.$link - the full link data
+                console.error("Got a deeplink that didn't match", nomatch);
+            }
+        );
+      }
 }

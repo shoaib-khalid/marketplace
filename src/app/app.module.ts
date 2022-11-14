@@ -1,7 +1,7 @@
 import { APP_INITIALIZER, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ExtraOptions, PreloadAllModules, RouterModule } from '@angular/router';
+import { ExtraOptions, PreloadAllModules, RouteReuseStrategy, RouterModule } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { FuseModule } from '@fuse';
 import { FuseConfigModule } from '@fuse/services/config';
@@ -17,6 +17,8 @@ import { AppConfig } from 'app/config/service.config';
 // import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { SplashScreenModule } from './shared/splash-screen/splash-screen.module';
+import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy       : PreloadAllModules,
@@ -54,7 +56,10 @@ const routerConfig: ExtraOptions = {
         //     registrationStrategy: 'registerWhenStable:30000'
         //     })
 
-        SplashScreenModule
+        SplashScreenModule,
+
+        IonicModule.forRoot()
+
     ],
     bootstrap   : [
         AppComponent
@@ -67,6 +72,11 @@ const routerConfig: ExtraOptions = {
             deps: [AppConfig], 
             multi: true 
         },
+        {
+            provide: RouteReuseStrategy, 
+            useClass: IonicRouteStrategy 
+        },
+        Deeplinks
     ]
 })
 export class AppModule

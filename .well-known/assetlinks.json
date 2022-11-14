@@ -1,0 +1,10 @@
+[
+    {
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target" : { 
+            "namespace": "android_app", 
+            "package_name": "com.kalsym.deliverin",
+            "sha256_cert_fingerprints": ["42:2B:FE:6B:EF:70:7B:64:09:96:3C:C2:43:BE:D7:EB:A8:C0:65:32:23:6C:4B:A4:8F:AA:9C:FE:B7:3D:0B:3F"] 
+        }
+    }
+]

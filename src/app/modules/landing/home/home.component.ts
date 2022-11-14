@@ -14,6 +14,7 @@ import { CurrentLocationService } from 'app/core/_current-location/current-locat
 import { CurrentLocation } from 'app/core/_current-location/current-location.types';
 import { BottomPopUpService } from 'app/layout/common/_bottom-popup/bottom-popup.service';
 import { Title } from '@angular/platform-browser';
+import { DeepLinksService } from 'app/core/_deeplinks/deeplinks.service';
 
 @Component({
     selector     : 'landing-home',
@@ -48,6 +49,10 @@ export class LandingHomeComponent implements OnInit
 
     currentLocation: CurrentLocation;
 
+    post: any = null;
+    slug: string;
+    url : string;
+
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -62,7 +67,8 @@ export class LandingHomeComponent implements OnInit
         private _currentLocationService: CurrentLocationService,
         private _navigate: NavigateService,
         private _bottomPopUpService: BottomPopUpService,
-        private _titleService: Title
+        private _titleService: Title,
+        private _deepLinksService: DeepLinksService
     )
     {
     }
@@ -216,6 +222,18 @@ export class LandingHomeComponent implements OnInit
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+
+        // this._deepLinksService.getDeeplinks()
+        //     .pipe(takeUntil(this._unsubscribeAll))
+        //     .subscribe((deepLinks) => {               
+
+        //         console.log('deepLinks', deepLinks);
+                
+        //         this.post = deepLinks;                
+
+        //         // Mark for check
+        //         this._changeDetectorRef.markForCheck();
+        //     });
     }
 
     /**
