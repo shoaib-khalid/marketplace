@@ -46,7 +46,8 @@
                                 "output": "/"
                             },
                             "src/.htaccess",
-                            "src/manifest.webmanifest"
+                            "src/manifest.webmanifest",
+                            "src/assetlinks.json"
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": [

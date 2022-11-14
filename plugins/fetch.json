@@ -1,0 +1,14 @@
+{
+  "ionic-plugin-deeplinks": {
+    "source": {
+      "type": "registry",
+      "id": "ionic-plugin-deeplinks@^1.0.24"
+    },
+    "is_top_level": true,
+    "variables": {
+      "URL_SCHEME": "deliverin/android",
+      "DEEPLINK_SCHEME": "https",
+      "DEEPLINK_HOST": "deliverin.my"
+    }
+  }
+}
