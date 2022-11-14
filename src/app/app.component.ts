@@ -290,7 +290,7 @@ export class AppComponent
     }
 
     setupDeeplinks() {
-        this._deeplinks.route({ '/:slug': '' }).subscribe(
+        this._deeplinks.route({ '/:slug': 'sign-in' }).subscribe(
             match => {
                 console.log('Successfully matched route', match);
         
