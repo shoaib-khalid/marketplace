@@ -18,7 +18,8 @@ import { CartService } from './core/cart/cart.service';
 import { CartItem } from './core/cart/cart.types';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { Platform as IonicPlatform } from '@ionic/angular';
 
 declare let gtag: Function;
 
@@ -62,7 +63,9 @@ export class AppComponent
         private _userService: UserService,
         private _cartsService: CartService,
         private _fuseConfirmationService: FuseConfirmationService,
-        private _zone: NgZone
+        private _deeplinks: Deeplinks,
+        private _zone: NgZone,
+        private _ionicPlatform: IonicPlatform 
         // private _swUpdate: SwUpdate
     )
     {        
@@ -279,20 +282,30 @@ export class AppComponent
     }
 
     initializeApp() {
-        App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
-            this._zone.run(() => {
-                // Example url: https://beerswift.app/tabs/tab2
-                // slug = /tabs/tab2
-                const slug = event.url.split(".app").pop();
-
-                console.log('event.url', slug);
-                
-                if (slug) {
-                    this._router.navigateByUrl(slug);
-                }
-                // If no match, do nothing - let regular routing
-                // logic take over
-            });
+        this._ionicPlatform.ready().then(() => {
+        //   this.statusBar.styleDefault();
+        //   this.splashScreen.hide();
+          this.setupDeeplinks();
         });
     }
+
+    setupDeeplinks() {
+        this._deeplinks.route({ '/:slug': '' }).subscribe(
+            match => {
+                console.log('Successfully matched route', match);
+        
+                // Create our internal Router path by hand
+                const internalPath = `/${match.$route}/${match.$args['slug']}`;
+        
+                // Run the navigation in the Angular zone
+                this._zone.run(() => {
+                this._router.navigateByUrl(internalPath);
+                });
+            },
+            nomatch => {
+                // nomatch.$link - the full link data
+                console.error("Got a deeplink that didn't match", nomatch);
+            }
+        );
+      }
 }
