@@ -306,6 +306,8 @@ export class AppComponent
             nomatch => {
                 // nomatch.$link - the full link data
                 console.error("Got a deeplink that didn't match", nomatch);
+                console.error("hahshah", nomatch.$link);
+                
             }
         );
       }
