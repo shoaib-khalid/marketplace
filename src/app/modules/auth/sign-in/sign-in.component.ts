@@ -113,20 +113,20 @@ export class AuthSignInComponent implements OnInit
                 this._changeDetectorRef.markForCheck();
         });
 
-        this._deepLinksService.getDeeplinks()
-        .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe((deepLinks) => {               
+        // this._deepLinksService.getDeeplinks()
+        // .pipe(takeUntil(this._unsubscribeAll))
+        // .subscribe((deepLinks) => {               
 
-            console.log('deepLinks', deepLinks);
+        //     console.log('deepLinks', deepLinks);
             
-            // this.post = deepLinks;                
+        //     // this.post = deepLinks;                
 
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        }, (error)=> {
-            console.log("disini", error);
+        //     // Mark for check
+        //     this._changeDetectorRef.markForCheck();
+        // }, (error)=> {
+        //     console.log("disini", error);
             
-        });
+        // });
 
         // We need to check first the location before we proceed to send the payload
         // this.signInForm.disable();

@@ -293,7 +293,8 @@ export class AppComponent
 
     setupDeeplinks() {
         this._deeplinks.route({ 
-            '/sign-in': AuthSignInComponent 
+            '/': 'home',
+            '/sign-in': 'signIn'
         }).subscribe(
             match => {
                 console.log('Successfully matched route', match);
@@ -312,13 +313,6 @@ export class AppComponent
             nomatch => {
                 // nomatch.$link - the full link data
                 console.error("Got a deeplink that didn't match", nomatch);
-                console.error("hahshah", nomatch.$link);
-                // Run the navigation in the Angular zone
-                this._zone.run(() => {
-                    this._router.navigateByUrl("/sign-in");
-                });
-
-                console.error("hahshah", nomatch.$link);
 
             }
         );
