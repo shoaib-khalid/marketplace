@@ -100,7 +100,7 @@
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
 
     <plugin name="ionic-plugin-deeplinks" spec="^1.0.15">
-        <variable name="URL_SCHEME" value="deliverinApp" />
+        <variable name="URL_SCHEME" value="deliverin" />
         <variable name="DEEPLINK_SCHEME" value="https" />
         <variable name="DEEPLINK_HOST" value="deliverin.my" />
         <variable name="ANDROID_PATH_PREFIX" value="/" />

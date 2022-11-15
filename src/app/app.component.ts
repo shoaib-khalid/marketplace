@@ -293,7 +293,7 @@ export class AppComponent
 
     setupDeeplinks() {
         this._deeplinks.route({ 
-            '/sign-in': 'AuthSignInComponent' 
+            '/sign-in': AuthSignInComponent 
         }).subscribe(
             match => {
                 console.log('Successfully matched route', match);
