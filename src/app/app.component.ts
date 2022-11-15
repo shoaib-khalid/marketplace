@@ -287,47 +287,40 @@ export class AppComponent
         this._ionicPlatform.ready().then(() => {
         //   this.statusBar.styleDefault();
         //   this.splashScreen.hide();
-        //   this.setupDeeplinks();
-
-            App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
-                this._zone.run(() => {
-                    // Example url: https://beerswift.app/tabs/tab2
-                    // slug = /tabs/tab2
-                    const slug = '/sign-in'
-                    if (slug) {
-                        this._router.navigateByUrl(slug);
-                    }
-                    // If no match, do nothing - let regular routing
-                    // logic take over
-                });
-            });
+          this.setupDeeplinks();
         });
     }
 
     setupDeeplinks() {
-        // this._deeplinks.route({ 
-        //     'sign-in': 'AuthSignInComponent' 
-        // }).subscribe(
-        //     match => {
-        //         console.log('Successfully matched route', match);
+        this._deeplinks.route({ 
+            '/sign-in': 'AuthSignInComponent' 
+        }).subscribe(
+            match => {
+                console.log('Successfully matched route', match);
 
-        //         // navigate to route if it matches
-        //         this._router.navigate([match.$link.path]);
+                // navigate to route if it matches
+                this._router.navigate([match.$link.path]);
         
-        //         // // Create our internal Router path by hand
-        //         const internalPath = `/${match.$route}/${match.$args['slug']}`;
+                // // Create our internal Router path by hand
+                const internalPath = `/${match.$route}/${match.$args['slug']}`;
         
-        //         // Run the navigation in the Angular zone
-        //         this._zone.run(() => {
-        //             this._router.navigateByUrl(internalPath);
-        //         });
-        //     },
-        //     nomatch => {
-        //         // nomatch.$link - the full link data
-        //         console.error("Got a deeplink that didn't match", nomatch);
-        //         console.error("hahshah", nomatch.$link);
-                
-        //     }
-        // );
-      }
+                // Run the navigation in the Angular zone
+                this._zone.run(() => {
+                    this._router.navigateByUrl(internalPath);
+                });
+            },
+            nomatch => {
+                // nomatch.$link - the full link data
+                console.error("Got a deeplink that didn't match", nomatch);
+                console.error("hahshah", nomatch.$link);
+                // Run the navigation in the Angular zone
+                this._zone.run(() => {
+                    this._router.navigateByUrl("/sign-in");
+                });
+
+                console.error("hahshah", nomatch.$link);
+
+            }
+        );
+    }
 }
