@@ -292,17 +292,22 @@ export class AppComponent
     }
 
     setupDeeplinks() {
-        this._deeplinks.routeWithNavController(this._navController, { '/sign-in': AuthSignInComponent }).subscribe(
+        this._deeplinks.routeWithNavController(this._navController, { 
+            '/sign-in': 'AuthSignInComponent' 
+        }).subscribe(
             match => {
                 console.log('Successfully matched route', match);
+
+                // navigate to route if it matches
+                this._router.navigate([match.$link.path]);
         
-                // Create our internal Router path by hand
-                const internalPath = `/${match.$route}/${match.$args['slug']}`;
+                // // Create our internal Router path by hand
+                // const internalPath = `/${match.$route}/${match.$args['slug']}`;
         
-                // Run the navigation in the Angular zone
-                this._zone.run(() => {
-                this._router.navigateByUrl(internalPath);
-                });
+                // // Run the navigation in the Angular zone
+                // this._zone.run(() => {
+                // this._router.navigateByUrl(internalPath);
+                // });
             },
             nomatch => {
                 // nomatch.$link - the full link data
