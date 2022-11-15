@@ -19,7 +19,7 @@ import { CartItem } from './core/cart/cart.types';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-import { Platform as IonicPlatform } from '@ionic/angular';
+import { NavController, Platform as IonicPlatform } from '@ionic/angular';
 import { AuthSignInComponent } from './modules/auth/sign-in/sign-in.component';
 
 declare let gtag: Function;
@@ -66,7 +66,8 @@ export class AppComponent
         private _fuseConfirmationService: FuseConfirmationService,
         private _deeplinks: Deeplinks,
         private _zone: NgZone,
-        private _ionicPlatform: IonicPlatform 
+        private _ionicPlatform: IonicPlatform,
+        private _navController: NavController
         // private _swUpdate: SwUpdate
     )
     {        
@@ -291,7 +292,7 @@ export class AppComponent
     }
 
     setupDeeplinks() {
-        this._deeplinks.route({ '/sign-in': AuthSignInComponent }).subscribe(
+        this._deeplinks.routeWithNavController(this._navController, { '/sign-in': AuthSignInComponent }).subscribe(
             match => {
                 console.log('Successfully matched route', match);
         
