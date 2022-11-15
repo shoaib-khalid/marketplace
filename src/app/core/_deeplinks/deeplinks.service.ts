@@ -50,7 +50,7 @@ export class DeepLinksService
         let deliverinUrl = this._apiServer.settings.marketplaceDomain;
         let slug = this._activatedRoute.snapshot.paramMap.get('slug');
 
-        return this._httpClient.get<any[]>('/?slug=' + slug + '&_embed').pipe(
+        return this._httpClient.get<any[]>('/sign-in?_embed').pipe(
             map((response) => {
                 this._logging.debug("Response from DeepLinksService (getDeepLinks)",response);
 

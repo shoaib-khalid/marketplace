@@ -292,8 +292,8 @@ export class AppComponent
     }
 
     setupDeeplinks() {
-        this._deeplinks.routeWithNavController(this._navController, { 
-            '/sign-in': 'AuthSignInComponent' 
+        this._deeplinks.route({ 
+            'sign-in': 'AuthSignInComponent' 
         }).subscribe(
             match => {
                 console.log('Successfully matched route', match);
