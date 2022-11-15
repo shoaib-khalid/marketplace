@@ -56,6 +56,8 @@ export class AuthSignInComponent implements OnInit
     domain :string = '';
     cart: Cart;
 
+    displaySocial: boolean = true;
+
     /**
      * Constructor
      */
@@ -130,6 +132,9 @@ export class AuthSignInComponent implements OnInit
 
         // We need to check first the location before we proceed to send the payload
         // this.signInForm.disable();
+        if(Capacitor.isNativePlatform()) {
+            this.displaySocial = false;
+        }
 
 
     }

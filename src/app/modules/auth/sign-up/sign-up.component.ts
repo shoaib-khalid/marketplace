@@ -18,6 +18,7 @@ import { AuthModalComponent } from '../auth-modal/auth-modal.component';
 import { CartService } from 'app/core/cart/cart.service';
 import { Cart, CartItem } from 'app/core/cart/cart.types';
 import { AppleLoginService } from '../apple-login/apple-login.service';
+import { Capacitor } from '@capacitor/core';
 
 
 @Component({
@@ -55,6 +56,9 @@ export class AuthSignUpComponent implements OnInit
 
     domain :string ='';
     cart: Cart;
+
+    displaySocial: boolean = true;
+
 
     /**
      * Constructor
@@ -125,6 +129,10 @@ export class AuthSignUpComponent implements OnInit
 
         this.domain = this._apiServer.settings.storeFrontDomain;
         this.signUpForm.get('domain').patchValue(this.domain);
+
+        if(Capacitor.isNativePlatform()) {
+            this.displaySocial = false;
+        }
 
     }
 
