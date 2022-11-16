@@ -1,5 +1,5 @@
 <div class="relative flex flex-col items-center bg-card w-full h-full min-h-140">
-    <div class="flex flex-col w-full min-w-0 sm:absolute sm:inset-0 sm:overflow-hidden border">
+    <div class="flex flex-col w-full min-w-0 sm:absolute sm:inset-0 sm:overflow-hidden ring-1 ring-slate-200 sm:rounded">
         <mat-drawer-container class="flex-auto sm:h-full">
             <!-- Drawer -->
             <mat-drawer
@@ -22,10 +22,10 @@
                     </div>
                 </div>
                 <!-- Panel links -->
-                <div class="flex flex-col divide-y border-t border-b">
+                <div class="flex flex-col">
                     <ng-container *ngFor="let panel of panels; trackBy: trackByFn">
                         <div
-                            class="flex px-8 py-5 cursor-pointer min-h-[109px]"
+                            class="flex px-8 py-5 cursor-pointer min-h-28 first:border-t border-b last:sm:border-b-0"
                             [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedPanel || selectedPanel !== panel.id,
                                         'bg-primary-50 dark:bg-hover': selectedPanel && selectedPanel === panel.id}"
                             (click)="goToPanel(panel.id)">
