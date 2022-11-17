@@ -19,6 +19,7 @@ import { PlatformService } from 'app/core/platform/platform.service';
 import { Platform } from 'app/core/platform/platform.types';
 import { DOCUMENT } from '@angular/common';
 import { Title } from '@angular/platform-browser';
+import { LoadingScreenService } from 'app/shared/loading-screen/loading-screen.service';
 
 @Component({
     selector     : 'order-list',
@@ -89,12 +90,16 @@ export class OrderListComponent implements OnInit
         public _dialog: MatDialog,
         private _platformService: PlatformService,
         private _storesService: StoresService,
-        private _titleService: Title
+        private _titleService: Title,
+        private _loadingScreenService: LoadingScreenService
+
     )
     {
     }
 
     ngOnInit() :void {
+
+        this._loadingScreenService.show();
         // this._httpstatService.get(503).subscribe((response) =>{});
         this._platformService.platform$
         .pipe(takeUntil(this._unsubscribeAll))
@@ -132,7 +137,9 @@ export class OrderListComponent implements OnInit
 
         // this._orderService.getOrdersWithDetails(this.customerAuthenticate.session.ownerId, 0, 3, this.orderCountSummary.find(item => item.id === "ALL").completionStatus).subscribe((response) =>{ });
         this._orderService.getOrderGroups({ page:0, pageSize: 3, customerId: this.customerAuthenticate.session.ownerId})
-        .subscribe((orders: OrderGroup[]) => {});
+        .subscribe((orders: OrderGroup[]) => {
+            this._loadingScreenService.hide();
+        });
         
         this.ordersDetails$ = this._orderService.ordersDetails$;
         this.ordersGroups$ = this._orderService.orderGroups$;

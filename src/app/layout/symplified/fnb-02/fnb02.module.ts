@@ -26,6 +26,7 @@ import { _SearchLocationModule } from 'app/layout/common/_search-location/search
 import { _VerticalModeModule } from 'app/layout/common/_vertical-mode/vertical-mode.module';
 import { _BottomPopUpModule } from 'app/layout/common/_bottom-popup/bottom-popup.module';
 import { _FloatingCartsModule } from 'app/layout/common/_floating-carts/floating-carts.module';
+import { LoadingScreenModule } from 'app/shared/loading-screen/loading-screen.module';
 
 @NgModule({
     declarations: [
@@ -57,7 +58,8 @@ import { _FloatingCartsModule } from 'app/layout/common/_floating-carts/floating
         FloatingMessageModule,
         BreadcrumbModule,
         _BottomPopUpModule,
-        _FloatingCartsModule
+        _FloatingCartsModule,
+        LoadingScreenModule
     ],
     exports     : [
         Fnb2LayoutComponent
