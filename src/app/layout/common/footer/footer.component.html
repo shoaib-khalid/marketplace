@@ -389,17 +389,20 @@
                     <!-- Address  -->
                     <div class="flex flex-col justify-between gap-y-2 text-white w-full mt-5">
                         <span *ngIf="marketplaceInfo.reg" class="text-white text-sm">Operated by: {{ marketplaceInfo.reg }}</span>
-                        <!-- <div class="flex flex-row">
+                        <div *ngIf="marketplaceInfo.address" 
+                            class="flex flex-row">
                             <mat-icon class="text-white" svgIcon="mat_solid:location_on"></mat-icon>
                             <address class="text-white text-sm">{{ marketplaceInfo.address }}</address>
-                        </div> -->
+                        </div>
                         <div class="flex flex-row">
-                            <div class="flex flex-row gap-1 items-center">
+                            <div *ngIf="marketplaceInfo.phonenumber"
+                                class="flex flex-row gap-1 items-center">
                                 <mat-icon class="text-white" svgIcon="heroicons_solid:phone"></mat-icon>
                                 <a class="text-sm" [href]="'tel:' + marketplaceInfo.phonenumber">{{ marketplaceInfo.phonenumber }}</a>
                             </div>
                             &nbsp; &nbsp;
-                            <div class="flex flex-row gap-1 tracking-tight items-center">
+                            <div *ngIf="marketplaceInfo.email"
+                                class="flex flex-row gap-1 tracking-tight items-center">
                                 <mat-icon class="text-white" svgIcon="heroicons_solid:mail"></mat-icon>
                                 <a class="text-sm" [href]="'mailto:' + marketplaceInfo.email">{{ marketplaceInfo.email }}</a>
                             </div>
@@ -408,7 +411,7 @@
                 </div>
                 <!-- Payment methods  -->
                 <div *ngIf="landingPage || !isScreenSmall" class="w-full flex flex-row justify-between md:justify-start md:flex-col md:items-end md:max-w-50 mt-2 md:mt-0 md:pl-2">
-                    <div class="flex flex-col w-1/2 md:w-full">
+                    <div *ngIf="paymentLogos.length > 0" class="flex flex-col w-1/2 md:w-full">
                         <span class="text-white font-semibold text-sm sm:text-base">PAYMENT METHODS</span>
                         <div class="flex flex-row flex-wrap gap-1 mt-2">
                             <ng-container *ngFor="let logo of paymentLogos">
@@ -421,7 +424,7 @@
                         </div>
                     </div>
                     <!-- Delivery partners -->
-                    <div class="flex flex-col w-1/2 md:w-full mt-0 md:mt-5">
+                    <div *ngIf="providerLogos.length > 0" class="flex flex-col w-1/2 md:w-full mt-0 md:mt-5">
                         <span class="text-white font-semibold text-sm sm:text-base">DELIVERY PARTNERS</span>
                         <div class="flex flex-row flex-wrap gap-1 mt-2">
                             <ng-container *ngFor="let logo of providerLogos">
