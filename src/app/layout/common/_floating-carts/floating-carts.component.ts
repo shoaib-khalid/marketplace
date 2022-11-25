@@ -5,6 +5,7 @@ import { FuseConfigService } from '@fuse/services/config';
 import { CartService } from 'app/core/cart/cart.service';
 import { CartWithDetails, DiscountOfCartGroup } from 'app/core/cart/cart.types';
 import { CartDiscount, CheckoutItems } from 'app/core/checkout/checkout.types';
+import { PlatformService } from 'app/core/platform/platform.service';
 
 
 @Component({
@@ -18,7 +19,7 @@ export class FloatingCartsComponent implements OnInit, OnDestroy
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     subTotal = 0;
-    currencySymbol: string = 'RM'
+    currencySymbol: string = ''
     totalItems: number = 0;
     /**
      * Constructor
@@ -27,7 +28,9 @@ export class FloatingCartsComponent implements OnInit, OnDestroy
         private _router: Router,
         private _fuseConfigService: FuseConfigService,
         private _cartService: CartService,
-        private _changeDetectorRef: ChangeDetectorRef
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _platformService: PlatformService,
+
     )
     {
     }
@@ -42,22 +45,26 @@ export class FloatingCartsComponent implements OnInit, OnDestroy
     ngOnInit(): void
     {
 
+        this._platformService.platform$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((platform) => {
+                if (platform) {
+                    // Get the curreny symbol
+                    this.currencySymbol = platform.currency;
+                }
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
         // Get cartSummary data
         this._cartService.cartsHeaderWithDetails$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((carts: CartWithDetails[])=>{
                 if (carts && carts.length > 0) {
                     
-                    // Total of all carts
-                    // this.totalItems = carts.length;
-
-                    // Total of all carts' items
-                    // this.totalItems = carts.map(item => item.cartItems).flat().length;
-
                     // Total quantity of all carts
                     this.totalItems = carts.map(item => item.cartItems.map(element => element.quantity).reduce((partialSum, a) => partialSum + a, 0)).reduce((a, b) => a + b, 0);
                     let checkoutListBody = carts.map(item => {
-                        this.currencySymbol
                         return {
                             cartId: item.id,
                             selectedItemId: item.cartItems.map(element => {
@@ -71,9 +78,6 @@ export class FloatingCartsComponent implements OnInit, OnDestroy
                             return n;
                         }
                     });
-
-                    // Get the curreny symbol
-                    this.currencySymbol = carts[0].store.regionCountry.currencySymbol;
                     
                     this._cartService.getDiscountOfCartGroup(checkoutListBody, {
                             platformVoucherCode: null, 
