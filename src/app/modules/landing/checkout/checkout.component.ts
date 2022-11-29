@@ -671,18 +671,18 @@ export class BuyerCheckoutComponent implements OnInit
                                         if (response && response.message === 'success') {
                                             let redirectUrl = response.secondary_url.replace('{amount}', this.paymentDetails.cartGrandTotal.toString());   
                                             
-                                            this._document.location.href = redirectUrl;
+                                            // this._document.location.href = redirectUrl;
                                             
                                             // const openATXWindow = this._document.location.href
 
-                                            // const openATXWindow = window.open(`${redirectUrl}`,'_blank',"width=600,height=600,modal=yes,alwaysRaised=yes")
+                                            const openATXWindow = window.open(`${redirectUrl}`,'_blank',"width=600,height=600,modal=yes,alwaysRaised=yes")
 
-                                            // var timer = setInterval(()=> { 
-                                            //     if(openATXWindow.closed) {
-                                            //         clearInterval(timer);
-                                            //         this._router.navigate(['/thankyou'])
-                                            //     }
-                                            //   }, 500);
+                                            var timer = setInterval(()=> { 
+                                                if(openATXWindow.closed) {
+                                                    clearInterval(timer);
+                                                    this._router.navigate(['/thankyou'])
+                                                }
+                                              }, 500);
 
                                             
                                         }
