@@ -661,7 +661,7 @@ export class BuyerCheckoutComponent implements OnInit
                                     "email"          : this.order.shipmentEmail,
                                     "mobile"         : this.order.shipmentPhoneNumber,
                                     "description"    : "Payment for " + this.order.shipmentName + " of deliverin",
-                                    "redirect_url"   : this._apiServer.settings.marketplaceDomain + "/thankyou/SUCCESS/ONLINEPAYMENT/Payment_was_successful?orderid=" + this.order.id,
+                                    "redirect_url"   : "https://" + this._apiServer.settings.marketplaceDomain + "/thankyou/SUCCESS/ONLINEPAYMENT/Payment_was_successful?orderid=" + this.order.id,
                                     "callback_url"   : this.payment.orderCreated.callbackUrl,
                                     "callback_token" : this.payment.orderCreated.callbackToken
                                 };
