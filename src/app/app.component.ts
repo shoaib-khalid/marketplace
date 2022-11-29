@@ -21,6 +21,8 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { NavController, Platform as IonicPlatform } from '@ionic/angular';
 import { AuthSignInComponent } from './modules/auth/sign-in/sign-in.component';
+import { StatusBar, Style } from '@capacitor/status-bar'
+import { Location } from '@angular/common';
 
 declare let gtag: Function;
 
@@ -67,7 +69,8 @@ export class AppComponent
         private _deeplinks: Deeplinks,
         private _zone: NgZone,
         private _ionicPlatform: IonicPlatform,
-        private _navController: NavController
+        private _navController: NavController,
+        private _location: Location,
         // private _swUpdate: SwUpdate
     )
     {        
@@ -274,12 +277,43 @@ export class AppComponent
         // back handler for android pwa app 
         App.addListener('backButton', ({ canGoBack }) => {
             if(canGoBack){
-                window.history.back();
+                this._location.back();
             } 
             else {
                 App.exitApp();
             }
         });
+
+        // iOS only
+        window.addEventListener('statusTap', function () {
+            console.log('statusbar tapped');
+        });
+        
+        // Display content under transparent status bar (Android only)
+        // StatusBar.setOverlaysWebView({ overlay: true });
+        StatusBar.setStyle({ style: Style.Light });
+        // StatusBar.show();
+
+        //for capacitor
+        // const deviceType : string = await Device.getInfo().then((response)=>{
+        //     return response.platform
+        // });
+        
+        // const setStatusBarStyleDark = async () => {
+        //     await StatusBar.setStyle({ style: Style.Dark });
+        // };
+        
+        // const setStatusBarStyleLight = async () => {
+        //     await StatusBar.setStyle({ style: Style.Light });
+        // };
+        
+        // const hideStatusBar = async () => {
+        //     await StatusBar.hide();
+        // };
+        
+        // const showStatusBar = async () => {
+        //     await StatusBar.show();
+        // };
         
     }
 

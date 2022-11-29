@@ -1,21 +1,21 @@
+
 {
     "env": {
-        "name": "prod"
-    },
+        "name": "prod" },
     "apiServer": {
-        "flowBuilderService"    : "https://api.symplified.biz/flow-builder/v1",
-        "userService"           : "https://api.symplified.biz/user-service/v1",
-        "productService"        : "https://api.symplified.biz/product-service/v1",
-        "orderService"          : "https://api.symplified.biz/order-service/v1",
-        "reportService"         : "https://api.symplified.biz/report-service/v1",
-        "deliveryService"       : "https://api.symplified.biz/delivery-service/v1",
-        "paymentService"        : "https://api.symplified.biz/payment-service/v1",
-        "locationService"       : "https://api.symplified.biz/location-service/v1",
-        "analyticService"       : "https://api.symplified.biz/analytic-service/v1",
-        "assetsService"         : "https://assets.symplified.biz"
+        "flowBuilderService"  : "https://api.deliverin.pk/flow-builder/v1",
+        "userService"         : "https://api.deliverin.pk/user-service/v1",
+        "productService"      : "https://api.deliverin.pk/product-service/v1",
+        "orderService"        : "https://api.deliverin.pk/order-service/v1",
+        "reportService"       : "https://api.deliverin.pk/report-service/v1",
+        "deliveryService"     : "https://api.deliverin.pk/delivery-service/v1",
+        "paymentService"      : "https://api.deliverin.pk/payment-service/v1",
+        "locationService"     : "https://api.deliverin.pk/location-service/v1",
+        "analyticService"     : "https://api.deliverin.pk/analytic-service/v1",
+        "assetsService"       : "https://assets.deliverin.pk"
     },
-    "storeFrontDomain"          : ".deliverin.my",
-    "marketplaceDomain"         : "deliverin.my",
-    "merchantPortalDomain"      : "merchant.symplified.biz",
+    "storeFrontDomain"          : ".easydukan.co",
+    "marketplaceDomain"         : "deliverin.pk",
+    "merchantPortalDomain"      : "merchant.easydukan.co",
     "logging": 0
 }

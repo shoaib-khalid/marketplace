@@ -15,6 +15,8 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from 'environments/environment';
 import { CityDetails, RegionCountryState } from 'app/core/location/location.types';
+import { Device } from '@capacitor/device';
+import { Geolocation as capacitorGeolocation } from '@capacitor/geolocation';
 // import { UserProfileValidationService } from '../../user-profile.validation.service';
 
 @Component({
@@ -107,7 +109,7 @@ export class EditAddressDialog implements OnInit {
         .addSvgIcon('search',this._domSanitizer.bypassSecurityTrustResourceUrl('assets/layouts/fnb/icons/search.svg'))
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
 
         // Create the form
         this.addressForm = this._formBuilder.group({
@@ -181,7 +183,22 @@ export class EditAddressDialog implements OnInit {
             var crd = position.coords;
             this.currentLat = crd.latitude;
             this.currentLong= crd.longitude;            
-        });   
+        });
+        
+        //for capacitor if device is ios
+        const deviceType : string = await Device.getInfo().then((response)=>{
+            return response.platform
+        });
+        //get current position for ios using capacitor geo location       
+        if(deviceType === "ios"){
+
+            await capacitorGeolocation.getCurrentPosition().then((position)=>{
+                var crd = position.coords;
+                this.currentLat = crd.latitude;
+                this.currentLong= crd.longitude;
+            });
+            
+        }
                 
         //======================== Insert google maps =========================
         //if db got null then we need to set the curren location so that it will display the google maps instead of hardcode the value of latitude and longitude
@@ -202,7 +219,7 @@ export class EditAddressDialog implements OnInit {
 
         // implement google maps
         let loader = new Loader({
-            apiKey: environment.googleMapsAPIKey,
+            apiKey: deviceType === "ios" ? 'AIzaSyAPWP5DsinfawdOHI2T1-_r5k34mTU0wIw' : environment.googleMapsAPIKey,
             libraries: ['places']
             
         });

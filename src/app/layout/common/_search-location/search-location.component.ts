@@ -14,10 +14,8 @@ import { CurrentLocationService } from 'app/core/_current-location/current-locat
 import { CurrentLocation } from 'app/core/_current-location/current-location.types';
 import { Capacitor } from '@capacitor/core';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Geolocation } from '@capacitor/geolocation';
-
-
-
+import { Geolocation as capacitorGeolocation } from '@capacitor/geolocation';
+import { Device } from '@capacitor/device';
 
 @Component({
     selector     : 'search-location',
@@ -265,14 +263,48 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
     /**
      * Locate current location
      */
-    locateMe() {
+    async locateMe() {
 
+        const deviceType : string = await Device.getInfo().then((response)=>{
+            return response.platform
+        });
+                
+        if(deviceType === "ios"){
+
+            await capacitorGeolocation.getCurrentPosition().then((position)=>{
+                var crd = position.coords;
+                this.queryLat = crd.latitude;
+                this.queryLong = crd.longitude;
+
+                let location = {
+                    lat     : this.queryLat,
+                    lng     : this.queryLong,
+                    keyword : this.keyword
+                };
+                
+                this.loader.load().then(() => {
+                    let geocoder: google.maps.Geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({ location: location})
+                    .then((response) => {
+                        if (response.results[0]) {
+                            this.searchControl.setValue(response.results[0].formatted_address);
+
+                            this._router.navigate(['/search'], { queryParams: location });
+
+                            // hide loading
+                            this._fuseLoadingService.hide();
+                        }
+                    })
+                });
+            });
+            
+        }
+       
         // show loading
         this._fuseLoadingService.show();
 
         // GoogleMap API
         navigator.geolocation.getCurrentPosition((position) => {
-
             var crd = position.coords;
             this.queryLat = crd.latitude;
             this.queryLong = crd.longitude;
@@ -299,6 +331,10 @@ export class _SearchLocationComponent implements OnInit, OnDestroy
             });
 
         }, error => {
+
+            console.log("error",error );
+            console.log("error",error.code);
+
 
             if (Capacitor.isNativePlatform()) {
 

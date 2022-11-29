@@ -14,6 +14,8 @@ import { StoresService } from 'app/core/store/store.service';
 import { AdsService } from '../ads/ads.service';
 import { FloatingBannerService } from '../floating-banner/floating-banner.service';
 import { Router } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
+import { Device } from '@capacitor/device';
 
 @Injectable({
     providedIn: 'root'
@@ -108,11 +110,15 @@ export class PlatformService
         // Get store by URL
         // ----------------------
 
-        let fullUrl = (this._platformLocation as any).location.origin;
+        const fullUrl = (this._platformLocation as any).location.origin;
         this.url.full = fullUrl;
 
+        console.log('fullUrl',fullUrl);
+        
         let sanatiseUrl = fullUrl.replace(/^(https?:|)\/\//, '').split(':')[0]; // this will get the domain from the URL
         this.url.domain = sanatiseUrl;
+        
+        console.log('this.url.domain',this.url.domain);
         
 
         let domainNameArr = sanatiseUrl.split('.');
@@ -126,12 +132,23 @@ export class PlatformService
 
         let productService = this._apiServer.settings.apiServer.productService;
         let accessToken = this._authService.publicToken;
-        let clientId = this._jwt.getJwtPayload(this._authService.jwtAccessToken).uid;        
+        let clientId = this._jwt.getJwtPayload(this._authService.jwtAccessToken).uid; 
+        
+        
+        //for capacitor if device is ios
+        // const deviceType : string = await Device.getInfo().then((response)=>{
+        //     return response.platform
+        // });
+        let capacitorIos = fullUrl.split("://")[1];
 
+        // console.log('capacitorIosURL',capacitorIos);
+        // console.log('this.url.domain',this.url.domain);
+
+        let domain = Capacitor.isNativePlatform() ? capacitorIos : this.url.domain
         const header = {
             headers: new HttpHeaders().set("Authorization", `Bearer ${accessToken}`),
-            params:{
-                domain:this.url.domain
+            params: {
+                domain: domain
             }
         };
         

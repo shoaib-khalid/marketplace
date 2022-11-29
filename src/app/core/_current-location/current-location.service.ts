@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable, of, ReplaySubject, switchMap } from 'rxjs';
 import { LogService } from 'app/core/logging/log.service';
 import { CurrentLocation } from './current-location.types';
+import { Device } from '@capacitor/device';
+import { Geolocation as capacitorGeolocation } from '@capacitor/geolocation';
 
 @Injectable({
     providedIn: 'root'
@@ -56,6 +58,28 @@ export class CurrentLocationService
                         this._currentLocation.next({ isAllowed: false });
                     }
                 );
+
+                const deviceType : string = await Device.getInfo().then((response)=>{
+                    return response.platform
+                });
+                        
+                if(deviceType === "ios"){
+        
+                    await capacitorGeolocation.getCurrentPosition().then((position)=>{
+                        var crd = position.coords;
+                        currentLat = crd.latitude;
+                        currentLong = crd.longitude;
+
+                        this._logging.debug("User has allowed location", { lat: currentLat, lng: currentLong });
+
+                        this._currentLocation.next({ isAllowed: true, location: { lat: currentLat, lng: currentLong }});
+                    },
+                    (error) => {
+                        this._logging.debug("User has NOT allowed location")
+                        this._currentLocation.next({ isAllowed: false });
+                    });
+                    
+                }
             })
         );
     }

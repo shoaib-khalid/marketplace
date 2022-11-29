@@ -15,7 +15,12 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from 'environments/environment';
 import { CityDetails, RegionCountryState } from 'app/core/location/location.types';
+import { Device } from '@capacitor/device';
 // import { UserProfileValidationService } from '../../user-profile.validation.service';
+import { Geolocation as capacitorGeolocation } from '@capacitor/geolocation';
+// import { Capacitor } from '@capacitor/core';
+// import { GoogleMap } from '@capacitor/google-maps';
+
 
 @Component({
   selector: 'app-edit-cart-address',
@@ -41,6 +46,12 @@ import { CityDetails, RegionCountryState } from 'app/core/location/location.type
                 width: 50vw;
                 height: 50vh;
                 cursor: pointer !important;  
+            }
+
+            .mymap {
+                display: inline-block;
+                width: 275px;
+                height: 400px;
             }
 
         `
@@ -107,7 +118,7 @@ export class EditCartAddressDialog implements OnInit {
         .addSvgIcon('search',this._domSanitizer.bypassSecurityTrustResourceUrl('assets/layouts/fnb/icons/search.svg'))
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
 
         // Create the form
         this.addressForm = this._formBuilder.group({
@@ -180,7 +191,24 @@ export class EditCartAddressDialog implements OnInit {
             var crd = position.coords;
             this.currentLat = crd.latitude;
             this.currentLong= crd.longitude;            
-        });   
+        });
+
+        //for capacitor if device is ios
+        const deviceType : string = await Device.getInfo().then((response)=>{
+            return response.platform
+        });
+        //get current position for ios using capacitor geo location       
+        if(deviceType === "ios"){
+
+            await capacitorGeolocation.getCurrentPosition().then((position)=>{
+                console.log("SIni ANJoy",position);
+                
+                var crd = position.coords;
+                this.currentLat = crd.latitude;
+                this.currentLong= crd.longitude;
+            });
+            
+        }
                 
         //======================== Insert google maps =========================
         //if db got null then we need to set the curren location so that it will display the google maps instead of hardcode the value of latitude and longitude
@@ -199,11 +227,12 @@ export class EditCartAddressDialog implements OnInit {
             }
         }
 
+        let gmapsApiKey = deviceType === "ios" ? 'AIzaSyAPWP5DsinfawdOHI2T1-_r5k34mTU0wIw' : environment.googleMapsAPIKey;
+        
         // implement google maps
         let loader = new Loader({
             apiKey: environment.googleMapsAPIKey,
             libraries: ['places']
-            
         });
 
         //  hardcode value first        
@@ -211,7 +240,7 @@ export class EditCartAddressDialog implements OnInit {
             lat: this.displayLat,
             lng: this.displayLong,  
         };
-        
+
         loader.load().then(() => {
             this.map = new google.maps.Map(document.getElementById("map"), {
                 center: this.location,
