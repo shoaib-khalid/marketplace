@@ -661,7 +661,7 @@ export class BuyerCheckoutComponent implements OnInit
                                     "email"          : this.order.shipmentEmail,
                                     "mobile"         : this.order.shipmentPhoneNumber,
                                     "description"    : "Payment for " + this.order.shipmentName + " of deliverin",
-                                    "redirect_url"   : "https://www.payhub2u.my/pay-bills/bill-list",
+                                    "redirect_url"   : "https://www.payhub2u.my/fnb",
                                     "callback_url"   : this.payment.orderCreated.callbackUrl,
                                     "callback_token" : this.payment.orderCreated.callbackToken
                                 };
@@ -669,14 +669,20 @@ export class BuyerCheckoutComponent implements OnInit
                                 this._checkoutService.postATXPayment(this.payment.paymentLink, axtPaymentBody, { accessKey: this.payment.token })
                                     .subscribe((response: AXTResponseBody)=>{
                                         if (response && response.message === 'success') {
-                                            let redirectUrl = response.secondary_url.replace('{amount}', this.paymentDetails.cartGrandTotal.toString());                                         
-                                            const openATXWindow = window.open(`${redirectUrl}`,'_blank',"width=600,height=600,modal=yes,alwaysRaised=yes")
-                                            var timer = setInterval(()=> { 
-                                                if(openATXWindow.closed) {
-                                                    clearInterval(timer);
-                                                    this._router.navigate(['/thankyou'])
-                                                }
-                                              }, 500);
+                                            let redirectUrl = response.secondary_url.replace('{amount}', this.paymentDetails.cartGrandTotal.toString());   
+                                            
+                                            this._document.location.href = redirectUrl;
+                                            
+                                            // const openATXWindow = this._document.location.href
+
+                                            // const openATXWindow = window.open(`${redirectUrl}`,'_blank',"width=600,height=600,modal=yes,alwaysRaised=yes")
+
+                                            // var timer = setInterval(()=> { 
+                                            //     if(openATXWindow.closed) {
+                                            //         clearInterval(timer);
+                                            //         this._router.navigate(['/thankyou'])
+                                            //     }
+                                            //   }, 500);
 
                                             
                                         }
