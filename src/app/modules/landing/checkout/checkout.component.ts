@@ -674,7 +674,17 @@ export class BuyerCheckoutComponent implements OnInit
                                             var timer = setInterval(()=> { 
                                                 if(openATXWindow.closed) {
                                                     clearInterval(timer);
-                                                    this._router.navigate(['/thankyou'])
+
+                                                    // after success set the cartItem to empty array
+                                                    this.carts = [];
+                                                    // set in cart service
+                                                    this._cartService.cartsHeaderWithDetails = [];
+
+                                                    // Resolve cart header
+                                                    this._cartService.cartResolver(true).subscribe();
+                                                    // navigate to home
+                                                    this._router.navigate(['/']);
+
                                                 }
                                               }, 500);
 

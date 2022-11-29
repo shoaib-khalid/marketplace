@@ -28,7 +28,11 @@ export class LandingThankyouComponent
     completionStatus: string;
     orderId         : string;
 
-    countdown: number = 3;
+    countdown: number = 4;
+    countdownMapping: any = {
+        '=1'   : '# second',
+        'other': '# seconds'
+    };
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -110,7 +114,7 @@ export class LandingThankyouComponent
 
                         console.log("this.countdown", this.countdown);
                         // if(this.countdown === 0) {
-                            window.close()
+                        window.close()
 
                         // }
 
@@ -162,5 +166,9 @@ export class LandingThankyouComponent
         } else {
             return this.platform.logo;
         }
+    }
+
+    close() {
+        window.close();
     }
 }

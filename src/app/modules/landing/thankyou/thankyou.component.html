@@ -91,7 +91,22 @@
                 <span class="text2xl text-center">Your order have failed due to {{completionStatus.replaceAll('_',' ')}}!</span>
             </ng-template>
         </div>
-        <div class="pb-30">
+        <!-- Title -->
+        <div class="flex justify-center mt-0.5 font-medium">
+            <!-- Redirect countdown -->
+            <ng-container *ngIf="countdown > 0">
+                Redirecting in {{countdown | i18nPlural: countdownMapping }}
+            </ng-container>
+
+            <!-- Redirect message -->
+            <ng-container *ngIf="countdown === 0">
+                <div class="flex flex-col items-center justify-center">
+                    <span>You are now being redirected!</span>
+                    <span><a class="text-primary" (click)="close()"> Click here</a> if you're not redirected</span>
+                </div>
+            </ng-container>
+        </div>
+        <div class="pb-30" *ngIf="!orderId">
             <button
                 class="flex flex-row items-center mt-8 font-medium bg-primary-500 py-2 px-4 rounded"
                 [routerLink]="['/']">
