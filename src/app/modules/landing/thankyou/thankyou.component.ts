@@ -8,7 +8,7 @@ import { PlatformService } from 'app/core/platform/platform.service';
 import { Platform } from 'app/core/platform/platform.types';
 import { StoresService } from 'app/core/store/store.service';
 import { Store, StoreAssets } from 'app/core/store/store.types';
-import { Subject, takeUntil } from 'rxjs';
+import { finalize, Subject, takeUntil, takeWhile, tap, timer } from 'rxjs';
 
 @Component({
     selector     : 'landing-thankyou',
@@ -26,6 +26,9 @@ export class LandingThankyouComponent
 
     paymentType     : string;
     completionStatus: string;
+    orderId         : string;
+
+    countdown: number = 3;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -61,6 +64,11 @@ export class LandingThankyouComponent
         //     storeId: this._storesService.storeId$,
         // }
         
+        this._activatedRoute.queryParams.subscribe(params => {
+            console.log("payt", params.orderid);
+            this.orderId = params.orderid;
+        })
+        
         if(this.completionStatus === "Payment_was_successful" || this.completionStatus === "ORDER_CONFIRMED") {
             // this._cartService.deleteCartbyId(currentCartId).subscribe((response) => {
             // });
@@ -74,6 +82,48 @@ export class LandingThankyouComponent
             //         this.getCartItems(this.cartId);
             //     }
             // });
+            if(this.orderId) {
+                // Redirect after the countdown
+                timer(1000, 1000)
+                .pipe(
+                    finalize(() => {
+                        
+                        // // redirectURL
+                        // const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL')
+                        // // store front domain, to be used to compare with redirectURL
+                        // const storeFrontDomain = this._apiServer.settings.storeFrontDomain;
+                        
+                        // if (this._activatedRoute.snapshot.queryParamMap.get('redirectURL')) {  
+                            
+                        //     if (redirectURL.includes(storeFrontDomain)) {
+                        //         // Navigate to the external redirect url
+                        //         this._document.location.href = redirectURL;
+                        //     } else {
+                        //         // Navigate to the internal redirect url
+                        //         this._router.navigateByUrl(redirectURL);
+                        //     }
+                        // }
+                        // else 
+                        // {
+                        //     this._router.navigateByUrl('/signed-in-redirect');
+                        // }
+
+                        console.log("this.countdown", this.countdown);
+                        // if(this.countdown === 0) {
+                            window.close()
+
+                        // }
+
+
+                    }),
+                    takeWhile(() => this.countdown > 0),
+                    takeUntil(this._unsubscribeAll),
+                    tap(() => this.countdown--)
+                )
+                .subscribe();
+
+                
+            }
         }
         // Get the store info
         // this._storesService.store$
