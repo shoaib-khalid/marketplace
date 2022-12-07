@@ -142,6 +142,7 @@
                         <span class="font-semibold text-base">Special Instruction{{ selectedProduct.isNoteOptional === false ? ' (required)' : ''}}:</span> 
                         <mat-form-field class="mt-1 fuse-mat-textarea fuse-mat-no-subscript w-full" floatLabel="always">
                             <textarea
+                                style="resize: none;"
                                 class="text-sm"
                                 [ngClass]="'border border-red-600'"
                                 matInput
@@ -195,7 +196,7 @@
                                 [svgIcon]="'heroicons_solid:shopping-cart'"></mat-icon>
                             <span class="text-sm font-medium">Add to Cart</span>
                             <span class="text-sm">&#8226;</span>
-                            <span class="text-sm">{{displayedProduct.price | currency: store.regionCountry.currencySymbol}}</span>
+                            <span class="text-sm">{{displayedProduct.price * quantity | currency: store.regionCountry.currencySymbol}}</span>
                         </label>
                     </div>
                 </div>

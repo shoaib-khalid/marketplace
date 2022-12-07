@@ -323,7 +323,7 @@ export class StoresService
     // Store Categories Section
     // ---------------------------
 
-    getStoreCategories(storeId: string = "", name: string="", page: number = 0, size: number = 30, sort: string = 'name', order: 'asc' | 'desc' | '' = 'asc'): Observable<any>
+    getStoreCategories(storeId: string = "", name: string="", page: number = 0, size: number = 30, sort: string = 'sequenceNumber', order: 'asc' | 'desc' | '' = 'asc'): Observable<any>
     {
         let productService = this._apiServer.settings.apiServer.productService;
         //let accessToken = this._jwt.getJwtPayload(this._authService.jwtAccessToken).act;
