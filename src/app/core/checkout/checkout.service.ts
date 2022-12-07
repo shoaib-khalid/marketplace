@@ -664,7 +664,7 @@ export class CheckoutService
     {
         const header = {  
             headers: new HttpHeaders().set("Access-Key", `${params.accessKey}`),
-            params: params
+            // params: params
 
         };
 
