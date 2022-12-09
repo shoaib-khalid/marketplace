@@ -184,21 +184,6 @@ export class EditAddressDialog implements OnInit {
             this.currentLat = crd.latitude;
             this.currentLong= crd.longitude;            
         });
-        
-        //for capacitor if device is ios
-        const deviceType : string = await Device.getInfo().then((response)=>{
-            return response.platform
-        });
-        //get current position for ios using capacitor geo location       
-        if(deviceType === "ios"){
-
-            await capacitorGeolocation.getCurrentPosition().then((position)=>{
-                var crd = position.coords;
-                this.currentLat = crd.latitude;
-                this.currentLong= crd.longitude;
-            });
-            
-        }
                 
         //======================== Insert google maps =========================
         //if db got null then we need to set the curren location so that it will display the google maps instead of hardcode the value of latitude and longitude
@@ -219,9 +204,8 @@ export class EditAddressDialog implements OnInit {
 
         // implement google maps
         let loader = new Loader({
-            apiKey: deviceType === "ios" ? 'AIzaSyAPWP5DsinfawdOHI2T1-_r5k34mTU0wIw' : environment.googleMapsAPIKey,
-            libraries: ['places']
-            
+            apiKey: environment.googleMapsAPIKey,
+            libraries: ['places'] 
         });
 
         //  hardcode value first        
