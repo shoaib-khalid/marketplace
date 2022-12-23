@@ -1,5 +1,5 @@
 <ng-container *ngIf="selectedProduct">
-    <div class="flex flex-col">
+    <div class="flex flex-col max-h-full overflow-y-auto scrollbar-hide">
         <div class="flex flex-row justify-between items-center">
             <span class="font-bold text-lg">{{store.name}}</span>
             <mat-icon (click)="closeSheet()" class="text-stone-500 icon-size-7 cursor-pointer" svgIcon="heroicons_solid:x-circle"></mat-icon>

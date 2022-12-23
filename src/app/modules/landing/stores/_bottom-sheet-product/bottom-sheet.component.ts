@@ -31,7 +31,7 @@ import { AppConfig } from 'app/config/service.config';
             display: block;
             outline: 0;
             max-height: 100vh;
-            overflow: auto;
+            overflow: hidden;
             border-top-right-radius: 20px;
             border-top-left-radius: 20px;
         }

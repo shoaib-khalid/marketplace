@@ -7,7 +7,7 @@ const isbot = require('isbot');
 
 let isBot = false;
 
-const human = express.static(__dirname + '/public');
+const human = express.static(__dirname + '/dist/public');
 const bot = (req, res, next) => {
     next();
 };
@@ -31,7 +31,7 @@ app.get('*', (req, res) => {
     if (isBot) {
         res.send('HAHAHA BOT');
     } else {
-        res.sendFile(path.resolve(__dirname + '/dist/fuse', 'index.html'));
+        res.sendFile(path.resolve(__dirname + '/dist/public', 'index.html'));
     }
 });
 
