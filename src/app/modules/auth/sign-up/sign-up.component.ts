@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, NgZone, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
@@ -19,6 +19,10 @@ import { CartService } from 'app/core/cart/cart.service';
 import { Cart, CartItem } from 'app/core/cart/cart.types';
 import { AppleLoginService } from '../apple-login/apple-login.service';
 import { Capacitor } from '@capacitor/core';
+import jwt_decode from "jwt-decode";
+import { SocialLooginClientId } from '../sign-in/oauth.types';
+
+declare const google: any;
 
 
 @Component({
@@ -74,7 +78,8 @@ export class AuthSignUpComponent implements OnInit
         private _apiServer: AppConfig,
         private _userService: UserService,
         private _cartsService: CartService,
-        private _appleLoginService: AppleLoginService
+        private _appleLoginService: AppleLoginService,
+        private _ngZone: NgZone  //the navigation will be triggered outside Angular zone
 
     )
     {
@@ -120,10 +125,11 @@ export class AuthSignUpComponent implements OnInit
         this._platformsService.platform$
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((platform: Platform) => {
-            this.platform = platform;
-
-            this.countryCode = this.platform.country;
-            this.signUpForm.get('countryId').patchValue(this.countryCode);
+            if (platform) {
+                this.platform = platform;
+                this.countryCode = this.platform.country;
+                this.signUpForm.get('countryId').patchValue(this.countryCode);
+            }
 
         });
 
@@ -133,6 +139,28 @@ export class AuthSignUpComponent implements OnInit
         if(Capacitor.isNativePlatform()) {
             this.displaySocial = false;
         }
+
+    }
+
+    ngAfterViewInit() {
+
+        setTimeout(() => {
+            google.accounts.id.initialize({
+                client_id: SocialLooginClientId.GOOGLE_CLIENT_ID,
+                //Collect the token that Google returns to us when logging in
+                callback: (response: any) => this._ngZone.run(() => {
+                  this.handleGoogleSignIn(response);
+                })
+            });
+    
+            //Use customized button for Google Sign-in
+            google.accounts.id.renderButton(
+            //    this.gbutton.nativeElement,
+            document.getElementById('googleButton'),
+                { size: "large", text: 'signup_with', theme:"filled_blue", shape:"circle", type:"icon" }
+            );
+            
+        }, 0);
 
     }
 
@@ -425,6 +453,71 @@ export class AuthSignUpComponent implements OnInit
                     this.showAlert = true;
                 }
             );
+    }
+
+    handleGoogleSignIn(response: any) {
+        // Decode Google Token
+        let userObject: ValidateOauthRequest = jwt_decode(response.credential);
+        if (userObject) {
+
+            let userData = {
+                email         : userObject.email,
+                loginType     : "GOOGLE",
+                name          : userObject.name,
+                token         : response.credential
+            }
+            
+            this.validateOauthRequest = new ValidateOauthRequest();
+            this.validateOauthRequest.country = this.countryCode;
+            this.validateOauthRequest.email = userData.email;
+            this.validateOauthRequest.loginType = "GOOGLE";
+            this.validateOauthRequest.name = userData.name;
+            this.validateOauthRequest.token = userData.token;
+            this.validateOauthRequest.domain = this.domain;
+
+            
+            this._authService.loginOauth(this.validateOauthRequest,'Google Login')
+                .subscribe((loginOauthResponse) => {
+
+                    const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') ? this._activatedRoute.snapshot.queryParamMap.get('redirectURL') : null;
+                    const guestCartId = this._activatedRoute.snapshot.queryParamMap.get('guestCartId') ? this._activatedRoute.snapshot.queryParamMap.get('guestCartId') : null;
+                    const storeId = this._activatedRoute.snapshot.queryParamMap.get('storeId') ? this._activatedRoute.snapshot.queryParamMap.get('storeId') : null;
+
+                    // merge multiple guests carts
+                    let cartIds: { id: string, storeId: string, cartItems: CartItem[]}[] = this._cartsService.cartIds$ ? JSON.parse(this._cartsService.cartIds$) : [];
+                            
+                    if (cartIds.length > 0) {
+
+                        this._cartsService.mergeMultipleCarts(loginOauthResponse['session'].ownerId, cartIds.map(cart => cart.id))
+                        .subscribe(()=> {
+
+                            // Resolve cart after merge
+                            this._cartsService.cartResolver().subscribe();
+                            this._cartsService.cartResolver(true).subscribe();
+                        })
+
+                    }
+                    // Merge cart
+                    if (guestCartId && storeId) {  
+                    
+                        this._cartsService.mergeAndRedirect(guestCartId, storeId, loginOauthResponse['session'].ownerId, redirectURL);
+                    
+                    } 
+                    // if no guestCartId/storeId
+                    else {
+                        this._cartsService.redirect(redirectURL);
+                    }
+
+                    // Open native App
+                    if(Capacitor){
+                        
+                    }
+                },
+                exception => {
+                    console.error("An error has occured : ",exception);
+                });
+        }
+
     }
 
 }

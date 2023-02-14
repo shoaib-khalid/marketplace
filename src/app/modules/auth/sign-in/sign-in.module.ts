@@ -44,12 +44,12 @@ import { AuthModalComponent } from '../auth-modal/auth-modal.component';
           useValue: {
             autoLogin: false,
             providers: [
-              {
-                id: GoogleLoginProvider.PROVIDER_ID,
-                provider: new GoogleLoginProvider(
-                  SocialLooginClientId.GOOGLE_CLIENT_ID
-                )
-              },
+              // {
+              //   id: GoogleLoginProvider.PROVIDER_ID,
+              //   provider: new GoogleLoginProvider(
+              //     SocialLooginClientId.GOOGLE_CLIENT_ID
+              //   )
+              // },
               {
                 id: AppleLoginProvider.PROVIDER_ID,
                 provider: new AppleLoginProvider(

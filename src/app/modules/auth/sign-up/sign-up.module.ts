@@ -42,12 +42,12 @@ import { SocialLooginClientId } from '../sign-in/oauth.types';
           useValue: {
             autoLogin: false,
             providers: [
-              {
-                id: GoogleLoginProvider.PROVIDER_ID,
-                provider: new GoogleLoginProvider(
-                  SocialLooginClientId.GOOGLE_CLIENT_ID
-                )
-              },
+              // {
+              //   id: GoogleLoginProvider.PROVIDER_ID,
+              //   provider: new GoogleLoginProvider(
+              //     SocialLooginClientId.GOOGLE_CLIENT_ID
+              //   )
+              // },
               {
                 id: AppleLoginProvider.PROVIDER_ID,
                 provider: new AppleLoginProvider(
