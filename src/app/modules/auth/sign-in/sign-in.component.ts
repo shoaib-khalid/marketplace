@@ -159,8 +159,11 @@ export class AuthSignInComponent implements OnInit
             document.getElementById('googleButton'),
                 { size: "large", text: 'signup_with', theme:"filled_blue", shape:"circle", type:"icon" }
             );
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
             
-        }, 0);
+        }, 10);
 
     }
 
