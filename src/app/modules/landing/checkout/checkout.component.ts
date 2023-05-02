@@ -846,8 +846,6 @@ export class BuyerCheckoutComponent implements OnInit
     }
 
     postForm(id: string, path: string, params: any, method: any, encode: boolean) {
-
-        console.log(params);
         
         method = method || 'post';
     
@@ -874,8 +872,6 @@ export class BuyerCheckoutComponent implements OnInit
         customerActivity.pageVisited = path;
         customerActivity.storeId = null;
 
-        debugger;
-        
         this._analyticService.postActivity(customerActivity).subscribe(); 
     }
 
