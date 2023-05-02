@@ -110,11 +110,11 @@
                                 (click)="productViewOrientation = 'grid'"
                                 mat-button>
                             <label 
-                                class="flex items-center justify-center h-10 px-1 cursor-pointer mr-1"
+                                class="flex items-center justify-center px-1 cursor-pointer mr-1"
                                 for="grid-view-button"
                                 matRipple>
                                 <mat-icon
-                                    [ngClass]="productViewOrientation === 'grid' ? 'text-black dark:text-white' : 'text-gray'"
+                                    [ngClass]="productViewOrientation === 'grid' ? 'text-primary' : 'text-gray'"
                                     class="icon-size-4"
                                     [svgIcon]="'block-view'"></mat-icon>
                             </label>
@@ -127,11 +127,11 @@
                                 (click)="productViewOrientation = 'list'"
                                 mat-button>
                             <label 
-                                class="flex items-center justify-center h-10 px-1 cursor-pointer sm:mr-2"
+                                class="flex items-center justify-center px-1 cursor-pointer sm:mr-2"
                                 for="list-view-button"
                                 matRipple>
                                 <mat-icon
-                                    [ngClass]="productViewOrientation === 'list' ? 'text-black dark:text-white' : 'text-gray'"
+                                    [ngClass]="productViewOrientation === 'list' ? 'text-primary' : 'text-gray'"
                                     class="icon-size-4"
                                     [svgIcon]="'list-view'"></mat-icon>
                             </label>
@@ -163,8 +163,10 @@
                     <!-- Loading Product -->
                     <ng-template #productLoading>
                         <div class="flex flex-auto h-96 flex-col items-center justify-center rounded-lg border border-gray-300 dark:bg-transparent">
-                            <img class="w-20" src="assets/gif/loading.gif" alt="loading">
-                            <div class="mt-6 text-2xl font-semibold tracking-tight text-secondary">Loading Products</div>
+                            <div class="flex items-center justify-center rounded-full w-16 h-16 bg-gradient-to-br from-primary-500 to-white animate-spin">
+                                <div class="h-12 w-12 rounded-full ring-2 ring-white bg-white"></div>
+                            </div>
+                            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Loading Products</div>
                         </div>
                         <div class="mb-12"></div>
                     </ng-template>

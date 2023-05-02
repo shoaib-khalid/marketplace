@@ -4,7 +4,7 @@
         <!-- Carts -->
         <ng-container *ngIf="carts && carts.length; else noCarts">
             <!-- Delivery Address (xs) -->
-            <div class="block md:hidden w-full flex flex-col justify-center items-start border rounded-lg p-2 mb-2">
+            <div class="flex md:hidden w-full flex-col justify-center items-start border rounded-lg p-2 mb-2">
                 <!-- Header -->
                 <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
                     <mat-icon 
@@ -46,7 +46,7 @@
             </div>
             <!-- Store pickup info (MOBILE)  -->
             <ng-container *ngIf="selfPickupInfo && hasSelfPickup">
-                <div class="block md:hidden flex flex-col justify-center items-center border rounded-lg p-2 mb-2">
+                <div class="flex md:hidden flex-col justify-center items-center border rounded-lg p-2 mb-2">
                     <!-- Header -->
                     <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
                         <mat-icon 
@@ -425,7 +425,7 @@
                     </button>
                 </div>
                 <!-- Delivery Address (md) -->
-                <div class="hidden md:block flex flex-col justify-center items-center border rounded-lg p-2 mt-4">
+                <div class="hidden md:flex flex-col justify-center items-center border rounded-lg p-2 mt-4">
                     <!-- Header -->
                     <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
                         <mat-icon 
@@ -471,7 +471,7 @@
                 </div>
                 <!-- Store pickup info (md)  -->
                 <ng-container *ngIf="selfPickupInfo && hasSelfPickup">
-                    <div class="hidden md:block flex flex-col justify-center items-center border rounded-lg p-2 mt-4">
+                    <div class="hidden md:flex flex-col justify-center items-center border rounded-lg p-2 mt-4">
                         <!-- Header -->
                         <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
                             <mat-icon 

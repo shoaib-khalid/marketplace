@@ -172,7 +172,7 @@ export class BuyerCheckoutComponent implements OnInit
     customerId: string = '';
     customerAddress: CustomerAddress;
 
-    paymentDetails: CartDiscount = {
+    paymentDetails: Partial<CartDiscount> = {
         cartSubTotal: 0,
         subTotalDiscount: 0,
         subTotalDiscountDescription: null,
@@ -266,7 +266,7 @@ export class BuyerCheckoutComponent implements OnInit
         this._platformService.platform$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((platform) => {
-                if(platform) {
+                if (platform) {
                     this.platform = platform;
 
                     // set title
@@ -330,21 +330,27 @@ export class BuyerCheckoutComponent implements OnInit
                     // CartsWithDetailsTotalItems
                     this._checkoutService.checkoutItems$
                         .pipe(takeUntil(this._unsubscribeAll))
-                        .subscribe((checkoutItems: CheckoutItems[])=>{
-                            if (checkoutItems) { 
-                                
-                                this.checkoutItems = checkoutItems;
-                                let cartsWithDetailsTotalItemsArr = checkoutItems.map(item => item.selectedItemId.length);
-                                let cartsWithDetailsTotalItems = cartsWithDetailsTotalItemsArr.reduce((partialSum, a) => partialSum + a, 0);
-                                this.totalSelectedCartItem = cartsWithDetailsTotalItems;
+                        .subscribe((checkoutItems: CheckoutItems[])=> {
 
-                                // Check if has self pickup 
-                                this.hasSelfPickup = checkoutItems.some(item => item.deliveryType === 'PICKUP');
-                                
-                                // Get self pickup info
-                                let selfPickupIndex = checkoutItems.findIndex(item => item.selfPickupInfo.name);
-                                if (selfPickupIndex > -1) this.selfPickupInfo = checkoutItems[selfPickupIndex].selfPickupInfo;
+                            if (!checkoutItems) {
+                                return;
                             }
+                          
+                            this.checkoutItems = checkoutItems;
+                        
+                            const cartsWithDetailsTotalItemsArr = checkoutItems.map(item => item.selectedItemId.length);
+                            this.totalSelectedCartItem = cartsWithDetailsTotalItemsArr.reduce((partialSum, a) => partialSum + a, 0);
+                        
+                            // Check if has self pickup
+                            this.hasSelfPickup = checkoutItems.some(item => item.deliveryType === 'PICKUP');
+                        
+                            // Get self pickup info
+                            const selfPickupItem = checkoutItems.find(item => item.selfPickupInfo.name);
+                            
+                            if (selfPickupItem) {
+                                this.selfPickupInfo = selfPickupItem.selfPickupInfo;
+                            }
+
                             // Mark for check 
                             this._changeDetectorRef.markForCheck();
                         });
@@ -386,23 +392,40 @@ export class BuyerCheckoutComponent implements OnInit
 
         // Get cart summary
         this._checkoutService.cartSummary$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((response: DiscountOfCartGroup)=>{
-                if(response) {
-                    this.paymentDetails.cartSubTotal = response.sumCartSubTotal === null ? 0 : response.sumCartSubTotal
-                    this.paymentDetails.deliveryCharges = response.sumCartDeliveryCharge === null ? 0 : response.sumCartDeliveryCharge
-                    this.paymentDetails.cartGrandTotal = response.sumCartGrandTotal === null ? 0 : response.sumCartGrandTotal
-                    this.paymentDetails.platformVoucherSubTotalDiscount = response.platformVoucherSubTotalDiscount === null ? 0 : response.platformVoucherSubTotalDiscount;
-                    this.paymentDetails.platformVoucherDeliveryDiscount = response.platformVoucherDeliveryDiscount === null ? 0 : response.platformVoucherDeliveryDiscount;
-                    this.paymentDetails.deliveryDiscount = response.sumDeliveryDiscount === null ? 0 : response.sumDeliveryDiscount;
-                    this.paymentDetails.subTotalDiscount = response.sumSubTotalDiscount === null ? 0 : response.sumSubTotalDiscount;
-                    this.paymentDetails.storeServiceCharge = response.sumServiceCharge === null ? 0 : response.sumServiceCharge;
-                    this.paymentDetails.storeDiscountList = response.storeDiscountList;
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((response: DiscountOfCartGroup) => {
+            if (response) {
+                // Use destructuring to extract the properties from the response object
+                const {
+                    sumCartSubTotal,
+                    sumCartDeliveryCharge,
+                    sumCartGrandTotal,
+                    platformVoucherSubTotalDiscount,
+                    platformVoucherDeliveryDiscount,
+                    sumDeliveryDiscount,
+                    sumSubTotalDiscount,
+                    sumServiceCharge,
+                    storeDiscountList
+                } = response;
 
-                }
-                // Mark for check
-                this._changeDetectorRef.markForCheck()
-            });
+                // Use the nullish coalescing operator (??) to set default values of 0 for any properties that are null or undefined
+                this.paymentDetails = {
+                    cartSubTotal: sumCartSubTotal ?? 0,
+                    deliveryCharges: sumCartDeliveryCharge ?? 0,
+                    cartGrandTotal: sumCartGrandTotal ?? 0,
+                    platformVoucherSubTotalDiscount: platformVoucherSubTotalDiscount ?? 0,
+                    platformVoucherDeliveryDiscount: platformVoucherDeliveryDiscount ?? 0,
+                    deliveryDiscount: sumDeliveryDiscount ?? 0,
+                    subTotalDiscount: sumSubTotalDiscount ?? 0,
+                    storeServiceCharge: sumServiceCharge ?? 0,
+                    storeDiscountList
+                };
+            }
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });
+
 
         // Subscribe to user changes
         this._userService.user$
@@ -522,55 +545,65 @@ export class BuyerCheckoutComponent implements OnInit
         // Set Loading to true
         // this.isLoading = true;
         
-        let orderBodies = [];
         let platformVoucherCode = null;
 
-        let customerInfo = {
-            address: this.customerAddress ? this.customerAddress.address : '',
-            city: this.customerAddress ? this.customerAddress.city : '',
-            country: this.customerAddress ? this.customerAddress.country : '',
-            state: this.customerAddress ? this.customerAddress.state : '',
-            postCode: this.customerAddress ? this.customerAddress.postCode : '',
+        // Initialize customerInfo with empty values for all properties.
+        const customerInfo = {
+            address: '',
+            city: '',
+            country: '',
+            state: '',
+            postCode: '',
+            email: '',
+            phoneNumber: '',
+            name: ''
+        };
+          
+        if (this.customerAddress) {
 
-            email: this.customerAddress ? this.customerAddress.email : this.selfPickupInfo.email,
-            phoneNumber: this.customerAddress ? this.customerAddress.phoneNumber : this.selfPickupInfo.phoneNumber,
-            name: this.customerAddress ? this.customerAddress.name : this.selfPickupInfo.name
+            // Use destructuring to extract the properties from the response object
+            const { address, city, country, state, postCode, email, phoneNumber, name } = this.customerAddress;
+
+            // Use Object.assign to update customerInfo with the values from this.customerAddress
+            Object.assign(customerInfo, { address, city, country, state, postCode, email, phoneNumber, name });
+
+        } else if (this.selfPickupInfo) {
+
+            const { email, phoneNumber, name } = this.selfPickupInfo;
+
+            // Use Object.assign to update customerInfo with the values from this.selfPickupInfo
+            Object.assign(customerInfo, { email, phoneNumber, name });
         }
 
-        this.checkoutItems.forEach(checkout => {
-
+        const orderBodies = this.checkoutItems.map(checkout => {
             const orderBody = {
                 cartId: checkout.cartId,
-                cartItems: checkout.selectedItemId.map(element => {
-                    return {
-                        id: element,
-                    }
-                }),
+                paymentType: 'ONLINEPAYMENT', // COD/ONLINEPAYMENT
+                cartItems: checkout.selectedItemId.map(id => ({ id })),
                 customerId: this.customerId,
                 customerNotes: checkout.orderNotes,
-                // voucherCode: checkout.platformVoucherCode,
                 orderPaymentDetails: {
-                    accountName: this.user ? this.user.name : customerInfo.name,
-                    deliveryQuotationReferenceId: checkout.deliveryQuotationId ? checkout.deliveryQuotationId : null
+                    accountName: this.user?.name ?? customerInfo.name,
+                    // Use the logical OR operator to set deliveryQuotationReferenceId to null if it's falsy
+                    deliveryQuotationReferenceId: checkout.deliveryQuotationId || null
                 },
                 orderShipmentDetails: {
-                    address:  customerInfo.address,
+                    address: customerInfo.address,
                     city: customerInfo.city,
                     country: customerInfo.country,
                     email: customerInfo.email,
                     phoneNumber: customerInfo.phoneNumber,
                     receiverName: customerInfo.name,
                     state: customerInfo.state,
-                    storePickup: checkout.deliveryType === 'PICKUP' ? true : false,
+                    storePickup: checkout.deliveryType === 'PICKUP',
                     zipcode: customerInfo.postCode,
                     deliveryProviderId: checkout.deliveryProviderId,
-                    deliveryType: checkout.deliveryType ? checkout.deliveryType : null
+                    deliveryType: checkout.deliveryType || null
                 }
-
             };
-            orderBodies.push(orderBody)
             platformVoucherCode = checkout.platformVoucherCode;
-        })
+            return orderBody;
+        });
         
         this._checkoutService.postPlaceGroupOrder(orderBodies, true, platformVoucherCode)
             .subscribe((response) => {
@@ -584,12 +617,14 @@ export class BuyerCheckoutComponent implements OnInit
                 const paymentBody = {
                     // callbackUrl      : "https://bon-appetit.symplified.ai/thankyou",
                     customerId          : this.user ? this.user.id : null,
-                    customerName        : this.user ? this.user.name : customerInfo.name,
                     productCode         : "parcel", // 
                     // storeName        : this.store.name,
                     systemTransactionId : transactionId,
                     transactionId       : this.order.id,
-                    channel             : this.webOrigin ? this.webOrigin.toUpperCase() : null
+                    channel             : this.webOrigin ? this.webOrigin.toUpperCase() : 'DELIVERIN',
+                    customerName        : this.order.shipmentName,
+                    phoneNo             : this.order.shipmentPhoneNumber,
+                    email               : this.order.shipmentEmail
                 }
 
                 // return
@@ -691,6 +726,21 @@ export class BuyerCheckoutComponent implements OnInit
                                             
                                         }
                                     });
+                            } else if (this.payment.providerId == 5) {
+                                this.postForm( "post-to-betterpay", this.payment.paymentLink, 
+                                {
+                                    "merchant_id"   : this.payment.clientId, 
+                                    "invoice"       : this.payment.invoiceId, 
+                                    "payment_desc"  : 'null', 
+                                    "currency"      : 'MYR', 
+                                    "amount"        : this.paymentDetails.cartGrandTotal.toFixed(2), 
+                                    "buyer_name"    : this.order.shipmentName, 
+                                    "buyer_email"   : this.order.shipmentEmail, 
+                                    "phone"         : this.order.shipmentPhoneNumber, 
+                                    "hash"          : this.payment.hash,
+                                    "callback_url_fe_succ" : this.payment.redirectSuccessUrl,
+                                    "callback_url_fe_fail" : this.payment.redirectFailUrl
+                                },'post', true );
                             } else {
                                 this.displayError("Provider id not configured");
                                 console.error("Provider id not configured");
@@ -713,55 +763,65 @@ export class BuyerCheckoutComponent implements OnInit
         // Set Loading to true
         // this.isLoading = true;
         
-        let orderBodies = [];
         let platformVoucherCode = null;
 
-        let customerInfo = {
-            address: this.customerAddress ? this.customerAddress.address : '',
-            city: this.customerAddress ? this.customerAddress.city : '',
-            country: this.customerAddress ? this.customerAddress.country : '',
-            state: this.customerAddress ? this.customerAddress.state : '',
-            postCode: this.customerAddress ? this.customerAddress.postCode : '',
+        // Initialize customerInfo with empty values for all properties.
+        const customerInfo = {
+            address: '',
+            city: '',
+            country: '',
+            state: '',
+            postCode: '',
+            email: '',
+            phoneNumber: '',
+            name: ''
+        };
+          
+        if (this.customerAddress) {
 
-            email: this.customerAddress ? this.customerAddress.email : this.selfPickupInfo.email,
-            phoneNumber: this.customerAddress ? this.customerAddress.phoneNumber : this.selfPickupInfo.phoneNumber,
-            name: this.customerAddress ? this.customerAddress.name : this.selfPickupInfo.name
+            // Use destructuring to extract the properties from the response object
+            const { address, city, country, state, postCode, email, phoneNumber, name } = this.customerAddress;
+
+            // Use Object.assign to update customerInfo with the values from this.customerAddress
+            Object.assign(customerInfo, { address, city, country, state, postCode, email, phoneNumber, name });
+            
+        } else if (this.selfPickupInfo) {
+
+            const { email, phoneNumber, name } = this.selfPickupInfo;
+
+            // Use Object.assign to update customerInfo with the values from this.selfPickupInfo
+            Object.assign(customerInfo, { email, phoneNumber, name });
         }
 
-        this.checkoutItems.forEach(checkout => {
-
+        const orderBodies = this.checkoutItems.map(checkout => {
             const orderBody = {
                 cartId: checkout.cartId,
-                cartItems: checkout.selectedItemId.map(element => {
-                    return {
-                        id: element,
-                    }
-                }),
+                paymentType: 'COD', // COD/ONLINEPAYMENT
+                cartItems: checkout.selectedItemId.map(id => ({ id })),
                 customerId: this.customerId,
                 customerNotes: checkout.orderNotes,
-                // voucherCode: checkout.platformVoucherCode,
                 orderPaymentDetails: {
-                    accountName: this.user ? this.user.name : customerInfo.name,
-                    deliveryQuotationReferenceId: checkout.deliveryQuotationId ? checkout.deliveryQuotationId : null
+                    accountName: this.user?.name ?? customerInfo.name,
+                    // Use the logical OR operator to set deliveryQuotationReferenceId to null if it's falsy
+                    deliveryQuotationReferenceId: checkout.deliveryQuotationId || null
                 },
                 orderShipmentDetails: {
-                    address:  customerInfo.address,
+                    address: customerInfo.address,
                     city: customerInfo.city,
                     country: customerInfo.country,
                     email: customerInfo.email,
                     phoneNumber: customerInfo.phoneNumber,
                     receiverName: customerInfo.name,
                     state: customerInfo.state,
-                    storePickup: checkout.deliveryType === 'PICKUP' ? true : false,
+                    storePickup: checkout.deliveryType === 'PICKUP',
                     zipcode: customerInfo.postCode,
                     deliveryProviderId: checkout.deliveryProviderId,
-                    deliveryType: checkout.deliveryType ? checkout.deliveryType : null
+                    deliveryType: checkout.deliveryType || null
                 }
-
             };
-            orderBodies.push(orderBody)
             platformVoucherCode = checkout.platformVoucherCode;
-        })
+            return orderBody;
+        });
         
         this._checkoutService.postPlaceGroupOrder(orderBodies, true, platformVoucherCode)
             .subscribe((response) => {
@@ -785,7 +845,10 @@ export class BuyerCheckoutComponent implements OnInit
             });
     }
 
-    postForm(id, path, params, method, encode: boolean) {
+    postForm(id: string, path: string, params: any, method: any, encode: boolean) {
+
+        console.log(params);
+        
         method = method || 'post';
     
         let form = document.createElement('form');
@@ -810,8 +873,10 @@ export class BuyerCheckoutComponent implements OnInit
         let customerActivity = this.customerActivity;
         customerActivity.pageVisited = path;
         customerActivity.storeId = null;
+
+        debugger;
         
-        this._analyticService.postActivity(customerActivity).subscribe(()=>{}); 
+        this._analyticService.postActivity(customerActivity).subscribe(); 
     }
 
     onChangePage(pageOfItems: Array<any>) {

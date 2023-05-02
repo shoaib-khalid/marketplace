@@ -168,6 +168,9 @@ export interface ProductPackageOption
     title: string;
     totalAllow: number;
     productPackageOptionDetail: ProductPackageOptionDetail[];
+    sequenceNumber: number;
+    minAllow: number;
+    allowSameItem: boolean;
 }
 
 export interface ProductPackageOptionDetail 
@@ -178,6 +181,7 @@ export interface ProductPackageOptionDetail
     productPackageOptionId?: string;
     productInventory: ProductInventory[];
     sequenceNumber: number;
+    quantity?: number
 }
 
 export interface AddOnProduct

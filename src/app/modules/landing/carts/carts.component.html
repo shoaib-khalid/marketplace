@@ -5,7 +5,7 @@
         <ng-container *ngIf="carts && (carts.length > 0); else noCarts">
             <!-- Delivery Address (xs) -->
             <ng-container *ngIf="hasDelivery">
-                <div class="block md:hidden w-full flex flex-col justify-center items-start border rounded-lg p-2 mb-2">
+                <div class="md:hidden w-full flex flex-col justify-center items-start border rounded-lg p-2 mb-2">
                     <!-- Header -->
                     <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
                         <mat-icon 
@@ -60,7 +60,7 @@
             </ng-container>
             <!-- Store pickup info (MOBILE)  -->
             <ng-container *ngIf="hasSelfPickup">
-                <div class="block md:hidden w-full flex flex-col justify-center items-start border rounded-lg p-2 mb-2">
+                <div class="md:hidden w-full flex flex-col justify-center items-start border rounded-lg p-2 mb-2">
                     <!-- Header -->
                     <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
                         <mat-icon 
@@ -120,7 +120,7 @@
                     <!-- Checkbox all carts MOBILE -->
                     <div class="lg:hidden cart-title-grid grid w-full pb-2 px-2 border border-white">
                         <!-- Checkbox all in cart -->
-                        <div class="flex items-start justify-center items-center w-full">
+                        <div class="flex justify-center items-center w-full">
                             <input type="checkbox" [disabled]="selectedCart.disabled || isGettingDeliveryPrices" [(ngModel)]="selectedCart.selected" (change)="selectCart(carts,null,null,$event.target.checked)"/>
                         </div>
                         <div class="flex flex-col justify-start ml-2">
@@ -168,7 +168,7 @@
                                 <!-- Cart Header -->
                                 <div class="cart-title-grid grid w-full sticky border-b h-14 lg:h-16 items-center">
                                     <!-- Checkbox all in cart -->
-                                    <div class="flex items-start justify-center items-center w-full">
+                                    <div class="flex justify-center items-center w-full">
                                         <input 
                                         [disabled]="selectedCart.carts[i + pagination.startIndex].disabled || isGettingDeliveryPrices" [(ngModel)]="selectedCart.carts[i + pagination.startIndex].selected" type="checkbox" (change)="selectCart(null,cart,null,$event.target.checked)">
                                     </div>
@@ -269,7 +269,7 @@
                                                         <!-- <span class="leading-tight text-xs text-secondary flex flex-wrap">{{cartItem.specialInstruction}}</span> -->
                                                     </div>
                                                     <!-- Quantity -->
-                                                    <div class="block md:hidden flex flex-col justify-center items-center mt-0.5">
+                                                    <div class="md:hidden flex flex-col justify-center items-center mt-0.5">
                                                         <div class="flex flex-row h-6 w-16 justify-center items-center rounded-md relative border border-primary">
                                                             <button (click)="checkQuantity(cart.id,cartItem,null,'decrement')" class="text-black hover:bg-primary h-full w-20 rounded-l-md cursor-pointer outline-none">
                                                                 <span class="flex justify-center text-sm">−</span>
@@ -954,7 +954,7 @@
                 </div>
                 <!-- Delivery Address (md) -->
                 <ng-container *ngIf="hasDelivery">
-                    <div class="hidden md:block flex flex-col justify-center items-center border rounded-lg p-2 mt-4">
+                    <div class="hidden md:flex flex-col justify-center items-center border rounded-lg p-2 mt-4">
                         <!-- Header -->
                         <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
                             <mat-icon 
@@ -1013,7 +1013,7 @@
                 </ng-container>
                 <!-- Store pickup info (md)  -->
                 <ng-container *ngIf="hasSelfPickup">
-                    <div class="hidden md:block flex flex-col justify-center items-center border rounded-lg p-2 mt-4">
+                    <div class="hidden md:flex flex-col justify-center items-center border rounded-lg p-2 mt-4">
                         <!-- Header -->
                         <div class="flex flex-row border-b justify-start items-center pb-2 w-full">
                             <mat-icon 

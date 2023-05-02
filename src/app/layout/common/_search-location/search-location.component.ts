@@ -15,7 +15,7 @@ import { CurrentLocation } from 'app/core/_current-location/current-location.typ
 import { Capacitor } from '@capacitor/core';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Geolocation } from '@capacitor/geolocation';
-
+import { Plugin } from '@capacitor/core';
 
 
 

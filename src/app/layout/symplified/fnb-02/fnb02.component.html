@@ -74,14 +74,14 @@
                         <span class="text-white">&nbsp;></span>
                     </div>
                 </div> -->
-                <div class="md:hidden relative w-full flex flex-auto items-center p-2 pb-2 z-20 bg-primary"
+                <div class="md:hidden relative w-full flex flex-auto items-center px-2 z-20 bg-primary"
                     *ngIf="isSearchOpened" 
                     @expandCollapse
                     >
                     <!-- <search class="w-full"></search> -->
                     <!-- <vertical-mode></vertical-mode> -->
-                    <search-location class="w-full"></search-location>
-                    <div class="absolute top-1 right-1">
+                    <search-location class="w-full mb-2 mt-1"></search-location>
+                    <div class="absolute top-0.5 right-1">
                         <mat-icon (click)="closeSearch()" class="text-white cursor-pointer" [svgIcon]="'heroicons_outline:x'"></mat-icon>
                     </div>
                 </div> 
