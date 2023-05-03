@@ -731,7 +731,7 @@ export class BuyerCheckoutComponent implements OnInit
                                 {
                                     "merchant_id"   : this.payment.clientId, 
                                     "invoice"       : this.payment.invoiceId, 
-                                    "payment_desc"  : 'null', 
+                                    "payment_desc"  : this.payment.sysTransactionId, 
                                     "currency"      : 'MYR', 
                                     "amount"        : this.paymentDetails.cartGrandTotal.toFixed(2), 
                                     "buyer_name"    : this.order.shipmentName, 
