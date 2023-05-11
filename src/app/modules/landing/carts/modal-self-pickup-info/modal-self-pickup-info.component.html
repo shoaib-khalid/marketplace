@@ -30,7 +30,7 @@
                         <input
                             [formControlName]="'email'"
                             placeholder="Enter your email (for payment receipt)"
-                            [required]="user ? true :false"
+                            [required]="true"
                             matInput>
                             <mat-error *ngIf="addressForm.get('email').hasError('required')">
                                 Email is required
